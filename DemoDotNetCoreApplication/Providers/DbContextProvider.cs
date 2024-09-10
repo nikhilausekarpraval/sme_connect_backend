@@ -27,9 +27,10 @@ public class DbContextProvider : DbContext
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.MobileNo).IsRequired().HasMaxLength(20);
                 entity.Property(e => e.CreatedOnDt).HasDefaultValueSql("GETDATE()");
+
             });
 
-            modelBuilder.Entity<TaskItem>().ToTable("task");
+            modelBuilder.Entity<TaskItem>().ToTable("taskItem");
 
             modelBuilder.Entity<TaskItem>(entity =>
             {
@@ -37,7 +38,10 @@ public class DbContextProvider : DbContext
                 entity.Property(t => t.Name).IsRequired().HasMaxLength(100);
                 entity.Property(t => t.Description).HasMaxLength(500);
                 entity.Property(t => t.CreatedOnDt).HasDefaultValueSql("GETDATE()");
-            });
+                entity.HasOne(t => t.employee).WithMany(t => t.taskItems) 
+                .HasForeignKey(t => t.employee_id) 
+                .OnDelete(DeleteBehavior.Cascade); 
+        });
         }
     }
 

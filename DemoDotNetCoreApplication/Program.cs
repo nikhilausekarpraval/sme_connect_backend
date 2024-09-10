@@ -2,6 +2,7 @@ using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Providers;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
 builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
 
 var app = builder.Build();
 

@@ -1,5 +1,7 @@
-﻿using DemoDotNetCoreApplication.Constatns;
+﻿using AutoMapper;
+using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
+using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +14,13 @@ namespace DemoDotNetCoreApplication.Controllers
     {
         private readonly ILogger<EmployeeController> _logger;
         private readonly IEmployeeProvider _employeeProvider;
+        private readonly IMapper _mapper;
 
-        public EmployeeController(ILogger<EmployeeController> logger, IEmployeeProvider employeeProvider)
+        public EmployeeController(ILogger<EmployeeController> logger, IEmployeeProvider employeeProvider,IMapper mapper)
         {
             _logger = logger;
             _employeeProvider = employeeProvider;
+            _mapper = mapper;
         }
 
 
@@ -53,18 +57,18 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateEmployee([FromBody] Employee employee)
+        public async Task<ActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
-            if (employee == null)
+            if (employeeDto == null)
             {
                 return BadRequest("Employee data is null.");
             }
 
-            var response = await _employeeProvider.CreateEmployee(employee);
+            var response = await _employeeProvider.CreateEmployee(_mapper.Map<Employee>(employeeDto));
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
+                return CreatedAtAction(nameof(GetEmployee), new { id = employeeDto.Id }, employeeDto);
             }
             else
             {
@@ -75,10 +79,10 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpPut]
-        public async Task<ActionResult> UpdateEmployee([FromBody] Employee employee)
+        public async Task<ActionResult> UpdateEmployee([FromBody] EmployeeDto employeeDto)
         {
            
-            var response = await _employeeProvider.UpdateEmployee(employee);
+            var response = await _employeeProvider.UpdateEmployee(_mapper.Map<Employee>(employeeDto));
 
             if (response.Status == Constants.ApiResponseType.Success)
             {

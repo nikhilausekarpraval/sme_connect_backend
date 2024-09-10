@@ -1,5 +1,7 @@
-﻿using DemoDotNetCoreApplication.Constatns;
+﻿using AutoMapper;
+using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
+using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,11 +15,13 @@ namespace DemoDotNetCoreApplication.Controllers
     {
         private readonly ILogger<TaskItemController> _logger;
         private readonly ITaskItemProvider _taskItemProvider;
+        private readonly IMapper _mapper;
 
-        public TaskItemController(ILogger<TaskItemController> logger, ITaskItemProvider taskItemProvider)
+        public TaskItemController(ILogger<TaskItemController> logger, ITaskItemProvider taskItemProvider,IMapper mapper)
         {
             _logger = logger;
             _taskItemProvider = taskItemProvider;
+            _mapper = mapper;
         }
 
 
@@ -56,18 +60,18 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> CreateTaskItem([FromBody] TaskItem taskItem)
+        public async Task<ActionResult> CreateTaskItem([FromBody] TaskItemsDto taskItemDto)
         {
-            if (taskItem == null)
+            if (taskItemDto == null)
             {
                 return BadRequest("Task item data is null.");
             }
 
-            var response = await _taskItemProvider.CreateTaskItem(taskItem);
+            var response = await _taskItemProvider.CreateTaskItem(_mapper.Map<TaskItem>(taskItemDto));
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItem.Id }, taskItem);
+                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItemDto.Id }, taskItemDto);
             }
             else
             {
@@ -78,10 +82,10 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpPut]
-        public async Task<ActionResult> UpdateTaskItem( [FromBody] TaskItem taskItem)
+        public async Task<ActionResult> UpdateTaskItem( [FromBody] TaskItemsDto taskItemDto)
         {
 
-            var response = await _taskItemProvider.UpdateTaskItem(taskItem);
+            var response = await _taskItemProvider.UpdateTaskItem(_mapper.Map<TaskItem>(taskItemDto));
 
             if (response.Status == Constants.ApiResponseType.Success)
             {

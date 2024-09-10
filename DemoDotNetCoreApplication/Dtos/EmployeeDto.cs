@@ -1,10 +1,8 @@
-﻿using System.Xml.Linq;
-
-namespace DemoDotNetCoreApplication.Modals
+﻿namespace DemoDotNetCoreApplication.Dtos
 {
-    public class Employee
+    public class EmployeeDto
     {
-        public int Id { get; set; }  
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Position { get; set; }
         public string Designation { get; set; }
@@ -12,6 +10,5 @@ namespace DemoDotNetCoreApplication.Modals
         public string MobileNo { get; set; }
         public DateTime CreatedOnDt { get; set; }
         public string CreatedBy { get; set; }
-        public List<TaskItem> taskItems { get; set; }
     }
 }
