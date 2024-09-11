@@ -22,7 +22,7 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var taskItems = await _context.TaskItems.ToListAsync();
+                var taskItems = await _context.TaskItems.Include(t => t.employee).Where(t => t.employeeId == t.employeeId).ToListAsync();
                 return new ApiResponse<List<TaskItem>>(Constants.ApiResponseType.Success, taskItems);
             }
             catch (Exception ex)
@@ -35,7 +35,7 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var taskItem = await _context.TaskItems.FindAsync(id);
+                var taskItem = await _context.TaskItems.Include(e => e.employee).Where(e => e.employee.Id == e.employeeId).FirstAsync();
                 if (taskItem != null)
                 {
                     return new ApiResponse<TaskItem>(Constants.ApiResponseType.Success, taskItem);

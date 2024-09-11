@@ -27,6 +27,10 @@ public class DbContextProvider : DbContext
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.MobileNo).IsRequired().HasMaxLength(20);
                 entity.Property(e => e.CreatedOnDt).HasDefaultValueSql("GETDATE()");
+                entity.HasMany(e => e.taskItems)
+                .WithOne(t => t.employee)
+                .HasForeignKey(t => t.employeeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             });
 
@@ -39,7 +43,7 @@ public class DbContextProvider : DbContext
                 entity.Property(t => t.Description).HasMaxLength(500);
                 entity.Property(t => t.CreatedOnDt).HasDefaultValueSql("GETDATE()");
                 entity.HasOne(t => t.employee).WithMany(t => t.taskItems) 
-                .HasForeignKey(t => t.employee_id) 
+                .HasForeignKey(t => t.employeeId) 
                 .OnDelete(DeleteBehavior.Cascade); 
         });
         }

@@ -1,4 +1,5 @@
-﻿using DemoDotNetCoreApplication.Constatns;
+﻿using AutoMapper;
+using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
@@ -13,10 +14,12 @@ namespace DemoDotNetCoreApplication.Providers
     {
         private readonly DbContextProvider _context;
 
+
         public EmployeeProvider(DbContextProvider context)
         {
             _context = context;
             _context.Database.EnsureCreated();
+
         }
 
         public async Task<ApiResponse<List<Employee>>> getEmployees()
@@ -24,8 +27,14 @@ namespace DemoDotNetCoreApplication.Providers
            
             try
             {
-                var employees = await _context.Employees.ToListAsync();
-                return new ApiResponse<List<Employee>>(status:Constants.ApiResponseType.Success,data:employees,message:"");
+                //var employees = await _context.Employees.Include(e => e.taskItems).Where(e => e.taskItems.Any(t => t.employeeId == e.Id)).ToListAsync();
+                //return new ApiResponse<List<Employee>>(status:Constants.ApiResponseType.Success,data:employees,message:"");
+
+                var employees = await _context.Employees
+                                          .Include(e => e.taskItems)
+                                          .ToListAsync();
+
+                return new ApiResponse<List<Employee>>(Constants.ApiResponseType.Success, employees);
             }
             catch (Exception ex)
             {
@@ -37,7 +46,7 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var employee = await _context.Employees.FindAsync(id);
+                var employee = await _context.Employees.Include(e => e.taskItems).Where(e => e.taskItems.Any(t => t.employeeId == e.Id)).FirstAsync();
                 if (employee != null)
                 {
                     return new ApiResponse<Employee>(status: Constants.ApiResponseType.Success, data: employee, message: "");

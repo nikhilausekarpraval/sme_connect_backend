@@ -11,7 +11,6 @@ namespace DemoDotNetCoreApplication.Dtos
         public DateTime EndDate { get; set; }
         public DateTime CreatedOnDt { get; set; }
         public string CreatedBy { get; set; }
-
-        public int Employee_id { get; set; }
+        public int EmployeeId { get; set; }
     }
 }

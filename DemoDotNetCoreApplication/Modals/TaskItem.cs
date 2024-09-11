@@ -12,7 +12,7 @@ namespace DemoDotNetCoreApplication.Modals
         public DateTime EndDate { get; set; }
         public DateTime CreatedOnDt { get; set; }
         public string CreatedBy { get; set; }
-        public int employee_id { get; set; }
+        public int employeeId { get; set; }
         public Employee employee { get; set; }
     }
 }

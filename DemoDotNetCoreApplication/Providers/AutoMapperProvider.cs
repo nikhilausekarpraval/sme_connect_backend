@@ -12,6 +12,10 @@ namespace DemoDotNetCoreApplication.Providers
 
             CreateMap<TaskItem, TaskItemsDto>();
             CreateMap<TaskItemsDto, TaskItem>();
+
+            CreateMap<Employee,EmployeeTasksDto>();
+            CreateMap<EmployeeTasksDto, Employee>();
+            
         }
     }
 

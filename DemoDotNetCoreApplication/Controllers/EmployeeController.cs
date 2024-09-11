@@ -44,10 +44,10 @@ namespace DemoDotNetCoreApplication.Controllers
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
             var response = await _employeeProvider.getEmployees();
-
+            var employeeDtos = _mapper.Map<List<EmployeeTasksDto>>(response.Data);
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return Ok(response.Data);
+                return Ok(employeeDtos);
             }
             else
             {
