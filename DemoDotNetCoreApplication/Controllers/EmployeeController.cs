@@ -28,10 +28,10 @@ namespace DemoDotNetCoreApplication.Controllers
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
             var response =  await _employeeProvider.GetEmployee(id);
-
+            var employeeDtos = _mapper.Map<EmployeeTasksDto>(response.Data);
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return Ok(response.Data);
+                return Ok(employeeDtos);
             }
             else
             {

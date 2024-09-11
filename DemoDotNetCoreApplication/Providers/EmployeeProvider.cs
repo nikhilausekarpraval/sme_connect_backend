@@ -46,7 +46,7 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var employee = await _context.Employees.Include(e => e.taskItems).Where(e => e.taskItems.Any(t => t.employeeId == e.Id)).FirstAsync();
+                var employee = await _context.Employees.Include(e => e.taskItems).Where(e => e.Id == id).FirstAsync();
                 if (employee != null)
                 {
                     return new ApiResponse<Employee>(status: Constants.ApiResponseType.Success, data: employee, message: "");
