@@ -9,7 +9,7 @@ namespace DemoDotNetCoreApplication.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("employee")]
     public class EmployeeController : ControllerBase
     {
         private readonly ILogger<EmployeeController> _logger;

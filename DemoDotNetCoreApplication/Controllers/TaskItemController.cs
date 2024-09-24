@@ -10,7 +10,7 @@ namespace DemoDotNetCoreApplication.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("task")]
     public class TaskItemController : ControllerBase
     {
         private readonly ILogger<TaskItemController> _logger;
