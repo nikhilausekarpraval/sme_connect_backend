@@ -5,26 +5,32 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "9091",
+        "ASPNETCORE_HTTP_PORTS": "9092",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5124"
+      "applicationUrl": "http://localhost:9091"
     },
     "https": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "9091",
+        "ASPNETCORE_HTTP_PORTS": "9092",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7179;http://localhost:5124"
+      "applicationUrl": "https://localhost:9091;http://localhost:9091"
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "9091",
+        "ASPNETCORE_HTTP_PORTS": "9092",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
@@ -44,8 +50,8 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "9081",
-        "ASPNETCORE_HTTP_PORTS": "9082"
+        "ASPNETCORE_HTTPS_PORTS": "9091",
+        "ASPNETCORE_HTTP_PORTS": "9092"
       },
       "publishAllPorts": true,
       "useSSL": true
