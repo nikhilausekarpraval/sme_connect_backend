@@ -13,12 +13,16 @@ public class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            })
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
-            })
-            .AddServiceDiscovery(options =>
-            {
-                options.UseEureka();
             });
+            //.AddServiceDiscovery(options =>
+            //{
+            //    options.UseEureka();
+            //});
 }

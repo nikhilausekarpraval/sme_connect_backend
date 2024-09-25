@@ -3,11 +3,7 @@ using DemoDotNetCoreApplication.Providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Steeltoe.Discovery.Client;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+
 
 public class Startup
 {
@@ -23,6 +19,8 @@ public class Startup
     {
         services.AddDbContext<DbContextProvider>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddDiscoveryClient(Configuration);
 
         services.AddCors(options =>
         {
@@ -43,8 +41,6 @@ public class Startup
         services.AddScoped<IEmployeeProvider, EmployeeProvider>();
         services.AddAutoMapper(typeof(AutoMapperProvider));
 
-        // Add Eureka Discovery Client
-        //services.AddDiscoveryClient(Configuration);
     }
 
     // Configure middleware (HTTP request pipeline)
@@ -59,12 +55,9 @@ public class Startup
             });
         }
 
-        app.UseHttpsRedirection();
-        app.UseAuthorization();
-        app.UseCors("AllowAllOrigins");
+        //app.UseHttpsRedirection();
 
-        // Enable Eureka Discovery Client
-        //app.UseDiscoveryClient();
+        app.UseCors("AllowAllOrigins");
 
         app.UseRouting();
 
@@ -73,8 +66,7 @@ public class Startup
             endpoints.MapControllers();
         });
 
-        //app.useCon(
-        //    name: "default",
-        //    pattern: "{controller=Home}/{action=Index}/{id?}");
+        app.UseDiscoveryClient();
+
     }
 }
