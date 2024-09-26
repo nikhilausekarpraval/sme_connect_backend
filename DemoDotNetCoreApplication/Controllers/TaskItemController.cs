@@ -25,7 +25,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("get")]
         public async Task<ActionResult<IEnumerable<TaskItem>>> Get()
         {
             var response = await _taskItemProvider.getTaskItems();
@@ -59,7 +59,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult> CreateTaskItem([FromBody] TaskItemsDto taskItemDto)
         {
             if (taskItemDto == null)
@@ -81,7 +81,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<ActionResult> UpdateTaskItem( [FromBody] TaskItemsDto taskItemDto)
         {
 
@@ -99,7 +99,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult> DeleteTaskItem(int id)
         {
             var response = await _taskItemProvider.DeleteTaskItem(id);

@@ -40,7 +40,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("get")]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
             var response = await _employeeProvider.getEmployees();
@@ -56,7 +56,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult> CreateEmployee([FromBody] EmployeeDto employeeDto)
         {
             if (employeeDto == null)
@@ -78,7 +78,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<ActionResult> UpdateEmployee([FromBody] EmployeeDto employeeDto)
         {
            
@@ -95,7 +95,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult> DeleteEmployee(int id)
         {
             var response = await _employeeProvider.DeleteEmployee(id);
