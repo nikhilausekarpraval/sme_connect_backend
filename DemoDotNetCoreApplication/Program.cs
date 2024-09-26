@@ -49,9 +49,7 @@ public class Program
 
         app.UseCors("AllowAllOrigins");
 
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
         app.Run();
     }
