@@ -23,6 +23,14 @@ public class Program
         builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
         builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAllOrigins",
+                builder => builder.AllowAnyOrigin()
+                                  .AllowAnyMethod()
+                                  .AllowAnyHeader());
+        });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -38,6 +46,8 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
+
+        app.UseCors("AllowAllOrigins");
 
         app.MapControllerRoute(
             name: "default",
