@@ -15,12 +15,14 @@ namespace DemoDotNetCoreApplication.Controllers
     {
         private readonly ILogger<TaskItemController> _logger;
         private readonly ITaskItemProvider _taskItemProvider;
+        private readonly IEmployeeProvider _employeeProvider;
         private readonly IMapper _mapper;
 
-        public TaskItemController(ILogger<TaskItemController> logger, ITaskItemProvider taskItemProvider,IMapper mapper)
+        public TaskItemController(ILogger<TaskItemController> logger, ITaskItemProvider taskItemProvider,IMapper mapper,IEmployeeProvider employeeProvider)
         {
             _logger = logger;
             _taskItemProvider = taskItemProvider;
+            _employeeProvider = employeeProvider;
             _mapper = mapper;
         }
 
@@ -65,6 +67,14 @@ namespace DemoDotNetCoreApplication.Controllers
             if (taskItemDto == null)
             {
                 return BadRequest("Task item data is null.");
+            }
+
+            if (taskItemDto != null)
+            {
+                ApiResponse<Employee> result = await _employeeProvider.GetEmployee(taskItemDto.employee_id);
+                if (result.Status != Constants.ApiResponseType.Success) {
+                    return  StatusCode(500, result.Message);
+                }
             }
 
             var response = await _taskItemProvider.CreateTaskItem(_mapper.Map<TaskItem>(taskItemDto));

@@ -34,7 +34,7 @@ public class DbContextProvider : DbContext
 
             });
 
-            modelBuilder.Entity<TaskItem>().ToTable("taskItem");
+            modelBuilder.Entity<TaskItem>().ToTable("task");
 
             modelBuilder.Entity<TaskItem>(entity =>
             {

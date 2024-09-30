@@ -14,6 +14,8 @@ namespace DemoDotNetCoreApplication.Modals
         public DateTime end_date { get; set; }
         public DateTime created_on_dt { get; set; }
         public string created_by { get; set; }
+
+        [ForeignKey("employee")]
         public int employee_id { get; set; }
         public Employee employee { get; set; }
     }
