@@ -31,7 +31,7 @@ namespace DemoDotNetCoreApplication.Providers
                 //return new ApiResponse<List<Employee>>(status:Constants.ApiResponseType.Success,data:employees,message:"");
 
                 var employees = await _context.Employees
-                                          .Include(e => e.taskItems)
+                                          .Include(e => e.task_items)
                                           .ToListAsync();
 
                 return new ApiResponse<List<Employee>>(Constants.ApiResponseType.Success, employees);
@@ -46,7 +46,7 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var employee = await _context.Employees.Include(e => e.taskItems).Where(e => e.Id == id).FirstAsync();
+                var employee = await _context.Employees.Include(e => e.task_items).Where(e => e.id == id).FirstAsync();
                 if (employee != null)
                 {
                     return new ApiResponse<Employee>(status: Constants.ApiResponseType.Success, data: employee, message: "");
@@ -96,7 +96,7 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var existingEmployee = await _context.Employees.FindAsync(employee.Id);
+                var existingEmployee = await _context.Employees.FindAsync(employee.id);
                 if (existingEmployee != null)
                 {
                     _context.Entry(existingEmployee).CurrentValues.SetValues(employee);

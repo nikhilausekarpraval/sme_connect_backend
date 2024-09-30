@@ -22,14 +22,14 @@ public class DbContextProvider : DbContext
 
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.HasKey(e => e.Id); // Primary key
-                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.MobileNo).IsRequired().HasMaxLength(20);
-                entity.Property(e => e.CreatedOnDt).HasDefaultValueSql("GETDATE()");
-                entity.HasMany(e => e.taskItems)
+                entity.HasKey(e => e.id); // Primary key
+                entity.Property(e => e.name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.email).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.mobile_no).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.created_on_dt).HasDefaultValueSql("GETDATE()");
+                entity.HasMany(e => e.task_items)
                 .WithOne(t => t.employee)
-                .HasForeignKey(t => t.employeeId)
+                .HasForeignKey(t => t.employee_id)
                 .OnDelete(DeleteBehavior.Cascade);
 
             });
@@ -38,12 +38,12 @@ public class DbContextProvider : DbContext
 
             modelBuilder.Entity<TaskItem>(entity =>
             {
-                entity.HasKey(t => t.Id); // Primary key
-                entity.Property(t => t.Name).IsRequired().HasMaxLength(100);
-                entity.Property(t => t.Description).HasMaxLength(500);
-                entity.Property(t => t.CreatedOnDt).HasDefaultValueSql("GETDATE()");
-                entity.HasOne(t => t.employee).WithMany(t => t.taskItems) 
-                .HasForeignKey(t => t.employeeId) 
+                entity.HasKey(t => t.id); // Primary key
+                entity.Property(t => t.name).IsRequired().HasMaxLength(100);
+                entity.Property(t => t.description).HasMaxLength(500);
+                entity.Property(t => t.created_on_dt).HasDefaultValueSql("GETDATE()");
+                entity.HasOne(t => t.employee).WithMany(t => t.task_items) 
+                .HasForeignKey(t => t.employee_id) 
                 .OnDelete(DeleteBehavior.Cascade); 
         });
         }

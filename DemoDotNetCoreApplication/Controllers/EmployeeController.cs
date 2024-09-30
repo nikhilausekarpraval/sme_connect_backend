@@ -68,7 +68,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetEmployee), new { id = employeeDto.Id }, employeeDto);
+                return CreatedAtAction(nameof(GetEmployee), new { id = employeeDto.id }, employeeDto);
             }
             else
             {

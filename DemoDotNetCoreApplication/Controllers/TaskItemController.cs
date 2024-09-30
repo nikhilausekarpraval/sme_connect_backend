@@ -71,7 +71,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItemDto.Id }, taskItemDto);
+                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItemDto.id }, taskItemDto);
             }
             else
             {
