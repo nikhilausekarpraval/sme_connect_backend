@@ -67,7 +67,7 @@ namespace DemoDotNetCoreApplication.Providers
                 if (employee != null)
                 {
                     _context.Employees.Remove(employee);
-                    _context.SaveChanges();
+                   await _context.SaveChangesAsync();
                     return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
                 }
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, false, "Employee not found.");

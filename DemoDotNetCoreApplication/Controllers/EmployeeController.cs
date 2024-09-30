@@ -96,9 +96,9 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> DeleteEmployee([FromQuery] int taskId)
+        public async Task<ActionResult> DeleteEmployee([FromQuery] int employeeId)
         {
-            var response = await _employeeProvider.DeleteEmployee(taskId);
+            var response = await _employeeProvider.DeleteEmployee(employeeId);
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
