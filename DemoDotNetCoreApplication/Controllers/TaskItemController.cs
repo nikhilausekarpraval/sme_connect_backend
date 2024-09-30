@@ -69,12 +69,9 @@ namespace DemoDotNetCoreApplication.Controllers
                 return BadRequest("Task item data is null.");
             }
 
-            if (taskItemDto != null)
+            if(taskItemDto.employee_id == 0)
             {
-                ApiResponse<Employee> result = await _employeeProvider.GetEmployee(taskItemDto.employee_id);
-                if (result.Status != Constants.ApiResponseType.Success) {
-                    return  StatusCode(500, result.Message);
-                }
+                taskItemDto.employee_id = null;
             }
 
             var response = await _taskItemProvider.CreateTaskItem(_mapper.Map<TaskItem>(taskItemDto));
@@ -94,6 +91,21 @@ namespace DemoDotNetCoreApplication.Controllers
         [HttpPut("update")]
         public async Task<ActionResult> UpdateTaskItem( [FromBody] TaskItemsDto taskItemDto)
         {
+            if (taskItemDto != null)
+            {
+                if(taskItemDto.employee_id == null)
+                {
+                    return  StatusCode(404, "Employee not found");
+
+                }else
+                {
+                    ApiResponse<Employee> result = await _employeeProvider.GetEmployee(taskItemDto.employee_id);
+                    if (result.Status != Constants.ApiResponseType.Success)
+                    {
+                        return StatusCode(500, result.Message);
+                    }
+                }
+            }
 
             var response = await _taskItemProvider.UpdateTaskItem(_mapper.Map<TaskItem>(taskItemDto));
 

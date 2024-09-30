@@ -16,7 +16,7 @@ namespace DemoDotNetCoreApplication.Modals
         public string created_by { get; set; }
 
         [ForeignKey("employee")]
-        public int employee_id { get; set; }
+        public int? employee_id { get; set; }
         public Employee employee { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
-        public async Task<ApiResponse<Employee>> GetEmployee(int id)
+        public async Task<ApiResponse<Employee>> GetEmployee(int? id)
         {
             try
             {

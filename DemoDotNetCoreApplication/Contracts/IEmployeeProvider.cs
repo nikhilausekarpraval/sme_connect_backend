@@ -8,7 +8,7 @@ namespace DemoDotNetCoreApplication.Contracts
     {
         public  Task<ApiResponse<List<Employee>>> getEmployees();
 
-        public  Task<ApiResponse<Employee>> GetEmployee(int id);
+        public  Task<ApiResponse<Employee>> GetEmployee(int? id);
 
         public  Task<ApiResponse<bool>> DeleteEmployee(int id);
 

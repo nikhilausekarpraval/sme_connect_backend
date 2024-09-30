@@ -30,7 +30,7 @@ public class DbContextProvider : DbContext
                 entity.HasMany(e => e.task_items)
                 .WithOne(t => t.employee)
                 .HasForeignKey(t => t.employee_id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             });
 
@@ -44,7 +44,7 @@ public class DbContextProvider : DbContext
                 entity.Property(t => t.created_on_dt).HasDefaultValueSql("GETDATE()");
                 entity.HasOne(t => t.employee).WithMany(t => t.task_items) 
                 .HasForeignKey(t => t.employee_id) 
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.SetNull); 
         });
         }
     }
