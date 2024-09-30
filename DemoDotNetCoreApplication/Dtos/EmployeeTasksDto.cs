@@ -16,6 +16,6 @@ namespace DemoDotNetCoreApplication.Dtos
 
         public string createdBy { get; set; }
 
-        public List<TaskItemsDto> task_items { get; set; }
+        public List<TaskItemsDto> tasks { get; set; }
     }
 }
