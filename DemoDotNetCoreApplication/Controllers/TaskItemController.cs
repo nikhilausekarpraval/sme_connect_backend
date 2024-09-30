@@ -69,9 +69,9 @@ namespace DemoDotNetCoreApplication.Controllers
                 return BadRequest("Task item data is null.");
             }
 
-            if(taskItemDto.employee_id == 0)
+            if(taskItemDto.employeeId == 0)
             {
-                taskItemDto.employee_id = null;
+                taskItemDto.employeeId = null;
             }
 
             var response = await _taskItemProvider.CreateTaskItem(_mapper.Map<TaskItem>(taskItemDto));
@@ -93,13 +93,13 @@ namespace DemoDotNetCoreApplication.Controllers
         {
             if (taskItemDto != null)
             {
-                if(taskItemDto.employee_id == null)
+                if(taskItemDto.employeeId == null)
                 {
                     return  StatusCode(404, "Employee not found");
 
                 }else
                 {
-                    ApiResponse<Employee> result = await _employeeProvider.GetEmployee(taskItemDto.employee_id);
+                    ApiResponse<Employee> result = await _employeeProvider.GetEmployee(taskItemDto.employeeId);
                     if (result.Status != Constants.ApiResponseType.Success)
                     {
                         return StatusCode(500, result.Message);

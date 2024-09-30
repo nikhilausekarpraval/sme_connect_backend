@@ -12,10 +12,16 @@ namespace DemoDotNetCoreApplication.Modals
         public string position { get; set; }
         public string designation { get; set; }
         public string email { get; set; }
-        public string mobile_no { get; set; }
-        public DateTime created_on_dt { get; set; }
-        public string created_by { get; set; }
+
+        [Column("mobile_no")]
+        public string mobileNo { get; set; }
+
+        [Column("created_on_dt")]
+        public DateTime? createdOnDt { get; set; }
+
+        [Column("created_by")]
+        public string createdBy { get; set; }
         [JsonIgnore]
-        public List<TaskItem> task_items { get; set; }
+        public List<TaskItem>? tasks { get; set; }
     }
 }

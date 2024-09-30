@@ -7,8 +7,9 @@
         public string position { get; set; }
         public string designation { get; set; }
         public string email { get; set; }
-        public string mobile_no { get; set; }
-        public DateTime created_on_dt { get; set; }
-        public string created_by { get; set; }
+
+        public string mobileNo { get; set; }
+        public DateTime? createdOnDt { get; set; }
+        public string createdBy { get; set; }
     }
 }

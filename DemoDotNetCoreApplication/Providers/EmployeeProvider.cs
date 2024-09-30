@@ -31,7 +31,7 @@ namespace DemoDotNetCoreApplication.Providers
                 //return new ApiResponse<List<Employee>>(status:Constants.ApiResponseType.Success,data:employees,message:"");
 
                 var employees = await _context.Employees
-                                          .Include(e => e.task_items)
+                                          .Include(e => e.tasks)
                                           .ToListAsync();
 
                 return new ApiResponse<List<Employee>>(Constants.ApiResponseType.Success, employees);
@@ -46,7 +46,7 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var employee = await _context.Employees.Include(e => e.task_items).Where(e => e.id == id).FirstAsync();
+                var employee = await _context.Employees.Include(e => e.tasks).Where(e => e.id == id).FirstAsync();
                 if (employee != null)
                 {
                     return new ApiResponse<Employee>(status: Constants.ApiResponseType.Success, data: employee, message: "");

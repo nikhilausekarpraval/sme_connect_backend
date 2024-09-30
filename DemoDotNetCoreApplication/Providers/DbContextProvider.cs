@@ -12,7 +12,7 @@ public class DbContextProvider : DbContext
         }
 
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<TaskItem> TaskItems { get; set; }
+        public DbSet<TaskItem> Tasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,11 +25,11 @@ public class DbContextProvider : DbContext
                 entity.HasKey(e => e.id); // Primary key
                 entity.Property(e => e.name).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.email).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.mobile_no).IsRequired().HasMaxLength(20);
-                entity.Property(e => e.created_on_dt).HasDefaultValueSql("GETDATE()");
-                entity.HasMany(e => e.task_items)
+                entity.Property(e => e.mobileNo).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.createdOnDt).HasDefaultValueSql("GETDATE()");
+                entity.HasMany(e => e.tasks)
                 .WithOne(t => t.employee)
-                .HasForeignKey(t => t.employee_id)
+                .HasForeignKey(t => t.employeeId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             });
@@ -41,11 +41,11 @@ public class DbContextProvider : DbContext
                 entity.HasKey(t => t.id); // Primary key
                 entity.Property(t => t.name).IsRequired().HasMaxLength(100);
                 entity.Property(t => t.description).HasMaxLength(500);
-                entity.Property(t => t.created_on_dt).HasDefaultValueSql("GETDATE()");
-                entity.HasOne(t => t.employee).WithMany(t => t.task_items) 
-                .HasForeignKey(t => t.employee_id) 
+                entity.Property(t => t.createdOnDt).HasDefaultValueSql("GETDATE()");
+                entity.HasOne(t => t.employee).WithMany(t => t.tasks) 
+                .HasForeignKey(t => t.employeeId) 
                 .OnDelete(DeleteBehavior.SetNull); 
-        });
+            });
         }
     }
 

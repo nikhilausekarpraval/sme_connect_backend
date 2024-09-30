@@ -10,13 +10,21 @@ namespace DemoDotNetCoreApplication.Modals
         public int id { get; set; }  
         public string name { get; set; }
         public string description { get; set; }
-        public DateTime assigned_on_dt { get; set; }
-        public DateTime end_date { get; set; }
-        public DateTime created_on_dt { get; set; }
-        public string created_by { get; set; }
+        [Column("assigned_on_dt")]
+
+        public DateTime? assignedOnDt { get; set; }
+        [Column("end_date")]
+        public DateTime? endDate { get; set; }
+        [Column("created_on_dt")]
+        public DateTime? createdOnDt { get; set; }
+
+        [Column("created_by")]
+        public string createdBy { get; set; }
 
         [ForeignKey("employee")]
-        public int? employee_id { get; set; }
-        public Employee employee { get; set; }
+        [Column("employee_id")]
+        public int? employeeId { get; set; }
+
+        public Employee? employee { get; set; }
     }
 }
