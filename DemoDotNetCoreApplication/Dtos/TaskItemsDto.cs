@@ -4,13 +4,13 @@ namespace DemoDotNetCoreApplication.Dtos
 {
     public class TaskItemsDto
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public DateTime AssignedOnDt { get; set; }
-        public DateTime EndDate { get; set; }
-        public DateTime CreatedOnDt { get; set; }
-        public string CreatedBy { get; set; }
-        public int EmployeeId { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public DateTime? assignedOnDt { get; set; }
+        public DateTime? endDate { get; set; }
+        public DateTime? createdOnDt { get; set; }
+        public string createdBy { get; set; }
+        public int? employeeId { get; set; }
     }
 }

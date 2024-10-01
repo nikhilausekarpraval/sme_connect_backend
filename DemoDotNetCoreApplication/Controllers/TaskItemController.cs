@@ -10,17 +10,19 @@ namespace DemoDotNetCoreApplication.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("task")]
     public class TaskItemController : ControllerBase
     {
         private readonly ILogger<TaskItemController> _logger;
         private readonly ITaskItemProvider _taskItemProvider;
+        private readonly IEmployeeProvider _employeeProvider;
         private readonly IMapper _mapper;
 
-        public TaskItemController(ILogger<TaskItemController> logger, ITaskItemProvider taskItemProvider,IMapper mapper)
+        public TaskItemController(ILogger<TaskItemController> logger, ITaskItemProvider taskItemProvider,IMapper mapper,IEmployeeProvider employeeProvider)
         {
             _logger = logger;
             _taskItemProvider = taskItemProvider;
+            _employeeProvider = employeeProvider;
             _mapper = mapper;
         }
 
@@ -67,11 +69,16 @@ namespace DemoDotNetCoreApplication.Controllers
                 return BadRequest("Task item data is null.");
             }
 
+            if(taskItemDto.employeeId == 0)
+            {
+                taskItemDto.employeeId = null;
+            }
+
             var response = await _taskItemProvider.CreateTaskItem(_mapper.Map<TaskItem>(taskItemDto));
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItemDto.Id }, taskItemDto);
+                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItemDto.id }, taskItemDto);
             }
             else
             {
@@ -84,6 +91,21 @@ namespace DemoDotNetCoreApplication.Controllers
         [HttpPut("update")]
         public async Task<ActionResult> UpdateTaskItem( [FromBody] TaskItemsDto taskItemDto)
         {
+            if (taskItemDto != null)
+            {
+                if(taskItemDto.employeeId == null)
+                {
+                    return  StatusCode(404, "Employee not found");
+
+                }else
+                {
+                    ApiResponse<Employee> result = await _employeeProvider.GetEmployee(taskItemDto.employeeId);
+                    if (result.Status != Constants.ApiResponseType.Success)
+                    {
+                        return StatusCode(500, result.Message);
+                    }
+                }
+            }
 
             var response = await _taskItemProvider.UpdateTaskItem(_mapper.Map<TaskItem>(taskItemDto));
 
@@ -99,10 +121,10 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> DeleteTaskItem(int id)
+        [HttpDelete("delete")]
+        public async Task<ActionResult> DeleteTaskItem([FromQuery] int taskId)
         {
-            var response = await _taskItemProvider.DeleteTaskItem(id);
+            var response = await _taskItemProvider.DeleteTaskItem(taskId);
 
             if (response.Status == Constants.ApiResponseType.Success)
             {

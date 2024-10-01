@@ -9,7 +9,7 @@ namespace DemoDotNetCoreApplication.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("employee")]
     public class EmployeeController : ControllerBase
     {
         private readonly ILogger<EmployeeController> _logger;
@@ -68,7 +68,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetEmployee), new { id = employeeDto.Id }, employeeDto);
+                return CreatedAtAction(nameof(GetEmployee), new { id = employeeDto.id }, employeeDto);
             }
             else
             {
@@ -95,10 +95,10 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> DeleteEmployee(int id)
+        [HttpDelete("delete")]
+        public async Task<ActionResult> DeleteEmployee([FromQuery] int employeeId)
         {
-            var response = await _employeeProvider.DeleteEmployee(id);
+            var response = await _employeeProvider.DeleteEmployee(employeeId);
 
             if (response.Status == Constants.ApiResponseType.Success)
             {

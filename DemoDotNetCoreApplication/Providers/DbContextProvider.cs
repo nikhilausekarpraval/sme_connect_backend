@@ -12,7 +12,7 @@ public class DbContextProvider : DbContext
         }
 
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<TaskItem> TaskItems { get; set; }
+        public DbSet<TaskItem> Tasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,30 +22,30 @@ public class DbContextProvider : DbContext
 
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.HasKey(e => e.Id); // Primary key
-                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.MobileNo).IsRequired().HasMaxLength(20);
-                entity.Property(e => e.CreatedOnDt).HasDefaultValueSql("GETDATE()");
-                entity.HasMany(e => e.taskItems)
+                entity.HasKey(e => e.id); // Primary key
+                entity.Property(e => e.name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.email).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.mobileNo).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.createdOnDt).HasDefaultValueSql("GETDATE()");
+                entity.HasMany(e => e.tasks)
                 .WithOne(t => t.employee)
                 .HasForeignKey(t => t.employeeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             });
 
-            modelBuilder.Entity<TaskItem>().ToTable("taskItem");
+            modelBuilder.Entity<TaskItem>().ToTable("task");
 
             modelBuilder.Entity<TaskItem>(entity =>
             {
-                entity.HasKey(t => t.Id); // Primary key
-                entity.Property(t => t.Name).IsRequired().HasMaxLength(100);
-                entity.Property(t => t.Description).HasMaxLength(500);
-                entity.Property(t => t.CreatedOnDt).HasDefaultValueSql("GETDATE()");
-                entity.HasOne(t => t.employee).WithMany(t => t.taskItems) 
+                entity.HasKey(t => t.id); // Primary key
+                entity.Property(t => t.name).IsRequired().HasMaxLength(100);
+                entity.Property(t => t.description).HasMaxLength(500);
+                entity.Property(t => t.createdOnDt).HasDefaultValueSql("GETDATE()");
+                entity.HasOne(t => t.employee).WithMany(t => t.tasks) 
                 .HasForeignKey(t => t.employeeId) 
-                .OnDelete(DeleteBehavior.Cascade); 
-        });
+                .OnDelete(DeleteBehavior.SetNull); 
+            });
         }
     }
 
