@@ -69,8 +69,10 @@ namespace DemoDotNetCoreApplication.Controllers
             {
                 return BadRequest("Employee data is null.");
             }
-
-            var response = await _employeeProvider.CreateEmployee(_mapper.Map<Employee>(employeeDto));
+            var emp = _mapper.Map<Employee>(employeeDto);
+            emp.CreatedOnDt = DateOnly.FromDateTime(DateTime.Today);
+            emp.CreatedBy = "admin";// this will updated from context
+            var response = await _employeeProvider.CreateEmployee(emp);
 
             if (response.Status == Constants.ApiResponseType.Success)
             {

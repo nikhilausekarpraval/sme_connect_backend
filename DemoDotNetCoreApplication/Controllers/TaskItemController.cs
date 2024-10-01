@@ -62,7 +62,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpPost("register")]
-        public async Task<ActionResult> CreateTaskItem([FromBody] TaskItemsDto taskItemDto)
+        public async Task<ActionResult> CreateTaskItem(TaskItemsDto taskItemDto)
         {
             if (taskItemDto == null)
             {
@@ -73,8 +73,11 @@ namespace DemoDotNetCoreApplication.Controllers
             {
                 taskItemDto.EmployeeId = null;
             }
+            var task = _mapper.Map<DemoDotNetCoreApplication.Modals.Task>(taskItemDto);
+            task.CreatedOnDt = DateOnly.FromDateTime(DateTime.Today);
+            task.CreatedBy = "admin";// this will updated from context
 
-            var response = await _taskItemProvider.CreateTaskItem(_mapper.Map<DemoDotNetCoreApplication.Modals.Task>(taskItemDto));
+            var response = await _taskItemProvider.CreateTaskItem(task);
 
             if (response.Status == Constants.ApiResponseType.Success)
             {

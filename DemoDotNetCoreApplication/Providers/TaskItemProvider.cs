@@ -72,7 +72,11 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-               await _context.Tasks.AddAsync(taskItem);
+                var task = taskItem;
+                task.Id = 0;
+                var emp = await _context.Employees.FindAsync(taskItem.EmployeeId);
+                task.Employee = emp;
+                await _context.Tasks.AddAsync(task);
                 await _context.SaveChangesAsync();
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
             }

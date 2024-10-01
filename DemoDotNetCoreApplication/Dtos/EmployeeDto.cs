@@ -7,9 +7,7 @@
         public string? Position { get; set; }
         public string? Designation { get; set; }
         public string? Email { get; set; }
-
         public string? MobileNo { get; set; }
-        public DateOnly? CreatedOnDt { get; set; }
-        public string? CreatedBy { get; set; }
+
     }
 }
