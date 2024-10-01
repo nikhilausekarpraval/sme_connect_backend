@@ -16,6 +16,6 @@ namespace DemoDotNetCoreApplication.Dtos
 
         public string? CreatedBy { get; set; }
 
-        public virtual ICollection<Modals.Task> Tasks { get; set; } = new List<Modals.Task>();
+        public virtual ICollection<TaskItemsDto> Tasks { get; set; } = new List<TaskItemsDto>();
     }
 }

@@ -41,7 +41,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<EmployeeTasksDto>>> GetEmployees()
         {
             try
             {
