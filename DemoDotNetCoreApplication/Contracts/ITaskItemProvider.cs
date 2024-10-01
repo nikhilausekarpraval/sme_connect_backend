@@ -5,15 +5,15 @@ namespace DemoDotNetCoreApplication.Contracts
 {
     public interface ITaskItemProvider
     {
-        public  Task<ApiResponse<List<TaskItem>>> getTaskItems();
+        public  Task<ApiResponse<List<Modals.Task>>> getTaskItems();
 
-        public  Task<ApiResponse<TaskItem>> GetTaskItem(int id);
+        public  Task<ApiResponse<Modals.Task>> GetTaskItem(int id);
 
         public  Task<ApiResponse<bool>> DeleteTaskItem(int id);
 
-        public  Task<ApiResponse<bool>> CreateTaskItem(TaskItem employee);
+        public  Task<ApiResponse<bool>> CreateTaskItem(Modals.Task employee);
 
-        public  Task<ApiResponse<bool>> UpdateTaskItem(TaskItem employee);
+        public  Task<ApiResponse<bool>> UpdateTaskItem(Modals.Task employee);
 
     }
 }

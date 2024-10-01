@@ -1,27 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using System.Xml.Linq;
+﻿using System;
+using System.Collections.Generic;
 
-namespace DemoDotNetCoreApplication.Modals
+namespace DemoDotNetCoreApplication.Modals;
+
+public partial class Employee
 {
-    [Table("employee")]
-    public class Employee
-    {
-        public int id { get; set; }  
-        public string name { get; set; }
-        public string position { get; set; }
-        public string designation { get; set; }
-        public string email { get; set; }
+    public DateOnly? CreatedOnDt { get; set; }
 
-        [Column("mobile_no")]
-        public string mobileNo { get; set; }
+    public int Id { get; set; }
 
-        [Column("created_on_dt")]
-        public DateTime? createdOnDt { get; set; }
+    public string? CreatedBy { get; set; }
 
-        [Column("created_by")]
-        public string createdBy { get; set; }
-        [JsonIgnore]
-        public List<TaskItem>? tasks { get; set; }
-    }
+    public string? Designation { get; set; }
+
+    public string? Email { get; set; }
+
+    public string? MobileNo { get; set; }
+
+    public string? Name { get; set; }
+
+    public string? Position { get; set; }
+
+    public virtual ICollection<Modals.Task> Tasks { get; set; } = new List<Modals.Task>();
 }

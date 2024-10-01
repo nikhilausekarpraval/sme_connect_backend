@@ -43,17 +43,23 @@ namespace DemoDotNetCoreApplication.Controllers
         [HttpGet("get")]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-            var response = await _employeeProvider.getEmployees();
-            var employeeDtos = _mapper.Map<List<EmployeeTasksDto>>(response.Data);
-            if (response.Status == Constants.ApiResponseType.Success)
+            try
             {
-                return Ok(employeeDtos);
+                var response = await _employeeProvider.getEmployees();
+                var employeeDtos = _mapper.Map<List<EmployeeTasksDto>>(response.Data);// exeception here
+                if (response.Status == Constants.ApiResponseType.Success)
+                {
+                    return Ok(employeeDtos);
+                }
+                else
+                {
+                    _logger.LogError("Error retrieving employees: " + response.Message);
+                    return StatusCode(500, response.Message); // 500 Internal Server Error
+                }
             }
-            else
-            {
-                _logger.LogError("Error retrieving employees: " + response.Message);
-                return StatusCode(500, response.Message); // 500 Internal Server Error
-            }
+            catch (Exception ex) {  }
+
+            return BadRequest();
         }
 
         [HttpPost("register")]
@@ -68,7 +74,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetEmployee), new { id = employeeDto.id }, employeeDto);
+                return CreatedAtAction(nameof(GetEmployee), new { id = employeeDto.Id }, employeeDto);
             }
             else
             {
