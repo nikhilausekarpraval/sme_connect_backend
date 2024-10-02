@@ -41,19 +41,25 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<EmployeeTasksDto>>> GetEmployees()
         {
-            var response = await _employeeProvider.getEmployees();
-            var employeeDtos = _mapper.Map<List<EmployeeTasksDto>>(response.Data);
-            if (response.Status == Constants.ApiResponseType.Success)
+            try
             {
-                return Ok(employeeDtos);
+                var response = await _employeeProvider.getEmployees();
+                var employeeDtos = _mapper.Map<List<EmployeeTasksDto>>(response.Data);// exeception here
+                if (response.Status == Constants.ApiResponseType.Success)
+                {
+                    return Ok(employeeDtos);
+                }
+                else
+                {
+                    _logger.LogError("Error retrieving employees: " + response.Message);
+                    return StatusCode(500, response.Message); // 500 Internal Server Error
+                }
             }
-            else
-            {
-                _logger.LogError("Error retrieving employees: " + response.Message);
-                return StatusCode(500, response.Message); // 500 Internal Server Error
-            }
+            catch (Exception ex) {  }
+
+            return BadRequest();
         }
 
         [HttpPost("register")]
@@ -63,12 +69,14 @@ namespace DemoDotNetCoreApplication.Controllers
             {
                 return BadRequest("Employee data is null.");
             }
-
-            var response = await _employeeProvider.CreateEmployee(_mapper.Map<Employee>(employeeDto));
+            var emp = _mapper.Map<Employee>(employeeDto);
+            emp.CreatedOnDt = DateOnly.FromDateTime(DateTime.Today);
+            emp.CreatedBy = "admin";// this will updated from context
+            var response = await _employeeProvider.CreateEmployee(emp);
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetEmployee), new { id = employeeDto.id }, employeeDto);
+                return CreatedAtAction(nameof(GetEmployee), new { id = employeeDto.Id }, employeeDto);
             }
             else
             {
@@ -86,7 +94,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return NoContent(); // 204 No Content
+                return Ok(response); // 200 success
             }
             else
             {
@@ -102,7 +110,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return NoContent(); // 204 No Content
+                return Ok(response); // 200 success
             }
             else
             {

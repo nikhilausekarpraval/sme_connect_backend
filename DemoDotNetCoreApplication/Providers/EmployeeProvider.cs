@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
+using DemoDotNetCoreApplication.Data;
 using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -12,10 +13,10 @@ namespace DemoDotNetCoreApplication.Providers
 {
     public class EmployeeProvider : IEmployeeProvider
     {
-        private readonly DbContextProvider _context;
+        private readonly DcimDevContext _context;
 
 
-        public EmployeeProvider(DbContextProvider context)
+        public EmployeeProvider(DcimDevContext context)
         {
             _context = context;
             _context.Database.EnsureCreated();
@@ -31,7 +32,7 @@ namespace DemoDotNetCoreApplication.Providers
                 //return new ApiResponse<List<Employee>>(status:Constants.ApiResponseType.Success,data:employees,message:"");
 
                 var employees = await _context.Employees
-                                          .Include(e => e.tasks)
+                                          .Include(e => e.Tasks)
                                           .ToListAsync();
 
                 return new ApiResponse<List<Employee>>(Constants.ApiResponseType.Success, employees);
@@ -46,7 +47,7 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var employee = await _context.Employees.Include(e => e.tasks).Where(e => e.id == id).FirstAsync();
+                var employee = await _context.Employees.Include(e => e.Tasks).Where(e => e.Id == id).FirstAsync();
                 if (employee != null)
                 {
                     return new ApiResponse<Employee>(status: Constants.ApiResponseType.Success, data: employee, message: "");
@@ -96,7 +97,7 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var existingEmployee = await _context.Employees.FindAsync(employee.id);
+                var existingEmployee = await _context.Employees.FindAsync(employee.Id);
                 if (existingEmployee != null)
                 {
                     _context.Entry(existingEmployee).CurrentValues.SetValues(employee);

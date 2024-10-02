@@ -2,14 +2,12 @@
 {
     public class EmployeeDto
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string position { get; set; }
-        public string designation { get; set; }
-        public string email { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Position { get; set; }
+        public string? Designation { get; set; }
+        public string? Email { get; set; }
+        public string? MobileNo { get; set; }
 
-        public string mobileNo { get; set; }
-        public DateTime? createdOnDt { get; set; }
-        public string createdBy { get; set; }
     }
 }

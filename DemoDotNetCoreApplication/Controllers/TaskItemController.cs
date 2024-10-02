@@ -28,7 +28,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpGet("get")]
-        public async Task<ActionResult<IEnumerable<TaskItem>>> Get()
+        public async Task<ActionResult<IEnumerable<DemoDotNetCoreApplication.Modals.Task>>> Get()
         {
             var response = await _taskItemProvider.getTaskItems();
 
@@ -45,7 +45,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskItem>> GetTaskItem(int id)
+        public async Task<ActionResult<DemoDotNetCoreApplication.Modals.Task>> GetTaskItem(int id)
         {
             var response = await _taskItemProvider.GetTaskItem(id);
 
@@ -62,23 +62,26 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpPost("register")]
-        public async Task<ActionResult> CreateTaskItem([FromBody] TaskItemsDto taskItemDto)
+        public async Task<ActionResult> CreateTaskItem(TaskItemsDto taskItemDto)
         {
             if (taskItemDto == null)
             {
                 return BadRequest("Task item data is null.");
             }
 
-            if(taskItemDto.employeeId == 0)
+            if(taskItemDto.EmployeeId == 0)
             {
-                taskItemDto.employeeId = null;
+                taskItemDto.EmployeeId = null;
             }
+            var task = _mapper.Map<DemoDotNetCoreApplication.Modals.Task>(taskItemDto);
+            task.CreatedOnDt = DateOnly.FromDateTime(DateTime.Today);
+            task.CreatedBy = "admin";// this will updated from context
 
-            var response = await _taskItemProvider.CreateTaskItem(_mapper.Map<TaskItem>(taskItemDto));
+            var response = await _taskItemProvider.CreateTaskItem(task);
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItemDto.id }, taskItemDto);
+                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItemDto.Id}, taskItemDto);
             }
             else
             {
@@ -93,13 +96,13 @@ namespace DemoDotNetCoreApplication.Controllers
         {
             if (taskItemDto != null)
             {
-                if(taskItemDto.employeeId == null)
+                if(taskItemDto.EmployeeId == null)
                 {
                     return  StatusCode(404, "Employee not found");
 
                 }else
                 {
-                    ApiResponse<Employee> result = await _employeeProvider.GetEmployee(taskItemDto.employeeId);
+                    ApiResponse<Employee> result = await _employeeProvider.GetEmployee(taskItemDto.EmployeeId);
                     if (result.Status != Constants.ApiResponseType.Success)
                     {
                         return StatusCode(500, result.Message);
@@ -107,11 +110,11 @@ namespace DemoDotNetCoreApplication.Controllers
                 }
             }
 
-            var response = await _taskItemProvider.UpdateTaskItem(_mapper.Map<TaskItem>(taskItemDto));
+            var response = await _taskItemProvider.UpdateTaskItem(_mapper.Map<Modals.Task>(taskItemDto));
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return NoContent(); // 204 No Content
+                return Ok(response); // 204 No Content
             }
             else
             {
@@ -128,7 +131,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return NoContent(); // 204 No Content
+                return Ok(response); // 204 No Content
             }
             else
             {

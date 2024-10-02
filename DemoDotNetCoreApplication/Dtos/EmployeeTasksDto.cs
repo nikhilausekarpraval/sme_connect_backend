@@ -4,18 +4,18 @@ namespace DemoDotNetCoreApplication.Dtos
 {
     public class EmployeeTasksDto
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string position { get; set; }
-        public string designation { get; set; }
-        public string email { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Position { get; set; }
+        public string? Designation { get; set; }
+        public string? Email { get; set; }
 
-        public string mobileNo { get; set; }
+        public string? MobileNo { get; set; }
 
-        public DateTime createdOnDt { get; set; }
+        public DateOnly? CreatedOnDt { get; set; }
 
-        public string createdBy { get; set; }
+        public string? CreatedBy { get; set; }
 
-        public List<TaskItemsDto> tasks { get; set; }
+        public virtual ICollection<TaskItemsDto> Tasks { get; set; } = new List<TaskItemsDto>();
     }
 }
