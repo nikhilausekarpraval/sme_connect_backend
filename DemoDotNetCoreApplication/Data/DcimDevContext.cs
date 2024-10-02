@@ -88,7 +88,8 @@ public partial class DcimDevContext : DbContext
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.EmployeeId)
-                .HasConstraintName("FKmeqi2abtbehx871tag4op3hag");
+                .HasConstraintName("FKmeqi2abtbehx871tag4op3hag")
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         OnModelCreatingPartial(modelBuilder);

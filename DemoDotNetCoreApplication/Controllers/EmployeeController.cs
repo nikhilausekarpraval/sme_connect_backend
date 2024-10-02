@@ -94,7 +94,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return NoContent(); // 204 No Content
+                return Ok(response); // 200 success
             }
             else
             {
@@ -110,7 +110,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return NoContent(); // 204 No Content
+                return Ok(response); // 200 success
             }
             else
             {
