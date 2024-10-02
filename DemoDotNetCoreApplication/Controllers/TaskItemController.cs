@@ -3,6 +3,7 @@ using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -11,6 +12,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
     [ApiController]
     [Route("task")]
+    [Authorize(Roles = "Administator,User")]
     public class TaskItemController : ControllerBase
     {
         private readonly ILogger<TaskItemController> _logger;

@@ -3,12 +3,14 @@ using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoDotNetCoreApplication.Controllers
 {
 
     [ApiController]
+    [Authorize(Roles = "Administator,User")]
     [Route("employee")]
     public class EmployeeController : ControllerBase
     {
