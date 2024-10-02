@@ -1,10 +1,11 @@
 ﻿
 using DemoDotNetCoreApplication.Modals;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DemoDotNetCoreApplication.Data;
 
-public partial class DcimDevContext : DbContext
+public partial class DcimDevContext : IdentityDbContext
 {
     public DcimDevContext()
     {
