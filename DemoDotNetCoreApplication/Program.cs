@@ -12,11 +12,19 @@ builder.Services.AddDbContext<DcimDevContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
-    .AddEntityFrameworkStores<DcimDevContext>();
+builder.Services.AddIdentityCore<IdentityUser>()
+    .AddEntityFrameworkStores<DcimDevContext>()
+    .AddDefaultTokenProviders();
 
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options => {
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+});
+
+
+
+
+//builder.Services.AddAuthorization();
 
 //builder.Services.AddAuthorization(options =>
 //{
@@ -70,6 +78,7 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -81,14 +90,24 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await RoleProvider.SeedRolesAsync(services);
+}
+
 app.UseHttpsRedirection();
+
 app.UseCors("AllowAllOrigins");
+
 app.UseRouting();
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapIdentityApi<ApplicationUser>();
+
+app.MapIdentityApi<IdentityUser>();
 
 app.Run();

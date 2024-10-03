@@ -12,7 +12,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
     [ApiController]
     [Route("task")]
-    [Authorize(Roles = "Administator,User")]
+    [Authorize(Roles = "Admin,User")]
     public class TaskItemController : ControllerBase
     {
         private readonly ILogger<TaskItemController> _logger;

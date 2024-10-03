@@ -5,10 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DemoDotNetCoreApplication.Data;
 
-public partial class DcimDevContext : IdentityDbContext<
-        ApplicationUser, ApplicationRole, string,
-        ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin,
-        ApplicationRoleClaim, ApplicationUserToken>
+public partial class DcimDevContext : IdentityDbContext<IdentityUser,IdentityRole,string>
 {
 
     public DcimDevContext(DbContextOptions<DcimDevContext> options)
@@ -93,42 +90,6 @@ public partial class DcimDevContext : IdentityDbContext<
                 .HasForeignKey(d => d.EmployeeId)
                 .HasConstraintName("FKmeqi2abtbehx871tag4op3hag")
                 .OnDelete(DeleteBehavior.SetNull);
-        });
-
-        modelBuilder.Entity<ApplicationUser>(b =>
-        {
-            b.HasMany(e => e.Claims)
-                .WithOne(e => e.User)
-                .HasForeignKey(uc => uc.UserId)
-                .IsRequired();
-
-            b.HasMany(e => e.Logins)
-                .WithOne(e => e.User)
-                .HasForeignKey(ul => ul.UserId)
-                .IsRequired();
-
-            b.HasMany(e => e.Tokens)
-                .WithOne(e => e.User)
-                .HasForeignKey(ut => ut.UserId)
-                .IsRequired();
-
-            b.HasMany(e => e.UserRoles)
-                .WithOne(e => e.User)
-                .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
-        });
-
-        modelBuilder.Entity<ApplicationRole>(b =>
-        {
-            b.HasMany(e => e.UserRoles)
-                .WithOne(e => e.Role)
-                .HasForeignKey(ur => ur.RoleId)
-                .IsRequired();
-
-            b.HasMany(e => e.RoleClaims)
-                .WithOne(e => e.Role)
-                .HasForeignKey(rc => rc.RoleId)
-                .IsRequired();
         });
 
         OnModelCreatingPartial(modelBuilder);
