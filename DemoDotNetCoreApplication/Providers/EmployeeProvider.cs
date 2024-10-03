@@ -2,7 +2,6 @@
 using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;

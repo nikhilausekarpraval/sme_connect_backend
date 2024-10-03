@@ -1,6 +1,6 @@
-﻿namespace DemoDotNetCoreApplication.Modals
+﻿namespace DemoDotNetCoreApplication.Dtos
 {
-    public class RegisterModel
+    public class RegisterModelDto
     {
         public string Username { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿using DemoDotNetCoreApplication.Dtos;
+using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpPost]
         [Route("add_role")]
-        public async Task<IActionResult> AddUserToRole([FromBody]  AssignRoleToUser role)
+        public async Task<IActionResult> AddUserToRole([FromBody]  AssignRoleDto role)
         {
             var user = await _userManager.FindByIdAsync(role.userId);
             if (user != null)
@@ -38,7 +39,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpPost]
         [Route("add_claim")]
-        public async Task<IActionResult> AddClaimToUser([FromBody] AssignClaimToUser userClaim)
+        public async Task<IActionResult> AddClaimToUser([FromBody] AssignClaimDto userClaim)
         {
             var user = await _userManager.FindByIdAsync(userClaim.userId);
             if (user != null)

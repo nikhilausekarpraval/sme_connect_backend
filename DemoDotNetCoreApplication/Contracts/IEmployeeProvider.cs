@@ -1,5 +1,4 @@
-﻿using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
+﻿using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace DemoDotNetCoreApplication.Contracts

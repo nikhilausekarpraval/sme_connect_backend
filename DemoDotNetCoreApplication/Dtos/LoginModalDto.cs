@@ -1,6 +1,6 @@
-﻿namespace DemoDotNetCoreApplication.Modals
+﻿namespace DemoDotNetCoreApplication.Dtos
 {
-    public class LoginModal
+    public class LoginModalDto
     {
         public string Username { get; set; }
 

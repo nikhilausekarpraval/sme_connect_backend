@@ -1,5 +1,6 @@
 ﻿namespace DemoDotNetCoreApplication.Controllers
 {
+    using DemoDotNetCoreApplication.Dtos;
     using DemoDotNetCoreApplication.Modals;
     using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
     using Microsoft.AspNetCore.Http;
@@ -33,7 +34,7 @@
 
             [HttpPost]
             [Route("login")]
-            public async Task<IActionResult> Login([FromBody] LoginModal model)
+            public async Task<IActionResult> Login([FromBody] LoginModalDto model)
             {
                 var user = await userManager.FindByNameAsync(model.Username);
                 if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
@@ -80,11 +81,11 @@
 
             [HttpPost]
             [Route("register")]
-            public async Task<IActionResult> Register([FromBody] RegisterModel model)
+            public async Task<IActionResult> Register([FromBody] RegisterModelDto model)
             {
                 var userExists = await userManager.FindByNameAsync(model.Username);
                 if (userExists != null)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = "User already exists!" });
 
                 ApplicationUser user = new ApplicationUser()
                 {
@@ -96,18 +97,18 @@
                 
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (!result.Succeeded)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
-                return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+                return Ok(new ResponseDto { Status = "Success", Message = "User created successfully!" });
             }
 
             [HttpPost]
             [Route("register-admin")]
-            public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
+            public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto model)
             {
                 var userExists = await userManager.FindByNameAsync(model.Username);
                 if (userExists != null)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = "User already exists!" });
 
                 ApplicationUser user = new ApplicationUser()
                 {
@@ -117,7 +118,7 @@
                 };
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (!result.Succeeded)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
                 if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
@@ -129,7 +130,7 @@
                     await userManager.AddToRoleAsync(user, UserRoles.Admin);
                 }
 
-                return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+                return Ok(new ResponseDto { Status = "Success", Message = "User created successfully!" });
             }
         }
     }
