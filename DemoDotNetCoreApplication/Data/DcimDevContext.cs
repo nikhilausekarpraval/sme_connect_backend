@@ -18,18 +18,6 @@ public partial class DcimDevContext : IdentityDbContext<IdentityUser,IdentityRol
     {
     }
 
-    //public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
-
-    //public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
-
-    //public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
-
-    //public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
-
-    //public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
-
-    //public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
-
     public virtual DbSet<Employee> Employees { get; set; }
 
     public virtual DbSet<DemoDotNetCoreApplication.Modals.Task> Tasks { get; set; }
