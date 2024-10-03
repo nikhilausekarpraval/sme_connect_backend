@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DemoDotNetCoreApplication.Data;
 
-public partial class DcimDevContext : IdentityDbContext<ApplicationUser,IdentityRole,string>
+public partial class DcimDevContext : IdentityDbContext<IdentityUser,IdentityRole,string>
 {
 
     public DcimDevContext(DbContextOptions<DcimDevContext> options)
