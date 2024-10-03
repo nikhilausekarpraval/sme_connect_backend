@@ -1,11 +1,12 @@
 ﻿using DemoDotNetCoreApplication.Modals;
+using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DemoDotNetCoreApplication.Data;
 
-public partial class DcimDevContext : IdentityDbContext<IdentityUser,IdentityRole,string>
+public partial class DcimDevContext : IdentityDbContext<ApplicationUser,IdentityRole,string>
 {
 
     public DcimDevContext(DbContextOptions<DcimDevContext> options)

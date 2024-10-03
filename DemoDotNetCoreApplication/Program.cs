@@ -1,7 +1,9 @@
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Data;
 using DemoDotNetCoreApplication.Modals;
+using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
 using DemoDotNetCoreApplication.Providers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -12,14 +14,22 @@ builder.Services.AddDbContext<DcimDevContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-builder.Services.AddIdentityCore<IdentityUser>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<DcimDevContext>()
     .AddDefaultTokenProviders();
 
 
-builder.Services.AddAuthorization(options => {
-    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+// Adding Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 });
+
+//builder.Services.AddAuthorization(options => {
+//    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+//});
 
 
 
@@ -41,29 +51,29 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo() { Title = "Auth Demo", Version = "v1" });
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter a token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
-    });
+    //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    //{
+    //    In = ParameterLocation.Header,
+    //    Description = "Please enter a token",
+    //    Name = "Authorization",
+    //    Type = SecuritySchemeType.Http,
+    //    BearerFormat = "JWT",
+    //    Scheme = "bearer"
+    //});
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer" 
-                }
-            }, new string[] { } 
-        }
-    });
+    //c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    //{
+    //    {
+    //        new OpenApiSecurityScheme
+    //        {
+    //            Reference = new OpenApiReference
+    //            {
+    //                Type = ReferenceType.SecurityScheme,
+    //                Id = "Bearer" 
+    //            }
+    //        }, new string[] { } 
+    //    }
+    //});
 });
 
 builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
@@ -106,8 +116,14 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapControllers();
+//app.MapControllers();
 
-app.MapIdentityApi<IdentityUser>();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
+
+//app.MapIdentityApi<ApplicationUser>();
 
 app.Run();
