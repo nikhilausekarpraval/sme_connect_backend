@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DemoDotNetCoreApplication.Modals;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,24 +8,26 @@ using System.Security.Claims;
 namespace DemoDotNetCoreApplication.Controllers
 {
     [ApiController]
-    //[Authorize(Roles = "Admin")]
-    [Route("employee")]
-    public class AdminController : Controller
+    [Authorize(Roles = "Admin")]
+    [Route("[controller]")]
+    public class AdminController : ControllerBase
     {
 
         private IServiceProvider _serviceProvider;
         private UserManager<IdentityUser> _userManager;
-        AdminController(IServiceProvider serviceProvider) {
+      public  AdminController(IServiceProvider serviceProvider) {
             this._serviceProvider = serviceProvider;
             this._userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
         }
 
-        public async Task<IActionResult> AddUserToRole(string userId, string roleName)
+        [HttpPost]
+        [Route("add_role")]
+        public async Task<IActionResult> AddUserToRole([FromBody]  AssignRoleToUser role)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(role.userId);
             if (user != null)
             {
-                var result = await _userManager.AddToRoleAsync(user, roleName);
+                var result = await _userManager.AddToRoleAsync(user, role.roleName);
                 if (result.Succeeded)
                 {
                     return Ok("User added to role successfully");
@@ -33,12 +36,14 @@ namespace DemoDotNetCoreApplication.Controllers
             return BadRequest("Failed to add user to role");
         }
 
-        public async Task<IActionResult> AddClaimToUser(string userId, string claimType, string claimValue)
+        [HttpPost]
+        [Route("add_claim")]
+        public async Task<IActionResult> AddClaimToUser([FromBody] AssignClaimToUser userClaim)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userClaim.userId);
             if (user != null)
             {
-                var claim = new Claim(claimType, claimValue);
+                var claim = new Claim(userClaim.claimType, userClaim.claimValue);
                 var result = await _userManager.AddClaimAsync(user, claim);
                 if (result.Succeeded)
                 {

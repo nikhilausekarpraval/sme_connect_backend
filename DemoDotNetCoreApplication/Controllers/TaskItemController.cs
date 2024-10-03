@@ -12,7 +12,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
     [ApiController]
     [Route("task")]
-    //[Authorize(Roles = "Admin,User")]
+    [Authorize]
     public class TaskItemController : ControllerBase
     {
         private readonly ILogger<TaskItemController> _logger;
@@ -127,6 +127,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpDelete("delete")]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult> DeleteTaskItem([FromQuery] int taskId)
         {
             var response = await _taskItemProvider.DeleteTaskItem(taskId);
