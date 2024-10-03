@@ -40,34 +40,34 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo() { Title = "Auth Demo", Version = "v1" });
+//builder.Services.AddSwaggerGen(c =>
+//{
+//    c.SwaggerDoc("v1", new OpenApiInfo() { Title = "Auth Demo", Version = "v1" });
 
-    //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    //{
-    //    In = ParameterLocation.Header,
-    //    Description = "Please enter a token",
-    //    Name = "Authorization",
-    //    Type = SecuritySchemeType.Http,
-    //    BearerFormat = "JWT",
-    //    Scheme = "bearer"
-    //});
+//    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+//    {
+//        In = ParameterLocation.Header,
+//        Description = "Please enter a token",
+//        Name = "Authorization",
+//        Type = SecuritySchemeType.Http,
+//        BearerFormat = "JWT",
+//        Scheme = "bearer"
+//    });
 
-    //c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    //{
-    //    {
-    //        new OpenApiSecurityScheme
-    //        {
-    //            Reference = new OpenApiReference
-    //            {
-    //                Type = ReferenceType.SecurityScheme,
-    //                Id = "Bearer" 
-    //            }
-    //        }, new string[] { } 
-    //    }
-    //});
-});
+//    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+//    {
+//        {
+//            new OpenApiSecurityScheme
+//            {
+//                Reference = new OpenApiReference
+//                {
+//                    Type = ReferenceType.SecurityScheme,
+//                    Id = "Bearer"
+//                }
+//            }, new string[] { }
+//        }
+//    });
+//});
 
 builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
 builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
@@ -111,12 +111,6 @@ app.UseAuthorization();
 
 //app.MapControllers();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
-
-
-//app.MapIdentityApi<ApplicationUser>();
+//app.MapIdentityApi<IdentityUser>();
 
 app.Run();
