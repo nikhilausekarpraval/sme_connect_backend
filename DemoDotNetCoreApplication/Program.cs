@@ -13,8 +13,20 @@ builder.Services.AddDbContext<DcimDevContext>(options =>
 
 
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
-    .AddEntityFrameworkStores<DcimDevContext>();
+    .AddEntityFrameworkStores<DcimDevContext>()
+    .AddDefaultTokenProviders();
 
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddMicrosoftIdentityWebApi(builder.Configuration, "AzureAd");
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("AdminPolicy", policy =>
+//        policy.RequireRole("Admin")); // For role-based
+//    options.AddPolicy("ClaimPolicy", policy =>
+//        policy.RequireClaim("Department", "HR")); // For claim-based
+//});
 
 builder.Services.AddAuthorization();
 
@@ -29,6 +41,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo() { Title = "Auth Demo", Version = "v1" });
