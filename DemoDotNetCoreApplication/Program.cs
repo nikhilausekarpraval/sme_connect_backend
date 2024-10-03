@@ -16,10 +16,9 @@ builder.Services.AddControllers();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
         .AddEntityFrameworkStores<DcimDevContext>();
 
-builder.Services.AddScoped<IEmployeeProvider,EmployeeProvider>();
-builder.Services.AddScoped<ITaskItemProvider,TaskItemProvider>();
-builder.Services.AddScoped<RoleProvider>();
-builder.Services.AddScoped<AutoMapperProvider>();
+builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
+builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
 
 builder.Services.AddCors(options =>
 {
