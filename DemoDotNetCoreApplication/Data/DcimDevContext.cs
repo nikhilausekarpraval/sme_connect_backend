@@ -1,5 +1,6 @@
-﻿using DemoDotNetCoreApplication.Modals;
-using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
+﻿using System;
+using System.Collections.Generic;
+using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,22 +9,104 @@ namespace DemoDotNetCoreApplication.Data;
 
 public partial class DcimDevContext : IdentityDbContext<IdentityUser,IdentityRole,string>
 {
+    public DcimDevContext()
+    {
+    }
 
     public DcimDevContext(DbContextOptions<DcimDevContext> options)
         : base(options)
     {
     }
 
+    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+
+    public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+
+    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+
+    public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
+
+    public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+
+    public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
+
     public virtual DbSet<Employee> Employees { get; set; }
 
-    public virtual DbSet<Modals.Task> Tasks { get; set; }
+    public virtual DbSet<DemoDotNetCoreApplication.Modals.Task> Tasks { get; set; }
+    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DefaultConnection");
+        => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<AspNetRole>(entity =>
+        {
+            entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedName] IS NOT NULL)");
+
+            entity.Property(e => e.Name).HasMaxLength(256);
+            entity.Property(e => e.NormalizedName).HasMaxLength(256);
+        });
+
+        modelBuilder.Entity<AspNetRoleClaim>(entity =>
+        {
+            entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
+        });
+
+        modelBuilder.Entity<AspNetUser>(entity =>
+        {
+            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+            entity.Property(e => e.Email).HasMaxLength(256);
+            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+            entity.Property(e => e.UserName).HasMaxLength(256);
+
+            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "AspNetUserRole",
+                    r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
+                    l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
+                    j =>
+                    {
+                        j.HasKey("UserId", "RoleId");
+                        j.ToTable("AspNetUserRoles");
+                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
+                    });
+        });
+
+        modelBuilder.Entity<AspNetUserClaim>(entity =>
+        {
+            entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<AspNetUserLogin>(entity =>
+        {
+            entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
+
+            entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<AspNetUserToken>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
+        });
 
         modelBuilder.Entity<Employee>(entity =>
         {
@@ -59,11 +142,13 @@ public partial class DcimDevContext : IdentityDbContext<IdentityUser,IdentityRol
                 .HasColumnName("position");
         });
 
-        modelBuilder.Entity<Modals.Task>(entity =>
+        modelBuilder.Entity<DemoDotNetCoreApplication.Modals.Task>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__task__3213E83F05BE6225");
 
             entity.ToTable("task");
+
+            entity.HasIndex(e => e.EmployeeId, "IX_task_employee_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AssignedOnDt).HasColumnName("assigned_on_dt");
@@ -89,15 +174,12 @@ public partial class DcimDevContext : IdentityDbContext<IdentityUser,IdentityRol
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.EmployeeId)
-                .HasConstraintName("FKmeqi2abtbehx871tag4op3hag")
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FKmeqi2abtbehx871tag4op3hag");
         });
 
         OnModelCreatingPartial(modelBuilder);
-
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-
 }

@@ -5,6 +5,8 @@ namespace DemoDotNetCoreApplication.Modals;
 
 public partial class Task
 {
+    public int Id { get; set; }
+
     public DateOnly? AssignedOnDt { get; set; }
 
     public DateOnly? CreatedOnDt { get; set; }
@@ -12,8 +14,6 @@ public partial class Task
     public int? EmployeeId { get; set; }
 
     public DateOnly? EndDate { get; set; }
-
-    public int Id { get; set; }
 
     public string? CreatedBy { get; set; }
 

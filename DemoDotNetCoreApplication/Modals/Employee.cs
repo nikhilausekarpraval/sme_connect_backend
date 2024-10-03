@@ -5,9 +5,9 @@ namespace DemoDotNetCoreApplication.Modals;
 
 public partial class Employee
 {
-    public DateOnly? CreatedOnDt { get; set; }
-
     public int Id { get; set; }
+
+    public DateOnly? CreatedOnDt { get; set; }
 
     public string? CreatedBy { get; set; }
 
@@ -21,5 +21,5 @@ public partial class Employee
 
     public string? Position { get; set; }
 
-    public virtual ICollection<Modals.Task> Tasks { get; set; } = new List<Modals.Task>();
+    public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 }
