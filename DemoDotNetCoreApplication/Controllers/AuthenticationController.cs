@@ -20,11 +20,11 @@
         [ApiController]
         public class AuthenticateController : ControllerBase
         {
-            private readonly UserManager<IdentityUser> userManager;
+            private readonly UserManager<ApplicationUser> userManager;
             private readonly RoleManager<IdentityRole> roleManager;
             private readonly IConfiguration _configuration;
 
-            public AuthenticateController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+            public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
             {
                 this.userManager = userManager;
                 this.roleManager = roleManager;
@@ -86,12 +86,14 @@
                 if (userExists != null)
                     return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
 
-                IdentityUser user = new IdentityUser()
+                ApplicationUser user = new ApplicationUser()
                 {
                     Email = model.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = model.Username
+                    UserName = model.Username,
+                    DisplayName = model.DisplayName
                 };
+                
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (!result.Succeeded)
                     return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
@@ -107,7 +109,7 @@
                 if (userExists != null)
                     return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
 
-                IdentityUser user = new IdentityUser()
+                ApplicationUser user = new ApplicationUser()
                 {
                     Email = model.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),

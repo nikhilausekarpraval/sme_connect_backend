@@ -14,10 +14,10 @@ namespace DemoDotNetCoreApplication.Controllers
     {
 
         private IServiceProvider _serviceProvider;
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<ApplicationUser> _userManager;
       public  AdminController(IServiceProvider serviceProvider) {
             this._serviceProvider = serviceProvider;
-            this._userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            this._userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         }
 
         [HttpPost]

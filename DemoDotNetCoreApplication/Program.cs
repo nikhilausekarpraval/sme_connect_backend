@@ -1,5 +1,6 @@
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Data;
+using DemoDotNetCoreApplication.Modals;
 using DemoDotNetCoreApplication.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -15,7 +16,7 @@ builder.Services.AddDbContext<DcimDevContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<DcimDevContext>();
 
 builder.Services.AddAuthentication(options =>
