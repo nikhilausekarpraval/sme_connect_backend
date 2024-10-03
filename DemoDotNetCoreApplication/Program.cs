@@ -96,6 +96,21 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+//creating roles in db
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await RoleProvider.SeedRolesAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding roles.");
+    }
+}
+
 // Middleware pipeline
 app.UseHttpsRedirection();
 app.UseStaticFiles();
