@@ -2,7 +2,7 @@
 {
     public class Constants
     {
-        public class ApiResponseType
+        public static class ApiResponseType
         {
             public const string Success = "Success";
 
@@ -10,6 +10,9 @@
 
             public const string NotFound = "NotFound";
         }
+
+        public static string[] Claims =  { "DeleteTask", "ViewReport", "ManageSystem" };
+
 
     }
 }

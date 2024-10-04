@@ -10,7 +10,7 @@ namespace DemoDotNetCoreApplication.Controllers
 {
 
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "User")]
     [Route("employee")]
     public class EmployeeController : ControllerBase
     {
@@ -24,6 +24,7 @@ namespace DemoDotNetCoreApplication.Controllers
             _employeeProvider = employeeProvider;
             _mapper = mapper;
         }
+
 
 
         [HttpGet("{id}")]
@@ -106,7 +107,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
         [HttpDelete("delete")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "CanDelete")]
         public async Task<ActionResult> DeleteEmployee([FromQuery] int employeeId)
         {
             var response = await _employeeProvider.DeleteEmployee(employeeId);

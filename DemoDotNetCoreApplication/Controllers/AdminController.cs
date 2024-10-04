@@ -16,13 +16,15 @@ namespace DemoDotNetCoreApplication.Controllers
 
         private IServiceProvider _serviceProvider;
         private UserManager<ApplicationUser> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
       public  AdminController(IServiceProvider serviceProvider) {
             this._serviceProvider = serviceProvider;
             this._userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            this._roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         }
 
         [HttpPost]
-        [Route("add_role")]
+        [Route("add_role_to_user")]
         public async Task<IActionResult> AddUserToRole([FromBody]  AssignRoleDto role)
         {
             var user = await _userManager.FindByIdAsync(role.userId);
@@ -38,7 +40,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
         [HttpPost]
-        [Route("add_claim")]
+        [Route("add_claim_to_user")]
         public async Task<IActionResult> AddClaimToUser([FromBody] AssignClaimDto userClaim)
         {
             var user = await _userManager.FindByIdAsync(userClaim.userId);
@@ -52,6 +54,27 @@ namespace DemoDotNetCoreApplication.Controllers
                 }
             }
             return BadRequest("Failed to add claim to user");
+        }
+
+        [HttpPost]
+        [Route("add_claim_to_role")]
+        public async Task<IActionResult> AddClaimToRole(string roleName,ClaimDto claimDto)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            Claim claim = new Claim(claimDto.ClaimType, claimDto.ClaimValue);
+            var result = await _roleManager.AddClaimAsync(role, claim);
+
+            if (result.Succeeded)
+            {
+                return Ok("Claim added to role");
+            }
+
+            return BadRequest("Could not add claim");
         }
 
     }

@@ -3,6 +3,7 @@
     using DemoDotNetCoreApplication.Dtos;
     using DemoDotNetCoreApplication.Modals;
     using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -24,13 +25,17 @@
             private readonly UserManager<ApplicationUser> userManager;
             private readonly RoleManager<IdentityRole> roleManager;
             private readonly IConfiguration _configuration;
+            private readonly SignInManager<ApplicationUser> signInManager;
 
-            public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+            public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager)
             {
                 this.userManager = userManager;
                 this.roleManager = roleManager;
                 _configuration = configuration;
+                this.signInManager = signInManager;
             }
+
+
 
             [HttpPost]
             [Route("login")]
@@ -39,36 +44,50 @@
                 var user = await userManager.FindByNameAsync(model.Username);
                 if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
                 {
+                    
                     var userRoles = await userManager.GetRolesAsync(user);
+                   
+                    var userClaims = await userManager.GetClaimsAsync(user);
 
                     var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-                    var token = new JwtSecurityToken();
-                    try
                     {
-                        foreach (var userRole in userRoles)
-                        {
-                            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                        }
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    };
 
-                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-
-                         token = new JwtSecurityToken(
-                            issuer: _configuration["Jwt:Issuer"],
-                            audience: _configuration["Jwt:Audience"],
-                            expires: DateTime.Now.AddHours(3),
-                            claims: authClaims,
-                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                            );
-                    }
-                    catch (Exception ex)
+                    
+                    foreach (var userRole in userRoles)
                     {
+                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
 
-                    }
+                       
+                        var role = await roleManager.FindByNameAsync(userRole);
+
+                       
+                        var roleClaims = await roleManager.GetClaimsAsync(role);
+
                    
+                        foreach (var roleClaim in roleClaims)
+                        {
+                            authClaims.Add(roleClaim);
+                        }
+                    }
+
+                    
+                    foreach (var userClaim in userClaims)
+                    {
+                        authClaims.Add(userClaim);
+                    }
+
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+
+                    var token = new JwtSecurityToken(
+                        issuer: _configuration["Jwt:Issuer"],
+                        audience: _configuration["Jwt:Audience"],
+                        expires: DateTime.Now.AddHours(3), // Token expiration time
+                        claims: authClaims, // All claims (roles + custom claims + role claims)
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                    );
 
                     return Ok(new
                     {
@@ -78,6 +97,7 @@
                 }
                 return Unauthorized();
             }
+
 
             [HttpPost]
             [Route("register")]
@@ -103,6 +123,17 @@
             }
 
             [HttpPost]
+            [Route("singout")]
+            public async Task<IActionResult> Logout()
+            {
+                await signInManager.SignOutAsync(); 
+
+                return Ok(new ResponseDto { Status = "Success", Message = "User logged out successfully!" });
+            }
+
+            [HttpPost]
+            //[Authorize(Roles = "Admin")]
+            //[Authorize(Policy ="ManageSystem")]
             [Route("register-admin")]
             public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto model)
             {

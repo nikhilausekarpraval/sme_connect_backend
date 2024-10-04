@@ -3,6 +3,7 @@ using DemoDotNetCoreApplication.Data;
 using DemoDotNetCoreApplication.Modals;
 using DemoDotNetCoreApplication.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +24,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
 })
 .AddJwtBearer(options =>
 {
@@ -38,12 +40,33 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddControllers(); 
-
-
 builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
 builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
+builder.Services.AddSingleton<IAuthorizationHandler, CustomClaimHandlerProvider>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CanEditTasks", policy =>
+        policy.RequireClaim("EditTask", "true"));
+
+    options.AddPolicy("CanDelete", policy =>
+        policy.RequireRole("User")
+        .AddRequirements(new CustomClaimRequirement("DeleteTask", "true")));
+
+    options.AddPolicy("CanViewReports", policy =>
+        policy.RequireClaim("ViewReport", "true"));
+
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("Admin")
+              .RequireClaim("ManageSystem", "true"));
+
+    options.AddPolicy("ManageTaskAndRoles", policy =>
+        policy.RequireRole("Admin")
+    );
+});
+
+builder.Services.AddControllers(); 
 
 
 builder.Services.AddCors(options =>
