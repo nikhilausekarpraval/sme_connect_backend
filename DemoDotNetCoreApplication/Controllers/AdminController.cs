@@ -23,6 +23,26 @@ namespace DemoDotNetCoreApplication.Controllers
             this._roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         }
 
+
+        [HttpPost]
+        [Route("add_role")]
+        public async Task<IActionResult> AddRole([FromQuery] string roleName)
+        {
+
+                var roleExist = await _roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(roleName));
+                    return Ok("Role added to role successfully");
+
+                }
+                else
+                {
+                    return Conflict("Role already exist");
+                }
+            
+        }
+
         [HttpPost]
         [Route("add_role_to_user")]
         public async Task<IActionResult> AddUserToRole([FromBody]  AssignRoleDto role)
