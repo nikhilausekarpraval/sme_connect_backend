@@ -1,8 +1,10 @@
 ﻿using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
+using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 
@@ -96,6 +98,36 @@ namespace DemoDotNetCoreApplication.Controllers
             }
 
             return BadRequest("Could not add claim");
+        }
+
+        [HttpPost]
+        [Route("getRoles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            try
+            {
+                var roles = await _roleManager.Roles.ToListAsync();
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new ResponseDto { Status = "Error", Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("getUsers")]
+        public async Task<IActionResult> GetUsers()
+        {
+            try
+            {
+                var roles = await _userManager.Users.ToListAsync();
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new ResponseDto { Status = "Error", Message = ex.Message });
+            }
         }
 
     }
