@@ -5,6 +5,7 @@
     using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Http.HttpResults;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
@@ -41,7 +42,7 @@
             [Route("login")]
             public async Task<IActionResult> Login([FromBody] LoginModalDto model)
             {
-                var user = await userManager.FindByNameAsync(model.Username);
+                var user = await userManager.FindByEmailAsync(model.Username);
                 if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
                 {
                     
@@ -103,21 +104,33 @@
             [Route("register")]
             public async Task<IActionResult> Register([FromBody] RegisterModelDto model)
             {
-                var userExists = await userManager.FindByNameAsync(model.Username);
-                if (userExists != null)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = "User already exists!" });
-
-                ApplicationUser user = new ApplicationUser()
-                {
-                    Email = model.Email,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = model.Username,
-                    DisplayName = model.DisplayName
-                };
                 
-                var result = await userManager.CreateAsync(user, model.Password);
-                if (!result.Succeeded)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                try
+                {
+                    var userExists = await userManager.FindByEmailAsync(model.Username);
+                    if (userExists != null)
+                        return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = "Duplicate Email id, User already exists!" });
+
+                    ApplicationUser user = new ApplicationUser()
+                    {
+                        Email = model.Email,
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        UserName = model.Username,
+                        DisplayName = model.DisplayName
+                    };
+
+                var  result =  await userManager.CreateAsync(user, model.Password);
+
+                    if (!result.Succeeded)
+                    {
+                        return BadRequest(result);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                  return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = ex.Message });
+                }
 
                 return Ok(new ResponseDto { Status = "Success", Message = "User created successfully!" });
             }
