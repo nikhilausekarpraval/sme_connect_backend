@@ -123,7 +123,7 @@
             }
 
             [HttpPost]
-            [Route("singout")]
+            [Route("logout")]
             public async Task<IActionResult> Logout()
             {
                 await signInManager.SignOutAsync(); 
