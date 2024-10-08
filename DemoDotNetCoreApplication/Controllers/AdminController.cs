@@ -10,7 +10,7 @@ namespace DemoDotNetCoreApplication.Controllers
 {
     [ApiController]
     [Authorize(Roles = "Admin")]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AdminController : ControllerBase
     {
 
