@@ -100,7 +100,7 @@ namespace DemoDotNetCoreApplication.Controllers
             return BadRequest("Could not add claim");
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("getRoles")]
         public async Task<IActionResult> GetRoles()
         {
@@ -115,7 +115,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("getUsers")]
         public async Task<IActionResult> GetUsers()
         {
