@@ -96,7 +96,7 @@
                         expiration = token.ValidTo
                     });
                 }
-                return Unauthorized();
+                return Unauthorized("Wrong email or passord");
             }
 
 
@@ -107,7 +107,8 @@
                 
                 try
                 {
-                    var userExists = await userManager.FindByEmailAsync(model.Username);
+                    var userExists = await userManager.FindByEmailAsync(model.Email);
+
                     if (userExists != null)
                         return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = "Duplicate Email id, User already exists!" });
 
