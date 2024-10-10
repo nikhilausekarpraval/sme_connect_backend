@@ -110,7 +110,7 @@
                     var userExists = await userManager.FindByEmailAsync(model.Email);
 
                     if (userExists != null)
-                        return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { Status = "Error", Message = "Duplicate Email id, User already exists!" });
+                        return NotFound( new ResponseDto { Status = "Error", Message = "Duplicate Email id, User already exists!" });
 
                     ApplicationUser user = new ApplicationUser()
                     {
