@@ -4,8 +4,10 @@
     {
         public class ResponseDto
         {
-            public string Status { get; set; }
-            public string Message { get; set; }
+            public string status { get; set; }
+            public string message { get; set; }
+
+            public string statusText { get; set; }
         }
     }
 }

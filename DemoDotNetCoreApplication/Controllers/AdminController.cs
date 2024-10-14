@@ -28,19 +28,19 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpPost]
         [Route("add_role")]
-        public async Task<IActionResult> AddRole([FromQuery] string roleName)
+        public async Task<IActionResult> AddRole([FromBody] RoleDto role)
         {
 
-                var roleExist = await _roleManager.RoleExistsAsync(roleName);
+                var roleExist = await _roleManager.RoleExistsAsync(role.roleName);
                 if (!roleExist)
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(roleName));
-                    return Ok("Role added to role successfully");
+                     await _roleManager.CreateAsync(new IdentityRole(role.roleName));
+                    return new JsonResult(Ok("Role added to role successfully"));
 
                 }
                 else
                 {
-                    return Conflict("Role already exist");
+                    return new JsonResult(Conflict("Role already exist"));
                 }
             
         }
@@ -50,16 +50,20 @@ namespace DemoDotNetCoreApplication.Controllers
         [Route("add_role_to_user")]
         public async Task<IActionResult> AddUserToRole([FromBody]  AssignRoleDto role)
         {
+            var error = "";
             var user = await _userManager.FindByIdAsync(role.userId);
             if (user != null)
             {
-                var result = await _userManager.AddToRoleAsync(user, role.roleName);
+              var  result = await _userManager.AddToRoleAsync(user, role.roleName);
                 if (result.Succeeded)
                 {
-                    return Ok("User added to role successfully");
+                    return Ok();
+                }else
+                {
+                    error = result.Errors.First().Description;
                 }
             }
-            return BadRequest("Failed to add user to role");
+            return new JsonResult( BadRequest(error));
         }
 
         [HttpPost]
@@ -73,31 +77,31 @@ namespace DemoDotNetCoreApplication.Controllers
                 var result = await _userManager.AddClaimAsync(user, claim);
                 if (result.Succeeded)
                 {
-                    return Ok("Claim added to user");
+                    return new JsonResult(Ok("Claim added to user"));
                 }
             }
-            return BadRequest("Failed to add claim to user");
+            return new JsonResult( BadRequest("Failed to add claim to user"));
         }
 
         [HttpPost]
         [Route("add_claim_to_role")]
-        public async Task<IActionResult> AddClaimToRole(string roleName,ClaimDto claimDto)
+        public async Task<IActionResult> AddClaimToRole([FromBody] AddClaimToRoleDto roleClaim )
         {
-            var role = await _roleManager.FindByNameAsync(roleName);
+            var role = await _roleManager.FindByNameAsync(roleClaim.roleName);
             if (role == null)
             {
-                return NotFound();
+                return new JsonResult( NotFound("Role not found"));
             }
 
-            Claim claim = new Claim(claimDto.ClaimType, claimDto.ClaimValue);
+            Claim claim = new Claim(roleClaim.claimType, roleClaim.claimValue);
             var result = await _roleManager.AddClaimAsync(role, claim);
 
             if (result.Succeeded)
             {
-                return Ok("Claim added to role");
+                return new JsonResult( Ok("Claim added to role"));
             }
 
-            return BadRequest("Could not add claim");
+            return new JsonResult(BadRequest("Could not add claim"));
         }
 
         [HttpGet]
@@ -111,7 +115,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound(new ResponseDto { Status = "Error", Message = ex.Message });
+                return new JsonResult(NotFound(new ResponseDto { status = "Error", message = ex.Message }));
             }
         }
 
@@ -126,7 +130,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound(new ResponseDto { Status = "Error", Message = ex.Message });
+                return new JsonResult(NotFound(new ResponseDto { status = "Error", message = ex.Message }));
             }
         }
 
