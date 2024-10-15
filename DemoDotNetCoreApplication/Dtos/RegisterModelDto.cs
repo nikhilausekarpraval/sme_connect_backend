@@ -9,5 +9,11 @@
         public string password { get; set; }
 
         public string displayName { get; set; }
+
+        public string question { get; set; }
+
+        public string answer { get; set; }  
+
+
     }
 }

@@ -22,6 +22,10 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Identity
 
     public virtual DbSet<DemoDotNetCoreApplication.Modals.Task> Tasks { get; set; }
 
+    public   override  DbSet<ApplicationUser>  Users { get; set; }
+
+    public virtual DbSet<> Questions { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 

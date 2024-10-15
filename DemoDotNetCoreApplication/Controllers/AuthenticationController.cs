@@ -1,5 +1,6 @@
 ﻿namespace DemoDotNetCoreApplication.Controllers
 {
+    using DemoDotNetCoreApplication.Data;
     using DemoDotNetCoreApplication.Dtos;
     using DemoDotNetCoreApplication.Modals;
     using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
@@ -9,6 +10,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Data.SqlClient;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.IdentityModel.Tokens;
@@ -29,13 +31,15 @@
             private readonly RoleManager<IdentityRole> roleManager;
             private readonly IConfiguration _configuration;
             private readonly SignInManager<ApplicationUser> signInManager;
+            private readonly DcimDevContext _dcimDevContext;
 
-            public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager)
+            public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
             {
                 this.userManager = userManager;
                 this.roleManager = roleManager;
                 _configuration = configuration;
                 this.signInManager = signInManager;
+                _dcimDevContext = dcimDevContext;
             }
 
 
@@ -44,15 +48,20 @@
             [Route("login")]
             public async Task<IActionResult> Login([FromBody] LoginModalDto model)
             {
-                var user = await userManager.FindByEmailAsync(model.UserName);
+               // var user = await userManager.FindByEmailAsync(model.UserName);
 
-                var newname  = user.DisplayName;
+                string sqlQuery = "SELECT * FROM AspNetUsers WHERE Email = @email";
+                var emailParam = new SqlParameter("@email", model.UserName);
+                var user = await _dcimDevContext.Users.FromSqlRaw(sqlQuery, emailParam).FirstAsync(); ;
+
+
+                var newname = user.DisplayName;
                 IList<string> gUserRoles;
                 IList<Claim> gUserClaims;
                 IList<Claim>? gRoleClaims = null;
                 if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
                 {
-                    
+
                     var userRoles = await userManager.GetRolesAsync(user);
                     gUserRoles = userRoles;
                     var userClaims = await userManager.GetClaimsAsync(user);
@@ -62,17 +71,17 @@
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
-                    
+
                     foreach (var userRole in userRoles)
                     {
                         authClaims.Add(new Claim(ClaimTypes.Role, userRole));
 
-                       
+
                         var role = await roleManager.FindByNameAsync(userRole);
-                       
+
                         var roleClaims = await roleManager.GetClaimsAsync(role);
 
-                   
+
                         foreach (var roleClaim in roleClaims)
                         {
                             authClaims.Add(roleClaim);
@@ -80,7 +89,7 @@
                         }
                     }
 
-                    
+
                     foreach (var userClaim in userClaims)
                     {
                         authClaims.Add(userClaim);
@@ -139,13 +148,13 @@
             [Route("register")]
             public async Task<IActionResult> Register([FromBody] RegisterModelDto model)
             {
-                
+
                 try
                 {
                     var userExists = await userManager.FindByEmailAsync(model.email);
 
                     if (userExists != null)
-                      return  new JsonResult(NotFound(new ResponseDto { status = "Error", statusText = "Duplicate email id, User already exists!", message = "" }));
+                        return new JsonResult(NotFound(new ResponseDto { status = "Error", statusText = "Duplicate email id, User already exists!", message = "" }));
 
                     ApplicationUser user = new ApplicationUser()
                     {
@@ -155,12 +164,16 @@
                         DisplayName = model.displayName
                     };
 
-                var  result =  await userManager.CreateAsync(user, model.password);
+                    var result = await userManager.CreateAsync(user, model.password);
 
                     if (!result.Succeeded)
                     {
                         return new JsonResult(BadRequest(result));
                     }
+
+                    var newUser = await userManager.FindByEmailAsync(model.email);
+
+                    await _dcimDevContext.
 
                 }
                 catch (Exception ex)
@@ -175,9 +188,95 @@
             [Route("logout")]
             public async Task<IActionResult> Logout()
             {
-                await signInManager.SignOutAsync(); 
+                await signInManager.SignOutAsync();
 
                 return Ok(new ResponseDto { status = "Success", message = "User logged out successfully!" });
+            }
+
+            [HttpPut]
+            [Authorize]
+            [Route("update_user")]
+            public async Task<IActionResult> UpdateUser([FromBody] RegisterModelDto user)
+            {
+                try
+                {
+                   var currentUser = await userManager.FindByEmailAsync(user.email);
+                  if(currentUser != null &&  await userManager.CheckPasswordAsync(currentUser, user.password))
+                    {
+                        currentUser.DisplayName = user.displayName;
+                        currentUser.UserName = user.userName;
+                        currentUser.Email = user.email;
+                        var result = await userManager.UpdateAsync(currentUser);
+                        return Ok(result);
+                    }else
+                    {
+                        throw new Exception("User email or password is wrong");
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    return new JsonResult(BadRequest(ex.Message));
+                }
+
+            }
+
+            [HttpPut]
+            [Authorize]
+            [Route("reset_password")]
+            public async Task<IActionResult> ResetPassword([FromBody] RegisterModelDto user)
+            {
+                try
+                {
+                    var currentUser = await userManager.FindByEmailAsync(user.email);
+                    if (currentUser != null && await userManager.CheckPasswordAsync(currentUser, user.password))
+                    {
+                        currentUser.DisplayName = user.displayName;
+                        currentUser.UserName = user.userName;
+                        currentUser.Email = user.email;
+                        var result = await userManager.UpdateAsync(currentUser);
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        throw new Exception("User email or password is wrong");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    return new JsonResult(BadRequest(ex.Message));
+                }
+
+            }
+
+            [HttpPut]
+            [Authorize]
+            [Route("forget_password")]
+            public async Task<IActionResult> ForgetPassword([FromBody] RegisterModelDto user)
+            {
+                try
+                {
+                    var currentUser = await userManager.FindByEmailAsync(user.email);
+                    if (currentUser != null && await userManager.CheckPasswordAsync(currentUser, user.password))
+                    {
+                        currentUser.DisplayName = user.displayName;
+                        currentUser.UserName = user.userName;
+                        currentUser.Email = user.email;
+                        var result = await userManager.UpdateAsync(currentUser);
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        throw new Exception("User email or password is wrong");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    return new JsonResult(BadRequest(ex.Message));
+                }
+
             }
 
             [HttpPost]
