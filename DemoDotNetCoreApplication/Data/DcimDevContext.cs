@@ -24,7 +24,7 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Identity
 
     public   override  DbSet<ApplicationUser>  Users { get; set; }
 
-    public virtual DbSet<> Questions { get; set; }
+    public virtual DbSet<Questions> Questions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=DefaultConnection");

@@ -18,7 +18,8 @@ builder.Services.AddDbContext<DcimDevContext>(options =>
 
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<DcimDevContext>();
+        .AddEntityFrameworkStores<DcimDevContext>()
+        .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {

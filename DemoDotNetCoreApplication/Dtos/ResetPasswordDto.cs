@@ -1,6 +1,6 @@
 ﻿namespace DemoDotNetCoreApplication.Dtos
 {
-    public class RegisterModelDto
+    public class ResetPasswordDto 
     {
         public string userName { get; set; }
 
@@ -12,7 +12,9 @@
 
         public string question { get; set; }
 
-        public string answer { get; set; }  
+        public string answer { get; set; }
+        public string newPassword { get; set; }
 
+        public string confirmPassword { get; set; }
     }
 }
