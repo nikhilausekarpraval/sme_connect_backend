@@ -50,73 +50,80 @@
             [Route("login")]
             public async Task<IActionResult> Login([FromBody] LoginModalDto model)
             {
-               // var user = await userManager.FindByEmailAsync(model.UserName);
-
-                string sqlQuery = "SELECT * FROM AspNetUsers WHERE Email = @email";
-                var emailParam = new SqlParameter("@email", model.UserName);
-                var user = await _dcimDevContext.Users.FromSqlRaw(sqlQuery, emailParam).FirstAsync(); ;
-
-
-                var newname = user.DisplayName;
-                IList<string> gUserRoles;
-                IList<Claim> gUserClaims;
-                IList<Claim>? gRoleClaims = null;
-                if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+                // var user = await userManager.FindByEmailAsync(model.UserName);
+                try
                 {
+                    string sqlQuery = "SELECT * FROM AspNetUsers WHERE Email = @email";
+                    var emailParam = new SqlParameter("@email", model.UserName);
+                    var user = await _dcimDevContext.Users.FromSqlRaw(sqlQuery, emailParam).FirstAsync(); ;
 
-                    var userRoles = await userManager.GetRolesAsync(user);
-                    gUserRoles = userRoles;
-                    var userClaims = await userManager.GetClaimsAsync(user);
-                    gUserClaims = userClaims;
-                    var authClaims = new List<Claim>
+
+                    var newname = user.DisplayName;
+                    IList<string> gUserRoles;
+                    IList<Claim> gUserClaims;
+                    IList<Claim>? gRoleClaims = null;
+                    if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+                    {
+
+                        var userRoles = await userManager.GetRolesAsync(user);
+                        gUserRoles = userRoles;
+                        var userClaims = await userManager.GetClaimsAsync(user);
+                        gUserClaims = userClaims;
+                        var authClaims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
 
-                    foreach (var userRole in userRoles)
-                    {
-                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-
-
-                        var role = await roleManager.FindByNameAsync(userRole);
-
-                        var roleClaims = await roleManager.GetClaimsAsync(role);
-
-
-                        foreach (var roleClaim in roleClaims)
+                        foreach (var userRole in userRoles)
                         {
-                            authClaims.Add(roleClaim);
-                            gRoleClaims = roleClaims;
+                            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+
+
+                            var role = await roleManager.FindByNameAsync(userRole);
+
+                            var roleClaims = await roleManager.GetClaimsAsync(role);
+
+
+                            foreach (var roleClaim in roleClaims)
+                            {
+                                authClaims.Add(roleClaim);
+                                gRoleClaims = roleClaims;
+                            }
                         }
+
+
+                        foreach (var userClaim in userClaims)
+                        {
+                            authClaims.Add(userClaim);
+                        }
+
+                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+
+                        var token = new JwtSecurityToken(
+                            issuer: _configuration["Jwt:Issuer"],
+                            audience: _configuration["Jwt:Audience"],
+                            expires: DateTime.Now.AddHours(3), // Token expiration time
+                            claims: authClaims, // All claims (roles + custom claims + role claims)
+                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                        );
+
+                        UserContextDto userContextDto = new UserContextDto { User = user, Roles = gUserRoles, UserClaims = gUserClaims, RoleClaims = gRoleClaims };
+
+                        return Ok(new
+                        {
+                            token = new JwtSecurityTokenHandler().WriteToken(token),
+                            expiration = token.ValidTo,
+                            userContext = userContextDto
+                        });
                     }
-
-
-                    foreach (var userClaim in userClaims)
-                    {
-                        authClaims.Add(userClaim);
-                    }
-
-                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-
-                    var token = new JwtSecurityToken(
-                        issuer: _configuration["Jwt:Issuer"],
-                        audience: _configuration["Jwt:Audience"],
-                        expires: DateTime.Now.AddHours(3), // Token expiration time
-                        claims: authClaims, // All claims (roles + custom claims + role claims)
-                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-
-                    UserContextDto userContextDto = new UserContextDto { User = user, Roles = gUserRoles, UserClaims = gUserClaims, RoleClaims = gRoleClaims };
-
-                    return Ok(new
-                    {
-                        token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = token.ValidTo,
-                        userContext = userContextDto
-                    });
+                    return Unauthorized(new { status = 401,statusText = "Wrong email or passord", message="" });
                 }
-                return Unauthorized("Wrong email or passord");
+                catch (Exception ex)
+                {
+                    return NotFound(new { message = "User not found", status = 400, statusText = ex.Message });
+                }
+                
             }
 
 
@@ -289,7 +296,6 @@
 
 
             [HttpPut]
-            [Authorize]
             [Route("forget_password")]
             public async Task<IActionResult> ForgetPassword([FromBody] ResetPasswordDto user)
             {
