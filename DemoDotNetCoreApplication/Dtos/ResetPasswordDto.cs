@@ -10,9 +10,9 @@
 
         public string displayName { get; set; }
 
-        public string question { get; set; }
+        public string question1 { get; set; }
 
-        public string answer { get; set; }
+        public string answer1 { get; set; }
         public string newPassword { get; set; }
 
         public string confirmPassword { get; set; }

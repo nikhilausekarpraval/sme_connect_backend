@@ -13,6 +13,5 @@
 
         public static string[] Claims =  { "DeleteTask", "ViewReport", "ManageSystem" };
 
-
     }
 }

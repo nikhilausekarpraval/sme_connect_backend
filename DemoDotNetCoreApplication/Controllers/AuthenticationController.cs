@@ -182,9 +182,19 @@
 
                     var newUser = await userManager.FindByEmailAsync(model.email);
 
-                    var question = new Questions { question = model.question, answerHash = Helper.HashString(model.answer) , user_id = newUser.Id };
+                    var question1 = new Questions { question = model.question1, answerHash = Helper.HashString(model.answer1), user_id = newUser.Id };
 
-                   var questionResult =  await _dcimDevContext.Questions.AddAsync(question);
+                    await _dcimDevContext.Questions.AddAsync(question1);
+
+                    var question2 = new Questions { question = model.question1, answerHash = Helper.HashString(model.answer1), user_id = newUser.Id };
+
+                    await _dcimDevContext.Questions.AddAsync(question2);
+
+                    var question3 = new Questions { question = model.question1, answerHash = Helper.HashString(model.answer1), user_id = newUser.Id };
+
+                    await _dcimDevContext.Questions.AddAsync(question3);
+
+                    await _dcimDevContext.SaveChangesAsync();
 
 
                 }
@@ -306,11 +316,11 @@
                     if (currentUser != null)
                     {
 
-                        var hashedAnswer = Helper.HashString(user.answer);
+                        var hashedAnswer = Helper.HashString(user.answer1);
 
                         var userQuestion = await _dcimDevContext.Questions
                            .FirstOrDefaultAsync(q => q.user_id == currentUser.Id
-                                                     && q.question == user.question
+                                                     && q.question == user.question1
                                                      && q.answerHash.SequenceEqual(hashedAnswer)); 
 
                         if (userQuestion != null)
