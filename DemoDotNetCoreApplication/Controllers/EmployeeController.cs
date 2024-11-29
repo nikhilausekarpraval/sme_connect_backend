@@ -2,9 +2,11 @@
 using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
+using DemoDotNetCoreApplication.Helpers;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static DemoDotNetCoreApplication.Constatns.Constants;
 
 namespace DemoDotNetCoreApplication.Controllers
 {
@@ -38,7 +40,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             else
             {
-                _logger.LogWarning($"Employee with ID {id} not found.");
+                _logger.LogWarning(Helper.GetErrorEntityWithIdNotFound(ModuleName.Employee, id));
                 return NotFound(response.Message);
             }
         }
@@ -56,7 +58,7 @@ namespace DemoDotNetCoreApplication.Controllers
                 }
                 else
                 {
-                    _logger.LogError("Error retrieving employees: " + response.Message);
+                    _logger.LogError(ApiErrors.ErrorRetrivingEmployees + response.Message);
                     return StatusCode(500, response.Message); // 500 Internal Server Error
                 }
             }
@@ -70,11 +72,11 @@ namespace DemoDotNetCoreApplication.Controllers
         {
             if (employeeDto == null)
             {
-                return BadRequest("Employee data is null.");
+                return BadRequest(ApiErrors.NullEmployee);
             }
             var emp = _mapper.Map<Employee>(employeeDto);
             emp.CreatedOnDt = DateOnly.FromDateTime(DateTime.Today);
-            emp.CreatedBy = "admin";// this will updated from context
+            emp.CreatedBy = RoleName.Admin;// this will updated from context
             var response = await _employeeProvider.CreateEmployee(emp);
 
             if (response.Status == Constants.ApiResponseType.Success)
@@ -83,7 +85,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             else
             {
-                _logger.LogError("Error creating employee: " + response.Message);
+                _logger.LogError(ApiErrors.ErrorCreatingEmployee + response.Message);
                 return StatusCode(500, response.Message); // 500 Internal Server Error
             }
         }
@@ -101,7 +103,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             else
             {
-                _logger.LogError("Error updating employee: " + response.Message);
+                _logger.LogError(ApiErrors.ErrorUpdatingEmployee + response.Message);
                 return StatusCode(500, response.Message); // 500 Internal Server Error
             }
         }
@@ -118,7 +120,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             else
             {
-                _logger.LogError("Error deleting employee: " + response.Message);
+                _logger.LogError(ApiErrors.ErrorDeletingEmployee + response.Message);
                 return StatusCode(500, response.Message); // 500 Internal Server Error
             }
         }

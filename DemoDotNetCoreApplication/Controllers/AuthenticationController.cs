@@ -13,15 +13,14 @@
     using Microsoft.Data.SqlClient;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.IdentityModel.Tokens;
     using System;
-    using System.Collections.Generic;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Security.Claims;
-    using System.Text;
     using System.Threading.Tasks;
     using DemoDotNetCoreApplication.Helpers;
     using System.Linq;
+    using DemoDotNetCoreApplication.Contracts;
+    using Microsoft.AspNetCore.Mvc.ApiExplorer;
+    using DemoDotNetCoreApplication.Constatns;
+    using static DemoDotNetCoreApplication.Constatns.Constants;
 
     namespace JWTAuthentication.Controllers
     {
@@ -34,14 +33,16 @@
             private readonly IConfiguration _configuration;
             private readonly SignInManager<ApplicationUser> signInManager;
             private readonly DcimDevContext _dcimDevContext;
+            private readonly IAuthenticationProvider _authenticationProvider;
 
-            public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
+            public AuthenticateController(UserManager<ApplicationUser> userManager, IAuthenticationProvider authenticationProvider, RoleManager<IdentityRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
             {
                 this.userManager = userManager;
                 this.roleManager = roleManager;
                 _configuration = configuration;
                 this.signInManager = signInManager;
                 _dcimDevContext = dcimDevContext;
+                this._authenticationProvider = authenticationProvider;
             }
 
 
@@ -53,80 +54,15 @@
                 // var user = await userManager.FindByEmailAsync(model.UserName);
                 try
                 {
-                    string sqlQuery = "SELECT * FROM AspNetUsers WHERE Email = @email";
-                    var emailParam = new SqlParameter("@email", model.UserName);
-                    var user = await _dcimDevContext.Users.FromSqlRaw(sqlQuery, emailParam).FirstAsync(); ;
-
-
-                    var newname = user.DisplayName;
-                    IList<string> gUserRoles;
-                    IList<Claim> gUserClaims;
-                    IList<Claim>? gRoleClaims = null;
-                    if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
-                    {
-
-                        var userRoles = await userManager.GetRolesAsync(user);
-                        gUserRoles = userRoles;
-                        var userClaims = await userManager.GetClaimsAsync(user);
-                        gUserClaims = userClaims;
-                        var authClaims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    };
-
-                        foreach (var userRole in userRoles)
-                        {
-                            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-
-
-                            var role = await roleManager.FindByNameAsync(userRole);
-
-                            var roleClaims = await roleManager.GetClaimsAsync(role);
-
-
-                            foreach (var roleClaim in roleClaims)
-                            {
-                                authClaims.Add(roleClaim);
-                                gRoleClaims = roleClaims;
-                            }
-                        }
-
-
-                        foreach (var userClaim in userClaims)
-                        {
-                            authClaims.Add(userClaim);
-                        }
-
-                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-
-                        var token = new JwtSecurityToken(
-                            issuer: _configuration["Jwt:Issuer"],
-                            audience: _configuration["Jwt:Audience"],
-                            expires: DateTime.Now.AddHours(3), // Token expiration time
-                            claims: authClaims, // All claims (roles + custom claims + role claims)
-                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                        );
-
-                        UserContextDto userContextDto = new UserContextDto { User = user, Roles = gUserRoles, UserClaims = gUserClaims, RoleClaims = gRoleClaims };
-
-                        return Ok(new
-                        {
-                            token = new JwtSecurityTokenHandler().WriteToken(token),
-                            expiration = token.ValidTo,
-                            userContext = userContextDto
-                        });
-                    }
-                    return Unauthorized(new { status = 401,statusText = "Wrong email or passord", message="" });
+                  var result =  await this._authenticationProvider.Login(model);
+                    return new JsonResult(result.data != null ? Ok(result.data) : Unauthorized(result));
                 }
                 catch (Exception ex)
                 {
-                    return NotFound(new { message = "User not found", status = 400, statusText = ex.Message });
+                    return new JsonResult( NotFound(new { message = "Error", status = 400, statusText = ex.Message }));
                 }
                 
             }
-
-
 
             //[HttpPost]
             //[Route("getUserContext")]
@@ -160,42 +96,9 @@
 
                 try
                 {
-                    var userExists = await userManager.FindByEmailAsync(model.email);
+                    var result = await this._authenticationProvider.Register(model);
 
-                    if (userExists != null)
-                        return new JsonResult(NotFound(new ResponseDto { status = "Error", statusText = "Duplicate email id, User already exists!", message = "" }));
-
-                    ApplicationUser user = new ApplicationUser()
-                    {
-                        Email = model.email,
-                        SecurityStamp = Guid.NewGuid().ToString(),
-                        UserName = model.userName,
-                        DisplayName = model.displayName
-                    };
-
-                    var result = await userManager.CreateAsync(user, model.password);
-
-                    if (!result.Succeeded)
-                    {
-                        return new JsonResult(BadRequest(result));
-                    }
-
-                    var newUser = await userManager.FindByEmailAsync(model.email);
-
-                    var question1 = new Questions { question = model.question1, answerHash = Helper.HashString(model.answer1), user_id = newUser.Id };
-
-                    await _dcimDevContext.Questions.AddAsync(question1);
-
-                    var question2 = new Questions { question = model.question1, answerHash = Helper.HashString(model.answer1), user_id = newUser.Id };
-
-                    await _dcimDevContext.Questions.AddAsync(question2);
-
-                    var question3 = new Questions { question = model.question1, answerHash = Helper.HashString(model.answer1), user_id = newUser.Id };
-
-                    await _dcimDevContext.Questions.AddAsync(question3);
-
-                    await _dcimDevContext.SaveChangesAsync();
-
+                    return new JsonResult(result.statusText == ApiErrors.UserCreated ? Ok(result) : BadRequest(result));
 
                 }
                 catch (Exception ex)
@@ -203,16 +106,23 @@
                     return new JsonResult(StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { status = "Error", message = ex.Message, statusText = ex.Message }));
                 }
 
-                return new JsonResult(Ok(new ResponseDto { status = "Success", statusText = "User created successfully!", message="" }));
             }
 
             [HttpPost]
             [Route("logout")]
             public async Task<IActionResult> Logout()
             {
-                await signInManager.SignOutAsync();
+                try
+                {
+                    await signInManager.SignOutAsync();
 
-                return new JsonResult(Ok(new ResponseDto { status = "Success", statusText = "User logged out successfully!", message="" }));
+                    return new JsonResult(Ok(new ResponseDto { status = "Success", statusText = "User logged out successfully!", message = "" }));
+                }
+                catch(Exception ex)
+                {
+                    return new JsonResult(NotFound(new ResponseDto { status = "Error", message = ex.Message, statusText = ex.Message })); 
+                }
+
             }
 
             [HttpPut]
@@ -238,7 +148,7 @@
                 }
                 catch (Exception ex)
                 {
-                    return new JsonResult(BadRequest(new ResponseDto { status = "Error", message = "" ,statusText = ex.Message}));
+                    return new JsonResult(NotFound(new ResponseDto { status = "Error", message = "" ,statusText = ex.Message}));
                 }
 
             }
@@ -299,7 +209,7 @@
                 }
                 catch (Exception ex)
                 {
-                    return new JsonResult(BadRequest(new ResponseDto { statusText = ex.Message, status="Error", message="" }));
+                    return new JsonResult(NotFound(new ResponseDto { statusText = ex.Message, status="Error", message="" }));
                 }
 
             }
@@ -365,7 +275,7 @@
                 }
                 catch (Exception ex)
                 {
-                    return new JsonResult(BadRequest(ex.Message));
+                    return new JsonResult(NotFound(ex.Message));
                 }
 
             }
@@ -376,31 +286,39 @@
             [Route("register-admin")]
             public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModelDto model)
             {
-                var userExists = await userManager.FindByNameAsync(model.userName);
-                if (userExists != null)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { status = "Error", message = "User already exists!" });
-
-                ApplicationUser user = new ApplicationUser()
+                try
                 {
-                    Email = model.email,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = model.userName
-                };
-                var result = await userManager.CreateAsync(user, model.password);
-                if (!result.Succeeded)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { status = "Error", message = "User creation failed! Please check user details and try again." });
+                    var userExists = await userManager.FindByNameAsync(model.userName);
+                    if (userExists != null)
+                        return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { status = "Error", message = "User already exists!" });
 
-                if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
-                    await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-                if (!await roleManager.RoleExistsAsync(UserRoles.User))
-                    await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+                    ApplicationUser user = new ApplicationUser()
+                    {
+                        Email = model.email,
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        UserName = model.userName
+                    };
+                    var result = await userManager.CreateAsync(user, model.password);
+                    if (!result.Succeeded)
+                        return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { status = "Error", message = "User creation failed! Please check user details and try again." });
 
-                if (await roleManager.RoleExistsAsync(UserRoles.Admin))
+                    if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
+                        await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+                    if (!await roleManager.RoleExistsAsync(UserRoles.User))
+                        await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+
+                    if (await roleManager.RoleExistsAsync(UserRoles.Admin))
+                    {
+                        await userManager.AddToRoleAsync(user, UserRoles.Admin);
+                    }
+
+                    return Ok(new ResponseDto { status = "Success", message = "User created successfully!" });
+                }
+                catch (Exception ex) 
                 {
-                    await userManager.AddToRoleAsync(user, UserRoles.Admin);
+                
                 }
 
-                return Ok(new ResponseDto { status = "Success", message = "User created successfully!" });
             }
         }
     }

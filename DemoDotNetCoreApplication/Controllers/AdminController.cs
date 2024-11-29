@@ -1,12 +1,8 @@
-﻿using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
-using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
+﻿using DemoDotNetCoreApplication.Contracts;
+using DemoDotNetCoreApplication.Dtos;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Security.Claims;
+
 
 namespace DemoDotNetCoreApplication.Controllers
 {
@@ -16,13 +12,10 @@ namespace DemoDotNetCoreApplication.Controllers
     public class AdminController : ControllerBase
     {
 
-        private IServiceProvider _serviceProvider;
-        private UserManager<ApplicationUser> _userManager;
-        private RoleManager<IdentityRole> _roleManager;
-      public  AdminController(IServiceProvider serviceProvider) {
-            this._serviceProvider = serviceProvider;
-            this._userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            this._roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+      private IAdminProvider _adminProvider;
+
+      public  AdminController(IServiceProvider serviceProvider,IAdminProvider adminProvider) {
+            this._adminProvider = adminProvider;
         }
 
 
@@ -31,77 +24,62 @@ namespace DemoDotNetCoreApplication.Controllers
         public async Task<IActionResult> AddRole([FromBody] RoleDto role)
         {
 
-                var roleExist = await _roleManager.RoleExistsAsync(role.roleName);
-                if (!roleExist)
-                {
-                     await _roleManager.CreateAsync(new IdentityRole(role.roleName));
-                    return new JsonResult(Ok("Role added to role successfully"));
-
-                }
-                else
-                {
-                    return new JsonResult(Conflict("Role already exist"));
-                }
+            try
+            {
+              var result =  await this._adminProvider.AddRole(role);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
             
         }
 
 
         [HttpPost]
         [Route("add_role_to_user")]
-        public async Task<IActionResult> AddUserToRole([FromBody]  AssignRoleDto role)
+        public async Task<IActionResult> AddRoleToUser([FromBody]  AssignRoleDto addRoleToUser)
         {
-            var error = "";
-            var user = await _userManager.FindByIdAsync(role.userId);
-            if (user != null)
+            try
             {
-              var  result = await _userManager.AddToRoleAsync(user, role.roleName);
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }else
-                {
-                    error = result.Errors.First().Description;
-                }
+                var result = await this._adminProvider.AddRoleToUser(addRoleToUser);
+                return new JsonResult(Ok(result));
             }
-            return new JsonResult( BadRequest(error));
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
         }
 
         [HttpPost]
         [Route("add_claim_to_user")]
         public async Task<IActionResult> AddClaimToUser([FromBody] AssignClaimDto userClaim)
         {
-            var user = await _userManager.FindByIdAsync(userClaim.userId);
-            if (user != null)
+            try
             {
-                var claim = new Claim(userClaim.claimType, userClaim.claimValue);
-                var result = await _userManager.AddClaimAsync(user, claim);
-                if (result.Succeeded)
-                {
-                    return new JsonResult(Ok("Claim added to user"));
-                }
+                var result = await this._adminProvider.AddClaimToUser(userClaim);
+                return new JsonResult(Ok(result));
             }
-            return new JsonResult( BadRequest("Failed to add claim to user"));
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
         }
 
         [HttpPost]
         [Route("add_claim_to_role")]
         public async Task<IActionResult> AddClaimToRole([FromBody] AddClaimToRoleDto roleClaim )
         {
-            var role = await _roleManager.FindByNameAsync(roleClaim.roleName);
-            if (role == null)
+            try
             {
-                return new JsonResult( NotFound("Role not found"));
+                var result = await this._adminProvider.AddClaimToRole(roleClaim);
+                return new JsonResult(Ok(result));
             }
-
-            Claim claim = new Claim(roleClaim.claimType, roleClaim.claimValue);
-            var result = await _roleManager.AddClaimAsync(role, claim);
-
-            if (result.Succeeded)
+            catch (Exception ex)
             {
-                return new JsonResult( Ok("Claim added to role"));
+                return new JsonResult(NotFound(ex));
             }
-
-            return new JsonResult(BadRequest("Could not add claim"));
         }
 
         [HttpGet]
@@ -110,12 +88,12 @@ namespace DemoDotNetCoreApplication.Controllers
         {
             try
             {
-                var roles = await _roleManager.Roles.ToListAsync();
-                return Ok(roles);
+                var result = await this._adminProvider.GetRoles();
+                return new JsonResult(Ok(result));
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(new ResponseDto { status = "Error", message = ex.Message }));
+                return new JsonResult(NotFound(ex));
             }
         }
 
@@ -125,16 +103,15 @@ namespace DemoDotNetCoreApplication.Controllers
         {
             try
             {
-                var roles = await _userManager.Users.ToListAsync();
-                return Ok(roles);
+                var result = await this._adminProvider.GetUsers();
+                return new JsonResult(Ok(result));
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(new ResponseDto { status = "Error", message = ex.Message }));
+                return new JsonResult(NotFound(ex));
             }
         }
 
     }
-
 
 }

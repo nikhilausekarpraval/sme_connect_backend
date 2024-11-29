@@ -2,9 +2,12 @@
 using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
+using DemoDotNetCoreApplication.Helpers;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
+using static DemoDotNetCoreApplication.Constatns.Constants;
 
 
 namespace DemoDotNetCoreApplication.Controllers
@@ -40,7 +43,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             else
             {
-                _logger.LogError("Error retrieving task items: " + response.Message);
+                _logger.LogError(ApiErrors.ErrorRetrivingTasks + response.Message);
                 return StatusCode(500, response.Message); // 500 Internal Server Error
             }
         }
@@ -57,7 +60,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             else
             {
-                _logger.LogWarning($"Task item with ID {id} not found.");
+                _logger.LogWarning(Helper.GetErrorEntityWithIdNotFound(ModuleName.TaskItem,id));
                 return NotFound(response.Message);
             }
         }
@@ -68,7 +71,7 @@ namespace DemoDotNetCoreApplication.Controllers
         {
             if (taskItemDto == null)
             {
-                return BadRequest("Task item data is null.");
+                return BadRequest(ApiErrors.NullTask);
             }
 
             if(taskItemDto.EmployeeId == 0)
@@ -77,7 +80,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             var task = _mapper.Map<DemoDotNetCoreApplication.Modals.Task>(taskItemDto);
             task.CreatedOnDt = DateOnly.FromDateTime(DateTime.Today);
-            task.CreatedBy = "admin";// this will updated from context
+            task.CreatedBy = RoleName.Admin;// this will updated from context
 
             var response = await _taskItemProvider.CreateTaskItem(task);
 
@@ -87,7 +90,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             else
             {
-                _logger.LogError("Error creating task item: " + response.Message);
+                _logger.LogError(ApiErrors.ErrorCreatingTask + response.Message);
                 return StatusCode(500, response.Message); // 500 Internal Server Error
             }
         }
@@ -100,7 +103,7 @@ namespace DemoDotNetCoreApplication.Controllers
             {
                 if(taskItemDto.EmployeeId == null)
                 {
-                    return  StatusCode(404, "Employee not found");
+                    return  StatusCode(404, ApiErrors.TaskNotFound);
 
                 }else
                 {
@@ -120,7 +123,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             else
             {
-                _logger.LogError("Error updating task item: " + response.Message);
+                _logger.LogError(ApiErrors.ErrorUpdatingTask + response.Message);
                 return StatusCode(500, response.Message); // 500 Internal Server Error
             }
         }
@@ -138,7 +141,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
             else
             {
-                _logger.LogError("Error deleting task item: " + response.Message);
+                _logger.LogError(ApiErrors.ErrorDeletingTask + response.Message);
                 return StatusCode(500, response.Message); // 500 Internal Server Error
             }
         }
