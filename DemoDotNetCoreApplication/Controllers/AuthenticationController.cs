@@ -114,9 +114,10 @@
             {
                 try
                 {
-                    await signInManager.SignOutAsync();
 
-                    return new JsonResult(Ok(new ResponseDto { status = "Success", statusText = "User logged out successfully!", message = "" }));
+                    var result = await this._authenticationProvider.Logout();
+
+                    return new JsonResult(Ok(result));
                 }
                 catch(Exception ex)
                 {
@@ -132,19 +133,9 @@
             {
                 try
                 {
-                   var currentUser = await userManager.FindByEmailAsync(user.email);
-                  if(currentUser != null &&  await userManager.CheckPasswordAsync(currentUser, user.password))
-                    {
-                        currentUser.DisplayName = user.displayName;
-                        currentUser.UserName = user.userName;
-                        currentUser.Email = user.email;
-                        var result = await userManager.UpdateAsync(currentUser);
-                        return new JsonResult(Ok(result));
-                    }else
-                    {
-                        throw new Exception("User email or password is wrong");
-                    }
-                    
+                    var result = await this._authenticationProvider.UpdateUser(user);
+                    return new JsonResult(result.statusText == AccessConfigurationSccessMessage.UpdatedUser ? Ok(result) : BadRequest(result));
+
                 }
                 catch (Exception ex)
                 {
@@ -161,51 +152,8 @@
                 try
                 {
 
-                    var currentUser = await userManager.FindByEmailAsync(user.email);
-
-                    if (currentUser != null)
-                    {
-
-                            if (await userManager.CheckPasswordAsync(currentUser, user.password))
-                            {
-                               
-                                var token = await userManager.GeneratePasswordResetTokenAsync(currentUser);
-                                var passwordResetResult = await userManager.ResetPasswordAsync(currentUser, token, user.newPassword);
-
-                                if (passwordResetResult.Succeeded)
-                                {
-                                    
-                                    currentUser.DisplayName = user.displayName;
-                                    currentUser.UserName = user.userName;
-                                    currentUser.Email = user.email;
-
-                                    var updateResult = await userManager.UpdateAsync(currentUser);
-
-                                    if (updateResult.Succeeded)
-                                    {
-                                        return new JsonResult(Ok(new ResponseDto { message = "", status ="Success", statusText = "Password and user details updated successfully" }));
-                                    }
-                                    else
-                                    {
-                                        return new JsonResult(BadRequest(new ResponseDto { statusText = "Failed to                  update user details", status="Error", message="" }));
-                                    }
-                                }
-                                else
-                                {
-                                    return new JsonResult(BadRequest(new ResponseDto { statusText = "Failed to reset password", status = "Error", message = ""  }));
-                                }
-                            }
-                            else
-                            {
-                            return new JsonResult(BadRequest(new ResponseDto{ statusText = "Old password is incorrect", status="Error", message ="" }));
-                            }
-
-                    }
-                    else
-                    {
-                        throw new Exception("User not found");
-                    }
-
+                    var result = await this._authenticationProvider.ResetPassword(user);
+                    return new JsonResult(result.statusText == AccessConfigurationSccessMessage.PasswordUserUpdated ? Ok(result) : BadRequest(result));
                 }
                 catch (Exception ex)
                 {
@@ -221,57 +169,8 @@
             {
                 try
                 {
-                    var currentUser = await userManager.FindByEmailAsync(user.email);
-
-                    if (currentUser != null)
-                    {
-
-                        var hashedAnswer = Helper.HashString(user.answer1);
-
-                        var userQuestion = await _dcimDevContext.Questions
-                           .FirstOrDefaultAsync(q => q.user_id == currentUser.Id
-                                                     && q.question == user.question1
-                                                     && q.answerHash.SequenceEqual(hashedAnswer)); 
-
-                        if (userQuestion != null)
-                        {
-
-                                var token = await userManager.GeneratePasswordResetTokenAsync(currentUser);
-                                var passwordResetResult = await userManager.ResetPasswordAsync(currentUser, token, user.password);
-
-                                if (passwordResetResult.Succeeded)
-                                {
-
-                                    currentUser.DisplayName = user.displayName;
-                                    currentUser.UserName = user.userName;
-                                    currentUser.Email = user.email;
-
-                                    var updateResult = await userManager.UpdateAsync(currentUser);
-
-                                    if (updateResult.Succeeded)
-                                    {
-                                        return new JsonResult(Ok(new ResponseDto { message = "", status = "Success",             statusText = "Password and user details updated successfully" }));
-                                     }
-                                    else
-                                    {
-                                    return new JsonResult(BadRequest(new ResponseDto { statusText = "Failed to                      update user details", status = "Error", message = "" }));
-                                    }
-                                }
-                                else
-                                {
-                                     return new JsonResult(BadRequest(new ResponseDto { statusText = "Failed to reset       password", status = "Error", message = "" }));
-                                  }
-                         }else
-                            {
-                            return new JsonResult(BadRequest(new ResponseDto { statusText = "Question or answer is wrong!", status = "Error", message = "" }));
-                            }
-                        }
-
-                    else
-                    {
-                        throw new Exception("User not found");
-                    }
-
+                    var result = await this._authenticationProvider.ForgetPassword(user);
+                    return new JsonResult(result.statusText == AccessConfigurationSccessMessage.PasswordUserUpdated ? Ok(result) : BadRequest(result));
                 }
                 catch (Exception ex)
                 {
@@ -288,35 +187,12 @@
             {
                 try
                 {
-                    var userExists = await userManager.FindByNameAsync(model.userName);
-                    if (userExists != null)
-                        return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { status = "Error", message = "User already exists!" });
-
-                    ApplicationUser user = new ApplicationUser()
-                    {
-                        Email = model.email,
-                        SecurityStamp = Guid.NewGuid().ToString(),
-                        UserName = model.userName
-                    };
-                    var result = await userManager.CreateAsync(user, model.password);
-                    if (!result.Succeeded)
-                        return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto { status = "Error", message = "User creation failed! Please check user details and try again." });
-
-                    if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
-                        await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-                    if (!await roleManager.RoleExistsAsync(UserRoles.User))
-                        await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-
-                    if (await roleManager.RoleExistsAsync(UserRoles.Admin))
-                    {
-                        await userManager.AddToRoleAsync(user, UserRoles.Admin);
-                    }
-
-                    return Ok(new ResponseDto { status = "Success", message = "User created successfully!" });
+                    var result = await this._authenticationProvider.RegisterAdmin(model);
+                    return new JsonResult(result.statusText == AccessConfigurationSccessMessage.UserCreated ? Ok(result) : BadRequest(result));
                 }
                 catch (Exception ex) 
                 {
-                
+                    return new JsonResult(NotFound(ex.Message));
                 }
 
             }
