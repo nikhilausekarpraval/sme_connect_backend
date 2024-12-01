@@ -59,7 +59,7 @@
                 }
                 catch (Exception ex)
                 {
-                    return new JsonResult( NotFound(new { message = "Error", status = 400, statusText = ex.Message }));
+                    return new JsonResult( NotFound(new ResponseDto { message = "Error", status = "", statusText = ex.Message }));
                 }
                 
             }

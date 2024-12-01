@@ -46,6 +46,7 @@ builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
 builder.Services.AddSingleton<IAuthorizationHandler, CustomClaimHandlerProvider>();
 builder.Services.AddScoped<IAdminProvider, AdminProvider>();
+builder.Services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
 
 
 builder.Services.AddAuthorization(options =>
