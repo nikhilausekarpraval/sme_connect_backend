@@ -108,7 +108,7 @@
 
             }
 
-            [HttpPost]
+            [HttpGet]
             [Route("logout")]
             public async Task<IActionResult> Logout()
             {
