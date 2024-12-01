@@ -82,7 +82,7 @@
 
         public static class Query
         {
-            public static string selectUsers = "SELECT* FROM AspNetUsers WHERE Email = @email";
+            public static string selectUsers = "SELECT * FROM AspNetUsers WHERE Email = @email";
         }
 }
 }

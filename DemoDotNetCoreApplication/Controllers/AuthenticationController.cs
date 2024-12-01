@@ -55,7 +55,7 @@
                 try
                 {
                   var result =  await this._authenticationProvider.Login(model);
-                    return new JsonResult(result.data != null ? Ok(result.data) : Unauthorized(result));
+                    return new JsonResult(result?.data != null ? Ok(result.data) : Unauthorized(result));
                 }
                 catch (Exception ex)
                 {
