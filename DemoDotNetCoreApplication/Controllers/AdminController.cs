@@ -1,5 +1,6 @@
 ﻿using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
+using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -104,6 +105,21 @@ namespace DemoDotNetCoreApplication.Controllers
             try
             {
                 var result = await this._adminProvider.GetUsers();
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
+        [HttpGet]
+        [Route("deleteUser")]
+        public async Task<IActionResult> DeleteUser([FromBody] ApplicationUser applicationUser)
+        {
+            try
+            {
+                var result = await this._adminProvider.DeleteUser(applicationUser);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)

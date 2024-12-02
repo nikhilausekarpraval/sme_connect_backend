@@ -155,6 +155,20 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
+        public async Task<ApiResponse<string>> DeleteUser(ApplicationUser user)
+        {
+            try
+            {
+                IdentityResult result = await _userManager.DeleteAsync(user);
+                return new ApiResponse<string> (result.Succeeded ? ApiResponseType.Success : ApiResponseType.Failure, "","");
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+
+        }
 
     }
 
