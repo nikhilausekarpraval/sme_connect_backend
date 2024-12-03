@@ -12,7 +12,7 @@ namespace DemoDotNetCoreApplication.Controllers
 {
 
     [ApiController]
-    [Authorize(Roles = "User")]
+    //[Authorize(Roles = "User")]
     [Route("employee")]
     public class EmployeeController : ControllerBase
     {

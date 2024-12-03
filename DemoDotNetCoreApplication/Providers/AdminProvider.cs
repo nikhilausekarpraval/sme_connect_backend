@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using static DemoDotNetCoreApplication.Constatns.Constants;
 using DemoDotNetCoreApplication.Contracts;
+using DemoDotNetCoreApplication.Data;
 
 
 namespace DemoDotNetCoreApplication.Providers
@@ -15,11 +16,14 @@ namespace DemoDotNetCoreApplication.Providers
         private UserManager<ApplicationUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
         private ILogger<AdminProvider> _logger;
+        private DcimDevContext _decimDevContext;
 
-        public AdminProvider(IServiceProvider serviceProvider, ILogger<AdminProvider> Logger)
+
+        public AdminProvider(IServiceProvider serviceProvider, ILogger<AdminProvider> Logger, DcimDevContext decimDevContext)
         {
             this._userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             this._roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            this._decimDevContext = decimDevContext;
             this._logger = Logger;
         }
 
@@ -155,20 +159,40 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
-        public async Task<ApiResponse<string>> DeleteUser(ApplicationUser user)
+        public async Task<ApiResponse<string>> DeleteUser(List<string> userIds)
         {
             try
             {
-                IdentityResult result = await _userManager.DeleteAsync(user);
-                return new ApiResponse<string> (result.Succeeded ? ApiResponseType.Success : ApiResponseType.Failure, "","");
+                var userRoles = _decimDevContext.UserRoles.Where(ur => userIds.Contains(ur.UserId));
+                var userClaims = _decimDevContext.UserClaims.Where(uc => userIds.Contains(uc.UserId));
+                var userLogins = _decimDevContext.UserLogins.Where(ul => userIds.Contains(ul.UserId));
+
+                _decimDevContext.UserRoles.RemoveRange(userRoles);
+                _decimDevContext.UserClaims.RemoveRange(userClaims);
+                _decimDevContext.UserLogins.RemoveRange(userLogins);
+
+                var usersToDelete = _decimDevContext.Users.Where(u => userIds.Contains(u.Id));
+                _decimDevContext.Users.RemoveRange(usersToDelete);
+
+                await _decimDevContext.SaveChangesAsync();
+
+                return new ApiResponse<string>(
+                    ApiResponseType.Success,
+                    "",
+                    "Users deleted successfully."
+                );
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1, ex, ex.Message);
-                throw;
+                _logger.LogError(ex, ex.Message);
+                return new ApiResponse<string>(
+                    ApiResponseType.Failure,
+                    "",
+                    $"An error occurred while deleting users: {ex.Message}"
+                );
             }
-
         }
+
 
     }
 

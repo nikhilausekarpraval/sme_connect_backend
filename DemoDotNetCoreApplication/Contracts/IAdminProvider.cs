@@ -25,7 +25,7 @@ namespace DemoDotNetCoreApplication.Contracts
 
         public  Task<List<ApplicationUser>> GetUsers();
 
-        public Task<ApiResponse<string>> DeleteUser(ApplicationUser user);
+        public Task<ApiResponse<string>> DeleteUser(List<string> users);
 
     }
 }

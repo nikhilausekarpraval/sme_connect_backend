@@ -113,13 +113,13 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpDelete]
         [Route("deleteUser")]
-        public async Task<IActionResult> DeleteUser([FromBody] ApplicationUser applicationUser)
+        public async Task<IActionResult> DeleteUser([FromBody] List<string> applicationUsers)
         {
             try
             {
-                var result = await this._adminProvider.DeleteUser(applicationUser);
+                var result = await this._adminProvider.DeleteUser(applicationUsers);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
