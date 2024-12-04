@@ -159,6 +159,36 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
+        public async Task<List<IdentityRoleClaim<string>>> GetRoleClaims()
+        {
+            try
+            {
+                var claims = await _decimDevContext.RoleClaims.ToListAsync();
+                return claims;
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1,$"{ex.Message}", ex);
+                throw;
+            }
+
+        }
+
+        public async Task<List<IdentityUserClaim<string>>> GetUserClaims()
+        {
+            try
+            {
+                var claims = await _decimDevContext.UserClaims.ToListAsync();
+                return claims;
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, $"{ex.Message}", ex);
+                throw;
+            }
+
+        }
+
         public async Task<ApiResponse<string>> DeleteUser(List<string> userIds)
         {
             try
