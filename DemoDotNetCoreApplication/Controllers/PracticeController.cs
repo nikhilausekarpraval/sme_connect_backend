@@ -52,20 +52,20 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        [HttpDelete]
-        [Route("delete_practices")]
-        public async Task<IActionResult> DeletePractices([FromBody] List<int> practicesIds)
-        {
-            try
-            {
-                var result = await this._adminProvider.DeleteUser(practicesIds);
-                return new JsonResult(Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(NotFound(ex));
-            }
-        }
+        //[HttpDelete]
+        //[Route("delete_practices")]
+        //public async Task<IActionResult> DeletePractices([FromBody] List<int> practicesIds)
+        //{
+        //    try
+        //    {
+        //        var result = await this._adminProvider.DeleteUser(practicesIds);
+        //        return new JsonResult(Ok(result));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new JsonResult(NotFound(ex));
+        //    }
+        //}
     }
 
 }

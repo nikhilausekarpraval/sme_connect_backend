@@ -51,20 +51,20 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        [HttpDelete]
-        [Route("delete_group")]
-        public async Task<IActionResult> DeleteGroup([FromBody] List<int> groupIds)
-        {
-            try
-            {
-                var result = await this._adminProvider.DeleteUser(groupIds);
-                return new JsonResult(Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(NotFound(ex));
-            }
-        }
+        //[HttpDelete]
+        //[Route("delete_group")]
+        //public async Task<IActionResult> DeleteGroup([FromBody] List<int> groupIds)
+        //{
+        //    try
+        //    {
+        //        var result = await this._adminProvider.DeleteUser(groupIds);
+        //        return new JsonResult(Ok(result));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new JsonResult(NotFound(ex));
+        //    }
+        //}
 
     }
 }
