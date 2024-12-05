@@ -20,13 +20,13 @@ namespace DemoDotNetCoreApplication.Providers
     {
 
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly RoleManager<ApplicationRole> roleManager;
         private readonly IConfiguration _configuration;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly DcimDevContext _dcimDevContext;
         private readonly ILogger<AuthenticationProvider> _logger;
 
-        public AuthenticationProvider(UserManager<ApplicationUser> userManager, ILogger<AuthenticationProvider> logger, RoleManager<IdentityRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
+        public AuthenticationProvider(UserManager<ApplicationUser> userManager, ILogger<AuthenticationProvider> logger, RoleManager<ApplicationRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
@@ -63,6 +63,8 @@ namespace DemoDotNetCoreApplication.Providers
                     {
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(ClaimTypes.Email, user?.Email),
+
                     };
 
                     foreach (var userRole in userRoles)
@@ -327,14 +329,13 @@ namespace DemoDotNetCoreApplication.Providers
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = model.userName
                 };
+
                 var result = await userManager.CreateAsync(user, model.password);
                 if (!result.Succeeded)
                     return new ResponseDto { status = ApiResponseType.Failure, message = AccessConfigurationErrorMessage.UserCreationFaild };
 
                 if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
-                    await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-                if (!await roleManager.RoleExistsAsync(UserRoles.User))
-                    await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+                    await roleManager.CreateAsync(getApplicationUser(UserRoles.Admin));
 
                 if (await roleManager.RoleExistsAsync(UserRoles.Admin))
                 {
@@ -351,6 +352,15 @@ namespace DemoDotNetCoreApplication.Providers
 
             }
 
+        }
+
+        public ApplicationRole getApplicationUser(string id)
+        {
+            return  new ApplicationRole()
+            {
+                Name = id,
+                ModifiedBy = ""
+            };
         }
     }
 }

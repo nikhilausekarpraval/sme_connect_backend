@@ -20,7 +20,7 @@ namespace DemoDotNetCoreApplication.Contracts
         public  Task<string> AddClaimToRole(AddClaimToRoleDto roleClaim);
 
 
-        public  Task<List<IdentityRole>> GetRoles();
+        public  Task<List<ApplicationRole>> GetRoles();
 
 
         public  Task<List<ApplicationUser>> GetUsers();

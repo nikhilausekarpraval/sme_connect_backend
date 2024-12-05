@@ -29,13 +29,13 @@
         public class AuthenticateController : ControllerBase
         {
             private readonly UserManager<ApplicationUser> userManager;
-            private readonly RoleManager<IdentityRole> roleManager;
+            private readonly RoleManager<ApplicationRole> roleManager;
             private readonly IConfiguration _configuration;
             private readonly SignInManager<ApplicationUser> signInManager;
             private readonly DcimDevContext _dcimDevContext;
             private readonly IAuthenticationProvider _authenticationProvider;
 
-            public AuthenticateController(UserManager<ApplicationUser> userManager, IAuthenticationProvider authenticationProvider, RoleManager<IdentityRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
+            public AuthenticateController(UserManager<ApplicationUser> userManager, IAuthenticationProvider authenticationProvider, RoleManager<ApplicationRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
             {
                 this.userManager = userManager;
                 this.roleManager = roleManager;

@@ -14,16 +14,18 @@ namespace DemoDotNetCoreApplication.Providers
     {
 
         private UserManager<ApplicationUser> _userManager;
-        private RoleManager<IdentityRole> _roleManager;
+        private RoleManager<ApplicationRole> _roleManager;
         private ILogger<AdminProvider> _logger;
         private DcimDevContext _decimDevContext;
+        private IUserContext _userContext;
 
 
-        public AdminProvider(IServiceProvider serviceProvider, ILogger<AdminProvider> Logger, DcimDevContext decimDevContext)
+        public AdminProvider(IServiceProvider serviceProvider, ILogger<AdminProvider> Logger, DcimDevContext decimDevContext,IUserContext userContext)
         {
             this._userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            this._roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            this._roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
             this._decimDevContext = decimDevContext;
+            this._userContext = userContext;
             this._logger = Logger;
         }
 
@@ -32,10 +34,10 @@ namespace DemoDotNetCoreApplication.Providers
 
             try
             {
-                var roleExist = await _roleManager.RoleExistsAsync(role.roleName);
+                var roleExist = await _roleManager.RoleExistsAsync(role.Name);
                 if (!roleExist)
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(role.roleName));
+                    await _roleManager.CreateAsync(new ApplicationRole { Name = role.Name ,ModifiedBy =_userContext.Email});
                     return AccessConfigurationSccessMessage.NewRoleAdded;
                 }
                 else
@@ -131,11 +133,11 @@ namespace DemoDotNetCoreApplication.Providers
 
         }
 
-        public async Task<List<IdentityRole>> GetRoles()
+        public async Task<List<ApplicationRole>> GetRoles()
         {
             try
             {
-                var roles = await _roleManager.Roles.ToListAsync();
+                var roles = await _decimDevContext.Roles.ToListAsync();
                 return roles;
             }
             catch (Exception ex)
@@ -149,8 +151,30 @@ namespace DemoDotNetCoreApplication.Providers
         {
             try
             {
-                var users = await _userManager.Users.ToListAsync();
-                return users;
+                var query = from user in _userManager.Users
+                            join userRole in _decimDevContext.UserRoles on user.Id equals userRole.UserId
+                            join role in _decimDevContext.Roles on userRole.RoleId equals role.Id
+                            select new { user, role };
+
+                var userRolesData = await query.ToListAsync();
+
+
+                var userWithRoles = userRolesData
+                                    .GroupBy(x => new { x.user.Id, x.user.UserName, x.user.Email })
+                                    .Select(g => new ApplicationUser
+                                    {
+                                        Id = g.Key.Id,
+                                        UserName = g.Key.UserName,
+                                        Email = g.Key.Email,
+                                        Roles = g.Select(x => new RoleDto
+                                        {
+                                            Id = x.role.Id,
+                                            Name = x.role.Name
+                                        }).ToList()
+                                    }).ToList();
+
+                return userWithRoles;
+
             }
             catch (Exception ex)
             {
@@ -158,6 +182,8 @@ namespace DemoDotNetCoreApplication.Providers
                 throw;
             }
         }
+
+
 
         public async Task<List<IdentityRoleClaim<string>>> GetRoleClaims()
         {
@@ -211,6 +237,7 @@ namespace DemoDotNetCoreApplication.Providers
                     "",
                     "Users deleted successfully."
                 );
+
             }
             catch (Exception ex)
             {

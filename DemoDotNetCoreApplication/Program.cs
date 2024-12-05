@@ -17,9 +17,10 @@ builder.Services.AddDbContext<DcimDevContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
         .AddEntityFrameworkStores<DcimDevContext>()
         .AddDefaultTokenProviders();
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -47,7 +48,15 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
 builder.Services.AddSingleton<IAuthorizationHandler, CustomClaimHandlerProvider>();
 builder.Services.AddScoped<IAdminProvider, AdminProvider>();
 builder.Services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<UserContextProvider>();
 
+// Register GenerateContext method (via UserContextProvider)
+builder.Services.AddScoped<IUserContext>((serviceProvider) =>
+{
+    var userContextProvider = serviceProvider.GetRequiredService<UserContextProvider>();
+    return userContextProvider.GenerateContext(serviceProvider).Result; 
+});
 
 builder.Services.AddAuthorization(options =>
 {

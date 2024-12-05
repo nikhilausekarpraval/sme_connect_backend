@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DemoDotNetCoreApplication.Modals;
+using Microsoft.AspNetCore.Identity;
+using Task = System.Threading.Tasks.Task;
 
 namespace DemoDotNetCoreApplication.Providers
 {
@@ -6,7 +8,7 @@ namespace DemoDotNetCoreApplication.Providers
     {
         public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
         {
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
             string[] roleNames = { "Admin", "User","Manager" };
             IdentityResult roleResult;
 
@@ -15,7 +17,7 @@ namespace DemoDotNetCoreApplication.Providers
                 var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
-                    roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                    roleResult = await roleManager.CreateAsync(new ApplicationRole { Name = roleName });
                 }
             }
         }
