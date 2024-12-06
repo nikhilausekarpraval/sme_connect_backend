@@ -24,7 +24,9 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
 
     public   override  DbSet<ApplicationUser>  Users { get; set; }
 
+    public virtual DbSet<Practice> Practices { get; set; }
 
+    public virtual DbSet<UserGroup> UserGroups { get; set; }
 
     public override DbSet<ApplicationRole> Roles { get; set; }
 
@@ -105,6 +107,41 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
                 .HasForeignKey(d => d.EmployeeId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FKmeqi2abtbehx871tag4op3hag");
+        });
+
+        //
+
+        modelBuilder.Entity<Practice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Practice__3213E83F14691F14");
+
+            entity.ToTable("Practice");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ModifiedBy)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedOnDt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<UserGroup>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Groups__3213E83F4104FC2B");
+
+            entity.ToTable("UserGroup");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ModifiedBy)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedOnDt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("name");
         });
 
         OnModelCreatingPartial(modelBuilder);
