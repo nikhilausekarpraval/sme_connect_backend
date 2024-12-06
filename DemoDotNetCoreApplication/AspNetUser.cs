@@ -41,13 +41,17 @@ public partial class AspNetUser
 
     public int? GroupsId { get; set; }
 
+    public string? ModifiedBy { get; set; }
+
+    public DateTime? ModifiedOnDt { get; set; }
+
     public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; } = new List<AspNetUserClaim>();
 
     public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; } = new List<AspNetUserLogin>();
 
     public virtual ICollection<AspNetUserToken> AspNetUserTokens { get; set; } = new List<AspNetUserToken>();
 
-    public virtual Group? Groups { get; set; }
+    public virtual UserGroup? Groups { get; set; }
 
     public virtual Practice? Practice { get; set; }
 

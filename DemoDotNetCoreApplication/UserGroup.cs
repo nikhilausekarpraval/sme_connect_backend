@@ -3,11 +3,14 @@ using System.Collections.Generic;
 
 namespace DemoDotNetCoreApplication;
 
-public partial class Group
+public partial class UserGroup
 {
     public int Id { get; set; }
 
     public string? Name { get; set; }
 
-    public virtual ICollection<AspNetUser> AspNetUsers { get; set; } = new List<AspNetUser>();
+    public DateOnly? ModifiedOnDt { get; set; }
+
+    public string? ModifiedBy { get; set; }
+
 }
