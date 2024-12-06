@@ -1,7 +1,10 @@
 ﻿using DemoDotNetCoreApplication.Contracts;
+using DemoDotNetCoreApplication.Data;
+using DemoDotNetCoreApplication.Providers;
 using DemoDotNetCoreApplication.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DemoDotNetCoreApplication.Modals;
 
 namespace DemoDotNetCoreApplication.Controllers
 {
@@ -11,22 +14,25 @@ namespace DemoDotNetCoreApplication.Controllers
     public class GroupController : ControllerBase
     {
 
-        private IAdminProvider _adminProvider;
+        private UserGroupProvider _userGroupProvider;
+        private UserContext _userContext;
 
-        public GroupController(IServiceProvider serviceProvider, IAdminProvider adminProvider)
+        public GroupController( UserGroupProvider userGroupProvider,UserContext userContext)
         {
-            this._adminProvider = adminProvider;
+            this._userGroupProvider = userGroupProvider;
+            _userContext = userContext;
         }
 
 
         [HttpPost]
-        [Route("add_roup")]
-        public async Task<IActionResult> AddGroup([FromBody] RoleDto role)
+        [Route("add_group")]
+        public async Task<IActionResult> AddGroup([FromBody] UserGroup group)
         {
 
             try
             {
-                var result = await this._adminProvider.AddRole(role);
+                group.ModifiedBy = _userContext.Email;
+                var result = await this._userGroupProvider.AddGroup(group);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -41,7 +47,7 @@ namespace DemoDotNetCoreApplication.Controllers
         {
             try
             {
-                var result = await this._adminProvider.GetRoles();
+                var result = await this._userGroupProvider.getGroups();
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -51,20 +57,20 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        //[HttpDelete]
-        //[Route("delete_group")]
-        //public async Task<IActionResult> DeleteGroup([FromBody] List<int> groupIds)
-        //{
-        //    try
-        //    {
-        //        var result = await this._adminProvider.DeleteUser(groupIds);
-        //        return new JsonResult(Ok(result));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new JsonResult(NotFound(ex));
-        //    }
-        //}
+        [HttpDelete]
+        [Route("delete_group")]
+        public async Task<IActionResult> DeleteGroup([FromBody] List<UserGroup> groupIds)
+        {
+            try
+            {
+                var result = await this._userGroupProvider.DeleteUserGroup(groupIds);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
 
     }
 }

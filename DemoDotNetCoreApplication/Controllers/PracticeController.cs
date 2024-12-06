@@ -1,5 +1,6 @@
 ﻿using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
+using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,22 +13,25 @@ namespace DemoDotNetCoreApplication.Controllers
     public class PracticeController : ControllerBase
     {
 
-        private IAdminProvider _adminProvider;
+        private IPracticeProvider _practiceProvider;
+        private UserContext _userContext;
 
-        public PracticeController(IServiceProvider serviceProvider, IAdminProvider adminProvider)
+        public PracticeController(IPracticeProvider practiceProvider,UserContext userContext)
         {
-            this._adminProvider = adminProvider;
+            this._practiceProvider = practiceProvider;
+            this._userContext = userContext;
         }
 
 
         [HttpPost]
         [Route("add_practices")]
-        public async Task<IActionResult> AddPractice([FromBody] RoleDto role)
+        public async Task<IActionResult> AddPractice([FromBody] Practice role)
         {
 
             try
             {
-                var result = await this._adminProvider.AddRole(role);
+                role.ModifiedBy = _userContext.Email;
+                var result = await this._practiceProvider.CreatePractice(role);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -42,7 +46,7 @@ namespace DemoDotNetCoreApplication.Controllers
         {
             try
             {
-                var result = await this._adminProvider.GetRoles();
+                var result = await this._practiceProvider.getPractices();
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -52,20 +56,20 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
 
-        //[HttpDelete]
-        //[Route("delete_practices")]
-        //public async Task<IActionResult> DeletePractices([FromBody] List<int> practicesIds)
-        //{
-        //    try
-        //    {
-        //        var result = await this._adminProvider.DeleteUser(practicesIds);
-        //        return new JsonResult(Ok(result));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new JsonResult(NotFound(ex));
-        //    }
-        //}
+        [HttpDelete]
+        [Route("delete_practices")]
+        public async Task<IActionResult> DeletePractices([FromBody] List<Practice> practicesIds)
+        {
+            try
+            {
+                var result = await this._practiceProvider.DeletePractice(practicesIds);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
     }
 
 }

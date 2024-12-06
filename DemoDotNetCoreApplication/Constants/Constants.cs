@@ -78,6 +78,7 @@
             public static string UpdatedUser = "Updated user.";
             public static string PasswordUserUpdated = "Password and user details updated successfully";
             public static string FaliedToUpdate = "Failed to update user details";
+            public static string AddedNewGroup = "New group added.";
         }
 
         public static class Query

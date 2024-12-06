@@ -48,6 +48,8 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
 builder.Services.AddSingleton<IAuthorizationHandler, CustomClaimHandlerProvider>();
 builder.Services.AddScoped<IAdminProvider, AdminProvider>();
 builder.Services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
+builder.Services.AddScoped<IPracticeProvider, PracticeProvider>();
+builder.Services.AddScoped<IGroupProvider, UserGroupProvider>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserContextProvider>();
 
