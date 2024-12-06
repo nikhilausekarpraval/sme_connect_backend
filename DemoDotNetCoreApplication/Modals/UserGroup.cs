@@ -1,9 +1,14 @@
 ﻿namespace DemoDotNetCoreApplication.Modals
 {
-    public class Group
+    public partial class UserGroup
     {
         public int Id { get; set; }
 
         public string? Name { get; set; }
+
+        public DateOnly? ModifiedOnDt { get; set; }
+
+        public string? ModifiedBy { get; set; }
+
     }
 }

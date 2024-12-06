@@ -24,6 +24,8 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
 
     public   override  DbSet<ApplicationUser>  Users { get; set; }
 
+
+
     public override DbSet<ApplicationRole> Roles { get; set; }
 
     public virtual DbSet<Questions> Questions { get; set; }

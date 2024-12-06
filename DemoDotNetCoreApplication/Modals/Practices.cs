@@ -1,9 +1,14 @@
 ﻿namespace DemoDotNetCoreApplication.Modals
 {
-    public class Practices
+    public partial class Practice
     {
-        public int id {  get; set; }
+        public int Id { get; set; }
 
-        public string? practice { get; set; }
+        public string? Name { get; set; }
+
+        public DateOnly? ModifiedOnDt { get; set; }
+
+        public string? ModifiedBy { get; set; }
+
     }
 }
