@@ -13,6 +13,7 @@ using System.Text;
 using static DemoDotNetCoreApplication.Constatns.Constants;
 using Microsoft.EntityFrameworkCore;
 using DemoDotNetCoreApplication.Contracts;
+using System.Data;
 
 namespace DemoDotNetCoreApplication.Providers
 {
@@ -142,7 +143,10 @@ namespace DemoDotNetCoreApplication.Providers
                     answerHash = Helper.HashString(answers[i]),
                     user_id = newUser.Id
                 })
-                                                            );
+                );
+
+                var roleResult = await userManager.AddToRoleAsync(newUser, model.role);//adding role
+
                 await _dcimDevContext.SaveChangesAsync();
 
                 return new ResponseDto { status = ApiResponseType.Success, statusText = AccessConfigurationSccessMessage.UserCreated, message = result.ToString() };
