@@ -24,7 +24,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpPost]
-        [Route("add_practices")]
+        [Route("add_practice")]
         public async Task<IActionResult> AddPractice([FromBody] Practice role)
         {
 
