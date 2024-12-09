@@ -10,6 +10,7 @@ namespace DemoDotNetCoreApplication.Contracts
     {
         public  Task<string> AddRole(RoleDto role);
 
+        public Task<ApiResponse<string>> DeleteRoles(List<string> roleIds);
 
         public  Task<string> AddRoleToUser(AssignRoleDto role);
 

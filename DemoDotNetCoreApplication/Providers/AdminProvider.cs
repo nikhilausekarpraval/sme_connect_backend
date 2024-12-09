@@ -147,6 +147,39 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
+        public async Task<ApiResponse<string>> DeleteRoles(List<string> roleIds)
+        {
+            try
+            {
+                using var transaction = await _decimDevContext.Database.BeginTransactionAsync();
+
+                var userRoles = _decimDevContext.UserRoles.Where(ur => roleIds.Contains(ur.RoleId));
+                var roleClaims = _decimDevContext.RoleClaims.Where(rc => roleIds.Contains(rc.RoleId));
+
+                _decimDevContext.UserRoles.RemoveRange(userRoles);
+                _decimDevContext.RoleClaims.RemoveRange(roleClaims);
+
+                var rolesToDelete = _decimDevContext.Roles.Where(r => roleIds.Contains(r.Id));
+                _decimDevContext.Roles.RemoveRange(rolesToDelete);
+
+                await _decimDevContext.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return new ApiResponse<string>(
+                    ApiResponseType.Success,
+                    "",
+                    "Roles deleted successfully."
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting roles. Role IDs: {RoleIds}", string.Join(", ", roleIds));
+                throw;
+            }
+        }
+
+
         public async Task<List<ApplicationUser>> GetUsers()
         {
             try

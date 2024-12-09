@@ -97,6 +97,21 @@ namespace DemoDotNetCoreApplication.Controllers
                 return new JsonResult(NotFound(ex));
             }
         }
+        [HttpDelete]
+        [Route("deleteRole")]
+        public async Task<IActionResult> DeleteRole([FromBody] List<string> roles)
+        {
+            try
+            {
+                var result = await this._adminProvider.DeleteRoles(roles);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
 
         [HttpGet]
         [Route("getUsers")]
