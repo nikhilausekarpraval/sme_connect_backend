@@ -13,4 +13,5 @@ public partial class Practice
 
     public string? ModifiedBy { get; set; }
 
+    public virtual ICollection<AspNetUser> AspNetUsers { get; set; } = new List<AspNetUser>();
 }
