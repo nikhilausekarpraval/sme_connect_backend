@@ -32,7 +32,7 @@ namespace DemoDotNetCoreApplication.Helpers
             return new JwtSecurityToken(
                             issuer: _configuration["Jwt:Issuer"],
                             audience: _configuration["Jwt:Audience"],
-                            expires: DateTime.Now.AddHours(3), // Token expiration time
+                            expires: DateTime.Now.AddHours(72), // Token expiration time
                             claims: authClaims, // All claims (roles + custom claims + role claims)
                             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                             );

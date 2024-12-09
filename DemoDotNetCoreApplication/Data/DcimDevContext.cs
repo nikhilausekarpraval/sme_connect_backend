@@ -111,6 +111,32 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
 
         //
 
+        modelBuilder.Entity<ApplicationUser>(entity =>
+        {
+            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+            entity.Property(e => e.DisplayName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Email).HasMaxLength(256);
+            entity.Property(e => e.Groups_id).HasColumnName("Groups_id");
+            entity.Property(e => e.ModifiedBy)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedOnDt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+            entity.Property(e => e.Practice_id).HasColumnName("practice_id");
+            entity.Property(e => e.UserName).HasMaxLength(256);
+
+        });
+
         modelBuilder.Entity<Practice>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Practice__3213E83F14691F14");

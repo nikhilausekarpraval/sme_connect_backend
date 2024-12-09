@@ -160,17 +160,27 @@ namespace DemoDotNetCoreApplication.Providers
 
 
                 var userWithRoles = userRolesData
-                                    .GroupBy(x => new { x.user.Id, x.user.UserName, x.user.Email })
-                                    .Select(g => new ApplicationUser
+                                    .GroupBy(x => x.user.Id) 
+                                    .Select(g =>
                                     {
-                                        Id = g.Key.Id,
-                                        UserName = g.Key.UserName,
-                                        Email = g.Key.Email,
-                                        Roles = g.Select(x => new RoleDto
+                                        var user = g.First().user; 
+                                        return new ApplicationUser
                                         {
-                                            Id = x.role.Id,
-                                            Name = x.role.Name
-                                        }).ToList()
+                                            Id = user.Id,
+                                            UserName = user.UserName,
+                                            DisplayName = user.DisplayName,
+                                            Email = user.Email,
+                                            ModifiedOnDt = user.ModifiedOnDt,
+                                            ModifiedBy = user.ModifiedBy,
+                                            PhoneNumber = user.PhoneNumber,
+                                            Practice_id = user.Practice_id,
+                                            Groups_id = user.Groups_id,
+                                            Roles = g.Select(x => new RoleDto
+                                            {
+                                                Id = x.role.Id,
+                                                Name = x.role.Name
+                                            }).ToList()
+                                        };
                                     }).ToList();
 
                 return userWithRoles;
