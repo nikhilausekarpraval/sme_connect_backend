@@ -109,26 +109,48 @@ namespace DemoDotNetCoreApplication.Providers
 
         }
 
-        public async Task<string> AddClaimToRole( AddClaimToRoleDto roleClaim)
+        public async Task<string> AddClaimToRole( List<AddClaimToRoleDto> roleClaims)
         {
             try
             {
-                var role = await _roleManager.FindByNameAsync(roleClaim.roleName);
+                var role = await _roleManager.FindByIdAsync(roleClaims[0].roleId);
                 if (role == null)
                 {
                     return AccessConfigurationErrorMessage.RoleNotFound;
                 }
 
-                Claim claim = new Claim(roleClaim.claimType, roleClaim.claimValue);
-                var result = await _roleManager.AddClaimAsync(role, claim);
+                foreach (var roleClaim in roleClaims)
+                {
 
-                 return result.Succeeded ? AccessConfigurationSccessMessage.ClaimAddedToUser : AccessConfigurationErrorMessage.ErrorWhileAddingClaim;
+                    Claim claim = new Claim(roleClaim.claimType, roleClaim.claimValue);
+
+                    var existingClaims = await _roleManager.GetClaimsAsync(role);
+
+                    var existingClaim = existingClaims.FirstOrDefault(c => c.Type == roleClaim.claimType);
+
+                    if (existingClaim != null)
+                    {
+                        var removeResult = await _roleManager.RemoveClaimAsync(role, existingClaim);
+                        if (!removeResult.Succeeded)
+                        {
+                            throw new Exception("Failed to remove existing claim.");
+                        }
+                    }
+
+                    var result = await _roleManager.AddClaimAsync(role, claim);
+                }
+
+                role.ModifiedBy = _userContext.Email; role.ModifiedOnDt = DateTime.Now;
+
+                var roleResult = await _roleManager.UpdateAsync(role);
+
+                return AccessConfigurationSccessMessage.ClaimAddedToUser; 
                 
             }
             catch (Exception ex) 
             {
                 this._logger.LogError(1, ex, ex.Message);
-                return AccessConfigurationErrorMessage.ErrorWhileAddingClaim;
+                throw;
             }
 
         }
@@ -143,6 +165,38 @@ namespace DemoDotNetCoreApplication.Providers
             catch (Exception ex)
             {
                 this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<RoleWithClaimsDto>> GetRolesWithClaims()
+        {
+            try
+            {
+
+                var rolesWithClaims = await _decimDevContext.Roles
+                    .Select(role => new RoleWithClaimsDto
+                    {
+                        Id = role.Id,
+                        Name = role.Name,
+                        ModifiedBy = role.ModifiedBy,
+                        ModifiedOnDt = role.ModifiedOnDt,
+                        Claims = _decimDevContext.RoleClaims
+                            .Where(rc => rc.RoleId == role.Id)
+                            .Select(rc => new IdentityRoleClaim<string>
+                            {   Id = rc.Id,
+                                RoleId = rc.RoleId,
+                                ClaimType = rc.ClaimType,
+                                ClaimValue = rc.ClaimValue
+                            }).ToList()
+                    })
+                    .ToListAsync();
+
+                return rolesWithClaims;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching roles with claims.");
                 throw;
             }
         }

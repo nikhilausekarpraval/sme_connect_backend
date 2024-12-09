@@ -14,11 +14,12 @@ namespace DemoDotNetCoreApplication.Contracts
 
         public  Task<string> AddRoleToUser(AssignRoleDto role);
 
+        public Task<List<RoleWithClaimsDto>> GetRolesWithClaims();
 
         public  Task<string> AddClaimToUser(AssignClaimDto userClaim);
 
 
-        public  Task<string> AddClaimToRole(AddClaimToRoleDto roleClaim);
+        public  Task<string> AddClaimToRole(List<AddClaimToRoleDto> roleClaim);
 
 
         public  Task<List<ApplicationRole>> GetRoles();
