@@ -68,9 +68,25 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("get_role_with_claims")]
+        public async Task<IActionResult> GetRolesWithclaims()
+        {
+            try
+            {
+                var result = await this._adminProvider.GetRolesWithClaims();
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
+
 
         [HttpGet]
-        [Route("getRoles")]
+        [Route("get_roles")]
         public async Task<IActionResult> GetRoles()
         {
             try
@@ -86,7 +102,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpDelete]
-        [Route("deleteRole")]
+        [Route("delete_role")]
         public async Task<IActionResult> DeleteRole([FromBody] List<string> roles)
         {
             try
