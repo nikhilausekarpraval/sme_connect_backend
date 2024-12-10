@@ -13,13 +13,11 @@ namespace DemoDotNetCoreApplication.Providers
     {
         private DcimDevContext _decimDevContext;
         private ILogger<RoleClaimProvider> _logger;
-        private IUserContext _userContext;
         private RoleManager<ApplicationRole> _roleManager;
 
-        public RoleClaimProvider(DcimDevContext dcimDevContext,RoleManager<ApplicationRole> roleManager, ILogger<RoleClaimProvider> logger,IUserContext userContext) {
+        public RoleClaimProvider(DcimDevContext dcimDevContext,RoleManager<ApplicationRole> roleManager, ILogger<RoleClaimProvider> logger) {
          this._decimDevContext = dcimDevContext;
             _logger = logger;
-            _userContext = userContext;
             _roleManager = roleManager;
         
         }

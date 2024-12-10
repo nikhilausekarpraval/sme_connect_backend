@@ -46,6 +46,13 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IUserContext, UserContext>();
 builder.Services.AddScoped<UserContextProvider>();
+// Register GenerateContext method (via UserContextProvider)
+builder.Services.AddScoped<IUserContext>((serviceProvider) =>
+{
+    var userContextProvider = serviceProvider.GetRequiredService<UserContextProvider>();
+    return userContextProvider.GenerateContext(serviceProvider).Result;
+});
+
 builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
 builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
@@ -55,13 +62,9 @@ builder.Services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
 builder.Services.AddScoped<IPracticeProvider, PracticeProvider>();
 builder.Services.AddScoped<IGroupProvider, UserGroupProvider>();
 builder.Services.AddScoped<IRoleClaimProvider, RoleClaimProvider>();
+builder.Services.AddScoped<RoleClaimProvider>();
 
-// Register GenerateContext method (via UserContextProvider)
-builder.Services.AddScoped<IUserContext>((serviceProvider) =>
-{
-    var userContextProvider = serviceProvider.GetRequiredService<UserContextProvider>();
-    return userContextProvider.GenerateContext(serviceProvider).Result;
-});
+
 
 builder.Services.AddAuthorization(options =>
 {

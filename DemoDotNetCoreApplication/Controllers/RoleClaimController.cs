@@ -1,12 +1,8 @@
 ﻿using DemoDotNetCoreApplication.Constatns;
-using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
 using DemoDotNetCoreApplication.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using static DemoDotNetCoreApplication.Constatns.Constants;
 
 namespace DemoDotNetCoreApplication.Controllers
 {

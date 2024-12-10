@@ -2,8 +2,6 @@
 using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Identity;
-using static DemoDotNetCoreApplication.Constatns.Constants;
-using System.Security.Claims;
 
 namespace DemoDotNetCoreApplication.Contracts
 {

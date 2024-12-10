@@ -3,6 +3,7 @@ using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static DemoDotNetCoreApplication.Constatns.Constants;
 
 
 namespace DemoDotNetCoreApplication.Controllers
@@ -28,7 +29,7 @@ namespace DemoDotNetCoreApplication.Controllers
             try
             {
               var result =  await this._adminProvider.AddRole(role);
-                return new JsonResult(Ok(result));
+               return result == AccessConfigurationErrorMessage.RoleExist ? new JsonResult(NotFound(result)) : new JsonResult(Ok(result));
             }
             catch (Exception ex)
             {
@@ -68,7 +69,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("get_role_with_claims")]
         public async Task<IActionResult> GetRolesWithclaims()
         {
