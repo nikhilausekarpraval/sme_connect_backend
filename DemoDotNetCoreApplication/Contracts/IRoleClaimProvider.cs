@@ -18,6 +18,7 @@ namespace DemoDotNetCoreApplication.Contracts
 
         public  Task<string> AddClaimToRole(List<AddClaimToRoleDto> roleClaims);
 
+        public Task<List<RoleClaimWithRolesDto>> GetRoleClaimsWithRolesAsync();
 
     }
 }

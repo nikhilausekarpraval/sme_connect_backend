@@ -22,22 +22,47 @@ namespace DemoDotNetCoreApplication.Providers
         
         }
 
-
         public async Task<List<IdentityRoleClaim<string>>> GetRoleClaims()
         {
             try
             {
-                var claims = await _decimDevContext.RoleClaims.ToListAsync();
-                return claims;
+                var result = await _decimDevContext.RoleClaims.ToListAsync();
+                return result;
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1, $"{ex.Message}", ex);
+                _logger.LogError(1, $"{ex.Message}", ex);
                 throw;
             }
-
         }
 
+        public async Task<List<RoleClaimWithRolesDto>> GetRoleClaimsWithRolesAsync()
+        {
+            try
+            {
+            var roleClaimsWithRoles = await (from roleClaim in _decimDevContext.RoleClaims
+                                                join role in _decimDevContext.Roles on roleClaim.RoleId equals role.Id
+                                                group new { roleClaim, role } by new { roleClaim.ClaimType, roleClaim.ClaimValue } into grouped
+                                                select new RoleClaimWithRolesDto
+                                                {
+                                                    id = grouped.First().roleClaim.Id, 
+                                                    claimType = grouped.Key.ClaimType,
+                                                    claimValue = grouped.Key.ClaimValue,
+                                                    roles = grouped.Select(g => new RoleDto
+                                                    {
+                                                        Id = g.role.Id,
+                                                        Name = g.role.Name
+                                                    }).Distinct().ToList() 
+                                                }).ToListAsync();
+
+                return roleClaimsWithRoles;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(1, $"{ex.Message}", ex);
+                throw;
+            }
+        }
 
         public async Task<ApiResponse<string>> DeleteRoleClaims(List<int> roleClaimIds)
         {

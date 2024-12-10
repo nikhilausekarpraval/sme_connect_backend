@@ -53,6 +53,21 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_claims_roles")]
+        public async Task<IActionResult> GetClaimAndRoles()
+        {
+            try
+            {
+                var result = await this._roleClaimProvider.GetRoleClaimsWithRolesAsync();
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
         [HttpPut("update_role_claim")]
         public async Task<ActionResult> UpdataeRoleClaim([FromBody] List<RoleClaimDto> employeeDto)
         {
