@@ -52,6 +52,7 @@ builder.Services.AddScoped<IPracticeProvider, PracticeProvider>();
 builder.Services.AddScoped<IGroupProvider, UserGroupProvider>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserContextProvider>();
+builder.Services.AddScoped<IRoleClaimProvider, RoleClaimProvider>();
 
 // Register GenerateContext method (via UserContextProvider)
 builder.Services.AddScoped<IUserContext>((serviceProvider) =>

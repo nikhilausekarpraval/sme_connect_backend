@@ -68,22 +68,6 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("add_claim_to_role")]
-        public async Task<IActionResult> AddClaimToRole([FromBody] List<AddClaimToRoleDto> roleClaim )
-        {
-            try
-            {
-                var result = await this._adminProvider.AddClaimToRole(roleClaim);
-                return new JsonResult(Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(NotFound(ex));
-            }
-        }
-
-
 
         [HttpGet]
         [Route("getRoles")]
@@ -100,20 +84,6 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("getRolesWithClaims")]
-        public async Task<IActionResult> GetRolesWithClaims()
-        {
-            try
-            {
-                var result = await this._adminProvider.GetRolesWithClaims();
-                return new JsonResult(Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(NotFound(ex));
-            }
-        }
 
         [HttpDelete]
         [Route("deleteRole")]

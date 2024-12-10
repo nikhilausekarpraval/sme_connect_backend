@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using static DemoDotNetCoreApplication.Constatns.Constants;
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Data;
+using System.Linq;
 
 
 namespace DemoDotNetCoreApplication.Providers
@@ -105,52 +106,6 @@ namespace DemoDotNetCoreApplication.Providers
             {
                 this._logger.LogError(1, ex, ex.Message);
                 return AccessConfigurationErrorMessage.ErrorWhileAddingClaim;
-            }
-
-        }
-
-        public async Task<string> AddClaimToRole( List<AddClaimToRoleDto> roleClaims)
-        {
-            try
-            {
-                var role = await _roleManager.FindByIdAsync(roleClaims[0].roleId);
-                if (role == null)
-                {
-                    return AccessConfigurationErrorMessage.RoleNotFound;
-                }
-
-                foreach (var roleClaim in roleClaims)
-                {
-
-                    Claim claim = new Claim(roleClaim.claimType, roleClaim.claimValue);
-
-                    var existingClaims = await _roleManager.GetClaimsAsync(role);
-
-                    var existingClaim = existingClaims.FirstOrDefault(c => c.Type == roleClaim.claimType);
-
-                    if (existingClaim != null)
-                    {
-                        var removeResult = await _roleManager.RemoveClaimAsync(role, existingClaim);
-                        if (!removeResult.Succeeded)
-                        {
-                            throw new Exception("Failed to remove existing claim.");
-                        }
-                    }
-
-                    var result = await _roleManager.AddClaimAsync(role, claim);
-                }
-
-                role.ModifiedBy = _userContext.Email; role.ModifiedOnDt = DateTime.Now;
-
-                var roleResult = await _roleManager.UpdateAsync(role);
-
-                return AccessConfigurationSccessMessage.ClaimAddedToUser; 
-                
-            }
-            catch (Exception ex) 
-            {
-                this._logger.LogError(1, ex, ex.Message);
-                throw;
             }
 
         }
@@ -280,22 +235,6 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
-
-
-        public async Task<List<IdentityRoleClaim<string>>> GetRoleClaims()
-        {
-            try
-            {
-                var claims = await _decimDevContext.RoleClaims.ToListAsync();
-                return claims;
-            }
-            catch (Exception ex)
-            {
-                this._logger.LogError(1,$"{ex.Message}", ex);
-                throw;
-            }
-
-        }
 
         public async Task<List<IdentityUserClaim<string>>> GetUserClaims()
         {

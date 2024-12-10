@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -9,13 +10,12 @@ namespace DemoDotNetCoreApplication.Data;
 
 public partial class DcimDevContext : IdentityDbContext<ApplicationUser,ApplicationRole,string>
 {
-    public DcimDevContext()
-    {
-    }
+    private readonly IUserContext _userContext;
 
-    public DcimDevContext(DbContextOptions<DcimDevContext> options)
+    public DcimDevContext(DbContextOptions<DcimDevContext> options, IUserContext userContext)
         : base(options)
     {
+        _userContext = userContext;
     }
 
     public virtual DbSet<Employee> Employees { get; set; }
@@ -35,9 +35,35 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var entries = ChangeTracker.Entries<IAuditableEntity>();
+
+        foreach (var entry in entries)
+        {
+
+            if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
+            {
+                entry.Entity.ModifiedOnDt = DateTime.UtcNow;
+                entry.Entity.ModifiedBy = _userContext.Email; 
+            }
+        }
+
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<RoleClaim>(entity =>
+        {
+            entity.Property(e => e.ModifiedOnDt)
+                .HasDefaultValueSql("GETDATE()");
+
+            entity.Property(e => e.ModifiedBy)
+                .IsRequired(false);
+        });
 
         modelBuilder.Entity<Employee>(entity =>
         {
