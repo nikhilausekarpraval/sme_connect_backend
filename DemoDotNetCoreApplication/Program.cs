@@ -12,6 +12,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<DcimDevContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -42,6 +43,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
+builder.Services.AddScoped<IUserContext, UserContext>();
+builder.Services.AddScoped<UserContextProvider>();
 builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
 builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
@@ -50,15 +54,13 @@ builder.Services.AddScoped<IAdminProvider, AdminProvider>();
 builder.Services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
 builder.Services.AddScoped<IPracticeProvider, PracticeProvider>();
 builder.Services.AddScoped<IGroupProvider, UserGroupProvider>();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<UserContextProvider>();
 builder.Services.AddScoped<IRoleClaimProvider, RoleClaimProvider>();
 
 // Register GenerateContext method (via UserContextProvider)
 builder.Services.AddScoped<IUserContext>((serviceProvider) =>
 {
     var userContextProvider = serviceProvider.GetRequiredService<UserContextProvider>();
-    return userContextProvider.GenerateContext(serviceProvider).Result; 
+    return userContextProvider.GenerateContext(serviceProvider).Result;
 });
 
 builder.Services.AddAuthorization(options =>

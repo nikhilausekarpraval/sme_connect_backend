@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Identity;
@@ -10,12 +11,12 @@ namespace DemoDotNetCoreApplication.Data;
 
 public partial class DcimDevContext : IdentityDbContext<ApplicationUser,ApplicationRole,string>
 {
-    private readonly IUserContext _userContext;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public DcimDevContext(DbContextOptions<DcimDevContext> options, IUserContext userContext)
+    public DcimDevContext(DbContextOptions<DcimDevContext> options, IHttpContextAccessor httpContextAccessor)
         : base(options)
     {
-        _userContext = userContext;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public virtual DbSet<Employee> Employees { get; set; }
@@ -39,13 +40,14 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
     {
         var entries = ChangeTracker.Entries<IAuditableEntity>();
 
+        var currentUserEmail = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
+
         foreach (var entry in entries)
         {
-
             if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
             {
                 entry.Entity.ModifiedOnDt = DateTime.UtcNow;
-                entry.Entity.ModifiedBy = _userContext.Email; 
+                entry.Entity.ModifiedBy = currentUserEmail; 
             }
         }
 
