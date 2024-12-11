@@ -64,13 +64,13 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
-        public async Task<ApiResponse<string>> DeleteRoleClaims(List<int> roleClaimIds)
+        public async Task<ApiResponse<string>> DeleteRoleClaims(List<string> roleClaimIds)
         {
             try
             {
                 using var transaction = await _decimDevContext.Database.BeginTransactionAsync();
 
-                var roleClaims = _decimDevContext.RoleClaims.Where(rc => roleClaimIds.Contains(rc.Id));
+                var roleClaims = _decimDevContext.RoleClaims.Where(rc => roleClaimIds.Contains(rc.RoleId));
 
                 _decimDevContext.RoleClaims.RemoveRange(roleClaims);
 

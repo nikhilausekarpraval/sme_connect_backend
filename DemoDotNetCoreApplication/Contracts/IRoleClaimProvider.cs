@@ -10,7 +10,7 @@ namespace DemoDotNetCoreApplication.Contracts
         public  Task<List<IdentityRoleClaim<string>>> GetRoleClaims();
 
 
-        public  Task<ApiResponse<string>> DeleteRoleClaims(List<int> roleClaimIds);
+        public  Task<ApiResponse<string>> DeleteRoleClaims(List<string> roleClaimIds);
 
 
         public  Task<ApiResponse<string>> UpdateRoleClaims(List<RoleClaimDto> roleClaimDtos);

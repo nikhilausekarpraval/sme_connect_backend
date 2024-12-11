@@ -93,7 +93,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpDelete]
         [Route("delete_role_claim")]
-        public async Task<IActionResult> DeleteRoleClaim([FromBody] List<int> RoleClaimIds)
+        public async Task<IActionResult> DeleteRoleClaim([FromBody] List<string> RoleClaimIds)
         {
             try
             {
