@@ -58,13 +58,103 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<RoleClaim>(entity =>
+        modelBuilder.Entity<AspNetRole>(entity =>
         {
-            entity.Property(e => e.ModifiedOnDt)
-                .HasDefaultValueSql("GETDATE()");
+            entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedName] IS NOT NULL)");
 
             entity.Property(e => e.ModifiedBy)
-                .IsRequired(false);
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedOnDt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(256);
+            entity.Property(e => e.NormalizedName).HasMaxLength(256);
+        });
+
+        modelBuilder.Entity<AspNetRoleClaim>(entity =>
+        {
+            entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
+        });
+
+        modelBuilder.Entity<AspNetUser>(entity =>
+        {
+            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+            entity.Property(e => e.DisplayName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Email).HasMaxLength(256);
+            entity.Property(e => e.GroupsId).HasColumnName("Groups_id");
+            entity.Property(e => e.ModifiedBy)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedOnDt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+            entity.Property(e => e.PracticeId).HasColumnName("practice_id");
+            entity.Property(e => e.UserName).HasMaxLength(256);
+
+            entity.HasOne(d => d.Groups).WithMany(p => p.AspNetUsers)
+                .HasForeignKey(d => d.GroupsId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_AspNetUsers_Groups");
+
+            entity.HasOne(d => d.Practice).WithMany(p => p.AspNetUsers)
+                .HasForeignKey(d => d.PracticeId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_AspNetUsers_Practices");
+
+            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "AspNetUserRole",
+                    r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
+                    l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
+                    j =>
+                    {
+                        j.HasKey("UserId", "RoleId");
+                        j.ToTable("AspNetUserRoles");
+                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
+                    });
+        });
+
+        modelBuilder.Entity<AspNetUserClaim>(entity =>
+        {
+            entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<AspNetUserLogin>(entity =>
+        {
+            entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
+
+            entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
+
+            entity.Property(e => e.LoginProvider).HasMaxLength(128);
+            entity.Property(e => e.ProviderKey).HasMaxLength(128);
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<AspNetUserToken>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
+
+            entity.Property(e => e.LoginProvider).HasMaxLength(128);
+            entity.Property(e => e.Name).HasMaxLength(128);
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
         });
 
         modelBuilder.Entity<Employee>(entity =>
@@ -101,7 +191,41 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
                 .HasColumnName("position");
         });
 
-        modelBuilder.Entity<DemoDotNetCoreApplication.Modals.Task>(entity =>
+        modelBuilder.Entity<Practice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Practice__3213E83F14691F14");
+
+            entity.ToTable("Practice");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ModifiedBy)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedOnDt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Question>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83F1C7B349F");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AnswerHash).HasColumnName("answerHash");
+            entity.Property(e => e.Question1)
+                .HasMaxLength(500)
+                .HasColumnName("question");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(450)
+                .HasColumnName("user_id");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Questions)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Questions_UserId");
+        });
+
+        modelBuilder.Entity<Task>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__task__3213E83F05BE6225");
 
@@ -135,50 +259,6 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
                 .HasForeignKey(d => d.EmployeeId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FKmeqi2abtbehx871tag4op3hag");
-        });
-
-        //
-
-        modelBuilder.Entity<ApplicationUser>(entity =>
-        {
-            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
-
-            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
-                .IsUnique()
-                .HasFilter("([NormalizedUserName] IS NOT NULL)");
-
-            entity.Property(e => e.DisplayName)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.Email).HasMaxLength(256);
-            entity.Property(e => e.Groups_id).HasColumnName("Groups_id");
-            entity.Property(e => e.ModifiedBy)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.ModifiedOnDt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-            entity.Property(e => e.Practice_id).HasColumnName("practice_id");
-            entity.Property(e => e.UserName).HasMaxLength(256);
-
-        });
-
-        modelBuilder.Entity<Practice>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Practice__3213E83F14691F14");
-
-            entity.ToTable("Practice");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ModifiedBy)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.ModifiedOnDt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .IsUnicode(false);
         });
 
         modelBuilder.Entity<UserGroup>(entity =>
