@@ -6,6 +6,7 @@ using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Task = DemoDotNetCoreApplication.Modals.Task;
 
 namespace DemoDotNetCoreApplication.Data;
 
@@ -208,22 +209,18 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<Question>(entity =>
+        modelBuilder.Entity<Questions>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83F1C7B349F");
+            entity.HasKey(e => e.id).HasName("PK__Question__3213E83F1C7B349F");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.AnswerHash).HasColumnName("answerHash");
-            entity.Property(e => e.Question1)
+            entity.Property(e => e.id).HasColumnName("id");
+            entity.Property(e => e.answerHash).HasColumnName("answerHash");
+            entity.Property(e => e.question)
                 .HasMaxLength(500)
                 .HasColumnName("question");
-            entity.Property(e => e.UserId)
+            entity.Property(e => e.user_id)
                 .HasMaxLength(450)
                 .HasColumnName("user_id");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Questions)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_Questions_UserId");
         });
 
         modelBuilder.Entity<Task>(entity =>
