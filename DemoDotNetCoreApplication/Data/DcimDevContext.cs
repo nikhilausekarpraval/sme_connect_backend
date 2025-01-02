@@ -19,11 +19,12 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
         _httpContextAccessor = httpContextAccessor;
     }
 
+
     public virtual DbSet<Employee> Employees { get; set; }
 
     public virtual DbSet<DemoDotNetCoreApplication.Modals.Task> Tasks { get; set; }
 
-    public   override  DbSet<ApplicationUser>  Users { get; set; }
+    public override DbSet<ApplicationUser> Users { get; set; }
 
     public virtual DbSet<Practice> Practices { get; set; }
 
