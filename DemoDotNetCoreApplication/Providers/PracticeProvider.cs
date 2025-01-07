@@ -33,13 +33,22 @@ namespace DemoDotNetCoreApplication.Providers
         }
 
 
-        public async Task<ApiResponse<bool>> DeletePractice(List<Practice> practices)
+        public async Task<ApiResponse<bool>> DeletePractice(List<int> practicesIds)
         {
             try
             {
-                    _context.Practices.RemoveRange(practices);
+                var practicesToRemove = _context.Practices.Where(practice => practicesIds.Contains(practice.Id)).ToList();
+
+                if (practicesToRemove.Any())
+                {
+                    _context.Practices.RemoveRange(practicesToRemove);
                     await _context.SaveChangesAsync();
                     return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
+                }
+                else
+                {
+                    return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, "No matching practices found.");
+                }
             }
             catch (Exception ex)
             {
@@ -47,7 +56,7 @@ namespace DemoDotNetCoreApplication.Providers
                 return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, ex.Message);
             }
         }
-
+    
         public async Task<ApiResponse<bool>> CreatePractice(Practice practice)
         {
             try

@@ -58,7 +58,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpDelete]
         [Route("delete_practices")]
-        public async Task<IActionResult> DeletePractices( List<Practice> practicesIds)
+        public async Task<IActionResult> DeletePractices( List<int> practicesIds)
         {
             try
             {

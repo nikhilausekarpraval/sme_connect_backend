@@ -8,7 +8,7 @@ namespace DemoDotNetCoreApplication.Contracts
         public  Task<ApiResponse<List<Practice>>> getPractices();
 
 
-        public  Task<ApiResponse<bool>> DeletePractice(List<Practice> practices);
+        public  Task<ApiResponse<bool>> DeletePractice(List<int> practices);
 
 
         public  Task<ApiResponse<bool>> CreatePractice(Practice Practice);
