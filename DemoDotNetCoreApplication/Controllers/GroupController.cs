@@ -26,7 +26,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpPost]
         [Route("add_group")]
-        public async Task<IActionResult> AddGroup([FromBody] UserGroup group)
+        public async Task<IActionResult> AddGroup( UserGroup group)
         {
 
             try
@@ -59,7 +59,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpDelete]
         [Route("delete_group")]
-        public async Task<IActionResult> DeleteGroup([FromBody] List<UserGroup> groupIds)
+        public async Task<IActionResult> DeleteGroup( List<UserGroup> groupIds)
         {
             try
             {

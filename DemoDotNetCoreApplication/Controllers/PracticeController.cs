@@ -25,13 +25,13 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpPost]
         [Route("add_practice")]
-        public async Task<IActionResult> AddPractice([FromBody] Practice role)
+        public async Task<IActionResult> AddPractice(Practice practice)
         {
 
             try
             {
-                role.ModifiedBy = _userContext.Email;
-                var result = await this._practiceProvider.CreatePractice(role);
+                practice.ModifiedBy = _userContext.Email;
+                var result = await this._practiceProvider.CreatePractice(practice);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -42,7 +42,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
         [HttpGet]
         [Route("get_practices")]
-        public async Task<IActionResult> GetPracticess()
+        public async Task<IActionResult> GetPractices()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpDelete]
         [Route("delete_practices")]
-        public async Task<IActionResult> DeletePractices([FromBody] List<Practice> practicesIds)
+        public async Task<IActionResult> DeletePractices( List<Practice> practicesIds)
         {
             try
             {

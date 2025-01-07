@@ -3,6 +3,7 @@ using DemoDotNetCoreApplication.Modals;
 using DemoDotNetCoreApplication.Constatns;
 using Microsoft.EntityFrameworkCore;
 using DemoDotNetCoreApplication.Contracts;
+using DemoDotNetCoreApplication.Dtos;
 
 namespace DemoDotNetCoreApplication.Providers
 {

@@ -8,7 +8,7 @@
 
         public string ? Description { get; set; }
 
-        public DateOnly? ModifiedOnDt { get; set; }
+        public DateTime? ModifiedOnDt { get; set; }
 
         public string? ModifiedBy { get; set; }
 
