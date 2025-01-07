@@ -14,9 +14,9 @@ namespace DemoDotNetCoreApplication.Controllers
     {
 
         private IPracticeProvider _practiceProvider;
-        private UserContext _userContext;
+        private IUserContext _userContext;
 
-        public PracticeController(IPracticeProvider practiceProvider,UserContext userContext)
+        public PracticeController(IPracticeProvider practiceProvider,IUserContext userContext)
         {
             this._practiceProvider = practiceProvider;
             this._userContext = userContext;

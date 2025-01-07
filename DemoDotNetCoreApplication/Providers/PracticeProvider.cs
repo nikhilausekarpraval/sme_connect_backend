@@ -47,20 +47,27 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
-        public async Task<ApiResponse<bool>> CreatePractice(Practice Practice)
+        public async Task<ApiResponse<bool>> CreatePractice(Practice practice)
         {
             try
             {
-                await _context.Practices.AddAsync(Practice);
+                bool exists = await _context.Practices.AnyAsync(p => p.Name == practice.Name);
+                if (exists)
+                {
+                    return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, "A practice with the same name already exists.");
+                }
+
+                await _context.Practices.AddAsync(practice);
                 await _context.SaveChangesAsync();
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1, ex, ex.Message);
+                _logger.LogError(1, ex, ex.Message);
                 return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, ex.Message);
             }
         }
+
 
     }
 }

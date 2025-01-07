@@ -15,9 +15,9 @@ namespace DemoDotNetCoreApplication.Controllers
     {
 
         private UserGroupProvider _userGroupProvider;
-        private UserContext _userContext;
+        private IUserContext _userContext;
 
-        public GroupController( UserGroupProvider userGroupProvider,UserContext userContext)
+        public GroupController( UserGroupProvider userGroupProvider,IUserContext userContext)
         {
             this._userGroupProvider = userGroupProvider;
             _userContext = userContext;

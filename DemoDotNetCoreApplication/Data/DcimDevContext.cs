@@ -172,6 +172,7 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
             entity.ToTable("Practice");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Description);
             entity.Property(e => e.ModifiedBy)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -188,6 +189,7 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
             entity.ToTable("UserGroup");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ModifiedBy);
             entity.Property(e => e.ModifiedBy)
                 .HasMaxLength(255)
                 .IsUnicode(false);
