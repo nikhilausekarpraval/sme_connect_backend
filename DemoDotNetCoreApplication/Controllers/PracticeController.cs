@@ -1,4 +1,5 @@
-﻿using DemoDotNetCoreApplication.Contracts;
+﻿using DemoDotNetCoreApplication.Constatns;
+using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Authorization;
@@ -32,6 +33,10 @@ namespace DemoDotNetCoreApplication.Controllers
             {
                 practice.ModifiedBy = _userContext.Email;
                 var result = await this._practiceProvider.CreatePractice(practice);
+                if (result.Status == Constants.ApiResponseType.Failure)
+                {
+                    return new JsonResult(NotFound(result));
+                }
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -63,6 +68,26 @@ namespace DemoDotNetCoreApplication.Controllers
             try
             {
                 var result = await this._practiceProvider.DeletePractice(practicesIds);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
+        [HttpPost]
+        [Route("update_practice")]
+        public async Task<IActionResult> UpdatePractice(Practice practice)
+        {
+            try
+            {
+                practice.ModifiedBy = _userContext.Email;
+                var result = await this._practiceProvider.UpdatePractice(practice);
+                if (result.Status == Constants.ApiResponseType.Failure)
+                {
+                    return new JsonResult(NotFound(result));
+                }
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)

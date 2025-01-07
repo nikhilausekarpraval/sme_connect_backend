@@ -4,6 +4,7 @@ using DemoDotNetCoreApplication.Data;
 using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using static DemoDotNetCoreApplication.Constatns.Constants;
@@ -23,23 +24,26 @@ namespace DemoDotNetCoreApplication.Providers
             this._logger = Logger;
         }
 
-        public async Task<string> AddGroup(UserGroup userGroup)
-        {
 
+        public async Task<ApiResponse<bool>> AddGroup(UserGroup group)
+        {
             try
             {
-                var result = await _dcimDevContext.UserGroups.AddAsync(userGroup);
-                await _dcimDevContext.SaveChangesAsync();
-                return AccessConfigurationSccessMessage.AddedNewGroup;
-                
+                bool exists = await _dcimDevContext.UserGroups.AnyAsync(p => p.Name == group.Name);
+                if (exists)
+                {
+                    return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, "A group with the same name already exists.");
+                }
 
+                await _dcimDevContext.UserGroups.AddAsync(group);
+                await _dcimDevContext.SaveChangesAsync();
+                return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1, ex, ex.Message);
-                throw;
+                _logger.LogError(1, ex, ex.Message);
+                return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, ex.Message);
             }
-
         }
 
         public async Task<ApiResponse<List<UserGroup>>> getGroups()
@@ -58,19 +62,53 @@ namespace DemoDotNetCoreApplication.Providers
         }
 
 
-        public async Task<ApiResponse<bool>> DeleteUserGroup(List<UserGroup> ids)
+        public async Task<ApiResponse<bool>> DeleteUserGroup(List<int> ids)
         {
             try
             {
-                    _dcimDevContext.UserGroups.RemoveRange(ids);
+                var userGroupsToRemove = _dcimDevContext.UserGroups.Where(userGroup => ids.Contains(userGroup.Id)).ToList();
+
+                if (userGroupsToRemove.Any())
+                {
+                    _dcimDevContext.UserGroups.RemoveRange(userGroupsToRemove);
                     await _dcimDevContext.SaveChangesAsync();
                     return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
-
+                }
+                else
+                {
+                    return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, "No matching user groups found.");
+                }
             }
             catch (Exception ex)
             {
                 this._logger.LogError(1, ex, ex.Message);
-                 throw;
+                throw;
+            }
+        }
+
+        public async Task<ApiResponse<bool>> UpdateGroup(UserGroup group)
+        {
+            try
+            {
+                var existingGroup = await _dcimDevContext.UserGroups.FindAsync(group.Id);
+                if (existingGroup == null)
+                {
+                    return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, "Selected group not found.");
+                }
+
+                existingGroup.Name = group.Name;
+                existingGroup.Description = group.Description;
+                //existingGroup.ModifiedBy = _userContext.Email;
+                //existingGroup.ModifiedDate = DateTime.UtcNow;
+
+                _dcimDevContext.UserGroups.Update(existingGroup);
+                await _dcimDevContext.SaveChangesAsync();
+                return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
             }
         }
 

@@ -78,6 +78,30 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
+        public async Task<ApiResponse<bool>> UpdatePractice(Practice practice)
+        {
+            try
+            {
+                var existingpractice = await _context.Practices.FindAsync(practice.Id);
+                if (existingpractice == null)
+                {
+                    return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, "Selected practice not found.");
+                }
+
+                existingpractice.Name = practice.Name;
+                existingpractice.Description = practice.Description;
+
+                _context.Practices.Update(existingpractice);
+                await _context.SaveChangesAsync();
+                return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+        }
+
 
     }
 }

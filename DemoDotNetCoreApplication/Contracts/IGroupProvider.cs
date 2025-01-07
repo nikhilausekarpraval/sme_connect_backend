@@ -6,13 +6,15 @@ namespace DemoDotNetCoreApplication.Contracts
 {
     public interface IGroupProvider
     {
-        public Task<string> AddGroup(UserGroup userGroup);
+        public Task<ApiResponse<bool>> AddGroup(UserGroup userGroup);
 
 
         public Task<ApiResponse<List<UserGroup>>> getGroups();
 
 
-        public Task<ApiResponse<bool>> DeleteUserGroup(List<UserGroup> ids);
+        public Task<ApiResponse<bool>> DeleteUserGroup(List<int> ids);
+
+        public  Task<ApiResponse<bool>> UpdateGroup(UserGroup group);
 
     }
 }

@@ -5,6 +5,7 @@ using DemoDotNetCoreApplication.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DemoDotNetCoreApplication.Modals;
+using DemoDotNetCoreApplication.Constatns;
 
 namespace DemoDotNetCoreApplication.Controllers
 {
@@ -14,10 +15,10 @@ namespace DemoDotNetCoreApplication.Controllers
     public class GroupController : ControllerBase
     {
 
-        private UserGroupProvider _userGroupProvider;
+        private IGroupProvider _userGroupProvider;
         private IUserContext _userContext;
 
-        public GroupController( UserGroupProvider userGroupProvider,IUserContext userContext)
+        public GroupController(IGroupProvider userGroupProvider,IUserContext userContext)
         {
             this._userGroupProvider = userGroupProvider;
             _userContext = userContext;
@@ -33,6 +34,10 @@ namespace DemoDotNetCoreApplication.Controllers
             {
                 group.ModifiedBy = _userContext.Email;
                 var result = await this._userGroupProvider.AddGroup(group);
+                if (result.Status == Constants.ApiResponseType.Failure)
+                {
+                    return new JsonResult(NotFound(result));
+                }
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -41,6 +46,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
 
         }
+
         [HttpGet]
         [Route("get_groups")]
         public async Task<IActionResult> GetGroups()
@@ -58,8 +64,8 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpDelete]
-        [Route("delete_group")]
-        public async Task<IActionResult> DeleteGroup( List<UserGroup> groupIds)
+        [Route("delete_groups")]
+        public async Task<IActionResult> DeleteGroup( List<int> groupIds)
         {
             try
             {
@@ -71,6 +77,27 @@ namespace DemoDotNetCoreApplication.Controllers
                 return new JsonResult(NotFound(ex));
             }
         }
+
+        [HttpPost]
+        [Route("update_group")]
+        public async Task<IActionResult> UpdateGroup(UserGroup group)
+        {
+            try
+            {
+                group.ModifiedBy = _userContext.Email;
+                var result = await this._userGroupProvider.UpdateGroup(group);
+                if (result.Status == Constants.ApiResponseType.Failure)
+                {
+                    return new JsonResult(NotFound(result));
+                }
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
 
     }
 }

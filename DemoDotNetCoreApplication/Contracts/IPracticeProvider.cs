@@ -13,5 +13,7 @@ namespace DemoDotNetCoreApplication.Contracts
 
         public  Task<ApiResponse<bool>> CreatePractice(Practice Practice);
 
+        public Task<ApiResponse<bool>> UpdatePractice(Practice practice);
+
     }
 }
