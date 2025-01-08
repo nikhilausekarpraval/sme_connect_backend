@@ -15,7 +15,11 @@ namespace DemoDotNetCoreApplication.Providers
 
             CreateMap<Employee,EmployeeTasksDto>();
             CreateMap<EmployeeTasksDto, Employee>();
-            
+
+            CreateMap<string, RoleDto>()
+             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src)) 
+             .ForMember(dest => dest.Id, opt => opt.Ignore());
+
         }
     }
 

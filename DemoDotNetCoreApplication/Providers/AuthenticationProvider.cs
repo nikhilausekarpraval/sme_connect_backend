@@ -14,6 +14,7 @@ using static DemoDotNetCoreApplication.Constatns.Constants;
 using Microsoft.EntityFrameworkCore;
 using DemoDotNetCoreApplication.Contracts;
 using System.Data;
+using AutoMapper;
 
 namespace DemoDotNetCoreApplication.Providers
 {
@@ -67,6 +68,13 @@ namespace DemoDotNetCoreApplication.Providers
                         new Claim(ClaimTypes.Email, user?.Email),
 
                     };
+
+                    var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProvider>());
+                    var mapper = config.CreateMapper();
+
+                    // Mapping string roles to RoleDto
+                    IList<RoleDto> roleDtos = mapper.Map<IList<RoleDto>>(gUserRoles);
+                    user.Roles = roleDtos;
 
                     foreach (var userRole in userRoles)
                     {
