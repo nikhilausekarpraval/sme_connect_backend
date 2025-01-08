@@ -60,6 +60,21 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_practice")]
+        public async Task<IActionResult> GetPractice([FromQuery] int id)
+        {
+            try
+            {
+                var result = await this._practiceProvider.getPractice(id);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
 
         [HttpDelete]
         [Route("delete_practices")]

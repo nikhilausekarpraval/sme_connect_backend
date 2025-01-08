@@ -32,6 +32,20 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
+        public async Task<ApiResponse<Practice>> getPractice(int practiceId)
+        {
+            try
+            {
+                var practice = await _context.Practices.FirstAsync(p => p.Id == practiceId);
+                return new ApiResponse<Practice>(Constants.ApiResponseType.Success, practice);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                return new ApiResponse<Practice>(Constants.ApiResponseType.Failure, null, ex.Message);
+            }
+        }
+
 
         public async Task<ApiResponse<bool>> DeletePractice(List<int> practicesIds)
         {
