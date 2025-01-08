@@ -9,7 +9,7 @@ namespace DemoDotNetCoreApplication.Providers
         public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-            string[] roleNames = { "Admin", "User","Manager","SME","Lead" };
+            string[] roleNames = { "Admin", "SuperAdmin","Manager","SME","Lead" };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)
