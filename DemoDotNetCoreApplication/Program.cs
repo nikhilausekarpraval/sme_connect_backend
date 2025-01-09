@@ -64,6 +64,7 @@ builder.Services.AddScoped<IGroupProvider, UserGroupProvider>();
 builder.Services.AddScoped<IRoleClaimProvider, RoleClaimProvider>();
 builder.Services.AddScoped<RoleClaimProvider>();
 builder.Services.AddScoped<IGroupUserProvider,GroupUserProvider>();
+builder.Services.AddScoped<IUserClaimProvider, UserClaimProvider>();
 
 
 builder.Services.AddAuthorization(options =>

@@ -196,7 +196,9 @@ namespace DemoDotNetCoreApplication.Providers
                 var query = from user in _userManager.Users
                             join userRole in _decimDevContext.UserRoles on user.Id equals userRole.UserId
                             join role in _decimDevContext.Roles on userRole.RoleId equals role.Id
-                            select new { user, role };
+                            join userClaims in _decimDevContext.UserClaims on user.Id equals userClaims.UserId into userClaimsGroup
+                            from userClaims in userClaimsGroup.DefaultIfEmpty() 
+                            select new { user, role, userClaims };
 
                 var userRolesData = await query.ToListAsync();
 
@@ -215,8 +217,16 @@ namespace DemoDotNetCoreApplication.Providers
                                             ModifiedOnDt = user.ModifiedOnDt,
                                             ModifiedBy = user.ModifiedBy,
                                             PhoneNumber = user.PhoneNumber,
-                                            Practice_id = user.Practice_id,
-                                            Groups_id = user.Groups_id,
+                                            Practice = user.Practice,
+                                            UserClaims = g
+                                            .Where(x => x.userClaims != null) 
+                                            .Select(x => new UserClaimDto
+                                            {
+                                                Id = x.userClaims.Id,
+                                                UserId = x.userClaims.UserId,
+                                                ClaimType = x.userClaims.ClaimType,
+                                                ClaimValue = x.userClaims.ClaimValue,
+                                            }).ToList(),
                                             Roles = g.Select(x => new RoleDto
                                             {
                                                 Id = x.role.Id,

@@ -1,4 +1,5 @@
 ﻿using DemoDotNetCoreApplication.Constatns;
+using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Providers;
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +14,10 @@ namespace DemoDotNetCoreApplication.Controllers
         public class UserClaimsController : ControllerBase
         {
 
-            private UserClaimProvider _UserClaimProvider;
+            private IUserClaimProvider _UserClaimProvider;
 
 
-            public UserClaimsController(UserClaimProvider UserClaimProvider)
+            public UserClaimsController(IUserClaimProvider UserClaimProvider)
             {
                 this._UserClaimProvider = UserClaimProvider;
             }
