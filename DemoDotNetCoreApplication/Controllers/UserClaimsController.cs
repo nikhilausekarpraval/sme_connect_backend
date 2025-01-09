@@ -79,7 +79,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
             [HttpDelete]
             [Route("delete_user_claim")]
-            public async Task<IActionResult> DeleteUserClaim([FromBody] List<string> UserClaimIds)
+            public async Task<IActionResult> DeleteUserClaim([FromBody] List<int> UserClaimIds)
             {
                 try
                 {

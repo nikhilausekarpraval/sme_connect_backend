@@ -9,7 +9,7 @@ namespace DemoDotNetCoreApplication.Contracts
         public Task<List<IdentityUserClaim<string>>> GetUserClaims();
 
 
-        public Task<ApiResponse<string>> DeleteUserClaims(List<string> UserClaimIds);
+        public Task<ApiResponse<string>> DeleteUserClaims(List<int> UserClaimIds);
 
 
         public Task<ApiResponse<string>> UpdateUserClaims(List<UserClaimDto> UserClaimDtos);

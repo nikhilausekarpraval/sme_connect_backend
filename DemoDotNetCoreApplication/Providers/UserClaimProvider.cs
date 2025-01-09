@@ -37,13 +37,13 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
-        public async Task<ApiResponse<string>> DeleteUserClaims(List<string> userClaimIds)
+        public async Task<ApiResponse<string>> DeleteUserClaims(List<int> userClaimIds)
         {
             try
             {
                 using var transaction = await _decimDevContext.Database.BeginTransactionAsync();
 
-                var userClaims = _decimDevContext.UserClaims.Where(rc => userClaimIds.Contains(rc.UserId));
+                var userClaims = _decimDevContext.UserClaims.Where(rc => userClaimIds.Contains(rc.Id));
 
                 _decimDevContext.UserClaims.RemoveRange(userClaims);
 
