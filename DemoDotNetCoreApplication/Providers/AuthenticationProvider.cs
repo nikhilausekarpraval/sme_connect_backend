@@ -124,7 +124,6 @@ namespace DemoDotNetCoreApplication.Providers
 
         public async Task<ResponseDto> Register(RegisterModelDto model)
         {
-
             try
             {
                 var userExists = await userManager.FindByEmailAsync(model.email);
@@ -153,7 +152,7 @@ namespace DemoDotNetCoreApplication.Providers
                 })
                 );
 
-                var roleResult = await userManager.AddToRoleAsync(newUser, model.role);//adding role
+                await AddRolesAndClaimsToUser(model, newUser);
 
                 await _dcimDevContext.SaveChangesAsync();
 
@@ -183,6 +182,35 @@ namespace DemoDotNetCoreApplication.Providers
 
         }
 
+        public async Task<bool> AddRolesAndClaimsToUser(RegisterModelDto model, ApplicationUser newUser)
+        {
+
+            // Add new roles
+            if (model.roles != null && model.roles.Any())
+            {
+                var roleResult = await userManager.AddToRolesAsync(newUser, model.roles);
+                if (!roleResult.Succeeded)
+                {
+                    var errors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
+                    throw new Exception($"Failed to add roles: {errors}");
+                }
+            }
+
+            // Add new claims
+            var userClaims = model.claims.Select(c => new Claim(c.ClaimType, c.ClaimValue)).ToList();
+            if (userClaims.Any())
+            {
+                var claimsResult = await userManager.AddClaimsAsync(newUser, userClaims);
+                if (!claimsResult.Succeeded)
+                {
+                    var errors = string.Join(", ", claimsResult.Errors.Select(e => e.Description));
+                    throw new Exception($"Failed to add claims: {errors}");
+                }
+            }
+
+            return true;
+        }
+
 
         public async Task<ResponseDto> UpdateUser(RegisterModelDto user)
         {
@@ -194,8 +222,36 @@ namespace DemoDotNetCoreApplication.Providers
                     currentUser.DisplayName = user.displayName;
                     currentUser.UserName = user.userName;
                     currentUser.Email = user.email;
+
                     var result = await userManager.UpdateAsync(currentUser);
+
+                    // Remove existing claims
+                    var currentClaims = await userManager.GetClaimsAsync(currentUser);
+                    foreach (var claim in currentClaims)
+                    {
+                        var removeClaimResult = await userManager.RemoveClaimAsync(currentUser, claim);
+                        if (!removeClaimResult.Succeeded)
+                        {
+                            throw new Exception($"Failed to remove claim: {claim.Type}");
+                        }
+                    }
+
+                    // Remove existing roles
+                    var currentRoles = await userManager.GetRolesAsync(currentUser);
+                    var removeRolesResult = await userManager.RemoveFromRolesAsync(currentUser, currentRoles);
+                    if (!removeRolesResult.Succeeded)
+                    {
+                        // Handle error
+                        var errors = string.Join(", ", removeRolesResult.Errors.Select(e => e.Description));
+                        throw new Exception($"Failed to remove roles: {errors}");
+                    }
+
+                    await AddRolesAndClaimsToUser(user, currentUser);
+
+                    await _dcimDevContext.SaveChangesAsync();
+
                     return new ResponseDto { status = ApiResponseType.Success, statusText = AccessConfigurationSccessMessage.UpdatedUser, message = "", data = result };
+
                 }
                 else
                 {
