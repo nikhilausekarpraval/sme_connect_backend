@@ -15,6 +15,6 @@ namespace DemoDotNetCoreApplication.Modals
 
         public ICollection<RoleDto>? Roles { get; set; }
 
-        public ICollection<UserClaimDto>? UserClaims { get; set; }
+        public ICollection<UserClaimDto>? Claims { get; set; }
     }
 }

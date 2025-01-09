@@ -218,19 +218,22 @@ namespace DemoDotNetCoreApplication.Providers
                                             ModifiedBy = user.ModifiedBy,
                                             PhoneNumber = user.PhoneNumber,
                                             Practice = user.Practice,
-                                            UserClaims = g
-                                            .Where(x => x.userClaims != null) 
+                                            Claims = g
+                                            .Where(x => x.userClaims != null)
+                                            .GroupBy(c => new { c.userClaims.ClaimType, c.userClaims.ClaimValue }) 
                                             .Select(x => new UserClaimDto
                                             {
-                                                Id = x.userClaims.Id,
-                                                UserId = x.userClaims.UserId,
-                                                ClaimType = x.userClaims.ClaimType,
-                                                ClaimValue = x.userClaims.ClaimValue,
+                                                Id = x.First().userClaims.Id,
+                                                UserId = x.First().userClaims.UserId,
+                                                ClaimType = x.Key.ClaimType,
+                                                ClaimValue = x.Key.ClaimValue,
                                             }).ToList(),
-                                            Roles = g.Select(x => new RoleDto
+                                             Roles = g
+                                            .GroupBy(r => r.role.Id)  
+                                            .Select(x => new RoleDto
                                             {
-                                                Id = x.role.Id,
-                                                Name = x.role.Name
+                                                Id = x.Key,
+                                                Name = x.First().role.Name
                                             }).ToList()
                                         };
                                     }).ToList();

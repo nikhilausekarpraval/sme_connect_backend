@@ -149,8 +149,7 @@ namespace DemoDotNetCoreApplication.Providers
                     question = q,
                     answerHash = Helper.HashString(answers[i]),
                     user_id = newUser.Id
-                })
-                );
+                }));
 
                 await AddRolesAndClaimsToUser(model, newUser);
 
@@ -211,17 +210,18 @@ namespace DemoDotNetCoreApplication.Providers
             return true;
         }
 
-
+        // update who can access this method currently can done without password
         public async Task<ResponseDto> UpdateUser(RegisterModelDto user)
         {
             try
             {
                 var currentUser = await userManager.FindByEmailAsync(user.email);
-                if (currentUser != null && await userManager.CheckPasswordAsync(currentUser, user.password))
+                if (currentUser != null && await userManager.CheckPasswordAsync(currentUser, user?.password ?? "") || true)
                 {
                     currentUser.DisplayName = user.displayName;
                     currentUser.UserName = user.userName;
-                    currentUser.Email = user.email;
+                    currentUser.PhoneNumber = user.phoneNumber;
+                    currentUser.Practice = user.practice;
 
                     var result = await userManager.UpdateAsync(currentUser);
 

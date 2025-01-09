@@ -10,6 +10,8 @@
 
         public List<ClaimDto>? claims { get; set; }
 
+        public string? phoneNumber { get; set; }
+
         public string? practice { get; set; }
 
         public string? password { get; set; }
