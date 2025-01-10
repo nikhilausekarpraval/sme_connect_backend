@@ -45,7 +45,9 @@ namespace DemoDotNetCoreApplication.Helpers
                 Email = model.email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.userName,
-                DisplayName = model.displayName
+                DisplayName = model.displayName,
+                PhoneNumber = model.phoneNumber,
+                Practice = model.practice
             };
 
         }
