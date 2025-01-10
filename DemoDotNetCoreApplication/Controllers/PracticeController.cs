@@ -62,7 +62,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpGet]
         [Route("get_practice")]
-        public async Task<IActionResult> GetPractice([FromQuery] int id)
+        public async Task<IActionResult> GetPractice([FromQuery] string id)
         {
             try
             {

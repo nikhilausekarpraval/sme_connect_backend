@@ -32,11 +32,11 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
-        public async Task<ApiResponse<Practice>> getPractice(int practiceId)
+        public async Task<ApiResponse<Practice>> getPractice(string practiceId)
         {
             try
             {
-                var practice = await _context.Practices.FirstAsync(p => p.Id == practiceId);
+                var practice = await _context.Practices.FirstAsync(p => p.Name == practiceId);
                 return new ApiResponse<Practice>(Constants.ApiResponseType.Success, practice);
             }
             catch (Exception ex)
