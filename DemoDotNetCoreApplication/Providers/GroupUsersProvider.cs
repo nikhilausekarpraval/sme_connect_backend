@@ -12,12 +12,14 @@ namespace DemoDotNetCoreApplication.Providers
     {
         private ILogger<GroupUserProvider> _logger;
         private DcimDevContext _dcimDevContext;
-        
+        private IUserContext _userContext;
 
-        public GroupUserProvider(ILogger<GroupUserProvider> Logger, DcimDevContext dcimDevContext)
+
+        public GroupUserProvider(ILogger<GroupUserProvider> Logger, DcimDevContext dcimDevContext, IUserContext userContext)
         {
             this._dcimDevContext = dcimDevContext;
             this._logger = Logger;
+            _userContext = userContext;
         }
 
 
@@ -41,6 +43,22 @@ namespace DemoDotNetCoreApplication.Providers
                 return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, ex.Message);
             }
         }
+
+        public async Task<ApiResponse<List<GroupUser>>> getUserGroups()
+        {
+            try
+            {   var user = _userContext.Email;
+                List<GroupUser> roles = await _dcimDevContext.GroupUsers.Where(g => g.UserEmail == user).ToListAsync();
+                await _dcimDevContext.SaveChangesAsync();
+                return new ApiResponse<List<GroupUser>>(ApiResponseType.Success, roles);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+        }
+
 
         public async Task<ApiResponse<List<GroupUser>>> getGroupUsers()
         {

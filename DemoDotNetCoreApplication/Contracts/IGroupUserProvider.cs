@@ -11,5 +11,7 @@ namespace DemoDotNetCoreApplication.Contracts
         public Task<ApiResponse<bool>> DeleteGroupUser(List<int> ids);
 
         public Task<ApiResponse<bool>> UpdateGroupUser(GroupUser group);
+
+        public Task<ApiResponse<List<GroupUser>>> getUserGroups();
     }
 }

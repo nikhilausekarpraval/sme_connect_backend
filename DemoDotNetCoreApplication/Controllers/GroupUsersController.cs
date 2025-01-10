@@ -75,6 +75,21 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("get_user_groups")]
+        public async Task<IActionResult> getUserGroups()
+        {
+            try
+            {
+                var result = await this._userGroupUsersProvider.getUserGroups();
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
         [HttpPost]
         [Route("update_group_user")]
         public async Task<IActionResult> UpdateGroupUsers(GroupUser group)
