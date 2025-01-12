@@ -75,7 +75,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpGet]
         [Route("get_user_groups")]
         public async Task<IActionResult> getUserGroups()
         {
