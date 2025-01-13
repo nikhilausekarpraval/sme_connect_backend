@@ -12,6 +12,6 @@ namespace DemoDotNetCoreApplication.Contracts
 
         public Task<ApiResponse<bool>> UpdateGroupUser(GroupUser group);
 
-        public Task<ApiResponse<List<GroupUser>>> getUserGroups();
+        public Task<ApiResponse<List<GroupUser>>> GetUserGroups(string practice);
     }
 }

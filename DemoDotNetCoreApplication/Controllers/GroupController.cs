@@ -10,7 +10,6 @@ using DemoDotNetCoreApplication.Constatns;
 namespace DemoDotNetCoreApplication.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     public class GroupController : ControllerBase
     {
@@ -26,6 +25,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [Route("add_group")]
         public async Task<IActionResult> AddGroup( UserGroup group)
         {
@@ -49,6 +49,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpGet]
         [Route("get_groups")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetGroups()
         {
             try
@@ -62,8 +63,29 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_user_practice_groups")]
+        public async Task<IActionResult> GetUserPracticeGroups([FromQuery] string practice)
+        {
+            try
+            {
+                var roleClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+                var userRole = roleClaim?.Value;
+
+                var result = await this._userGroupProvider.getUserPracticeGroups(practice);
+                
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex.Message));
+            }
+        }
+    
+
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         [Route("delete_groups")]
         public async Task<IActionResult> DeleteGroup( List<int> groupIds)
         {
@@ -80,6 +102,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpPost]
         [Route("update_group")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateGroup(UserGroup group)
         {
             try

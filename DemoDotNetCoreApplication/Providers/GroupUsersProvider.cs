@@ -44,20 +44,40 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
-        public async Task<ApiResponse<List<GroupUser>>> getUserGroups()
+        public async Task<ApiResponse<List<GroupUser>>> GetUserGroups(string practice = "")
         {
             try
-            {   var user = _userContext.Email;
-                List<GroupUser> roles = await _dcimDevContext.GroupUsers.Where(g => g.UserEmail == user).ToListAsync();
-                await _dcimDevContext.SaveChangesAsync();
-                return new ApiResponse<List<GroupUser>>(ApiResponseType.Success, roles);
+            {
+                var user = await _dcimDevContext.Users
+                    .FirstOrDefaultAsync(u => u.Email == _userContext.Email);
+
+                if (user == null)
+                {
+                    return new ApiResponse<List<GroupUser>>(ApiResponseType.NotFound, new List<GroupUser>(), "User not found.");
+                }
+
+                var userPracticeGroupsQuery = _dcimDevContext.UserGroups.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(practice))
+                {
+                    userPracticeGroupsQuery = userPracticeGroupsQuery.Where(g => g.Practice == practice);
+                }
+
+                var userPracticeGroups = await userPracticeGroupsQuery.ToListAsync();
+
+                var userJoinedGroups = await _dcimDevContext.GroupUsers
+                    .Where(g => g.UserEmail == user.Email && userPracticeGroups.Select(p => p.Name).Contains(g.Group))
+                    .ToListAsync();
+
+                return new ApiResponse<List<GroupUser>>(ApiResponseType.Success, userJoinedGroups);
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1, ex, ex.Message);
+                _logger.LogError(ex, "An error occurred while retrieving user groups: {Message}", ex.Message);
                 throw;
             }
         }
+
 
 
         public async Task<ApiResponse<List<GroupUser>>> getGroupUsers()

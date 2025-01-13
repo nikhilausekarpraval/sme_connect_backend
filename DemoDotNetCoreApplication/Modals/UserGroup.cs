@@ -6,6 +6,8 @@
 
         public string? Name { get; set; }
 
+        public string? Practice { get; set; }
+
         public string ? Description { get; set; }
 
         public DateTime? ModifiedOnDt { get; set; }

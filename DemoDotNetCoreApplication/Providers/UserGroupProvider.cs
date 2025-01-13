@@ -16,12 +16,13 @@ namespace DemoDotNetCoreApplication.Providers
     {
         private ILogger<UserGroupProvider> _logger;
         private DcimDevContext _dcimDevContext;
+        private IUserContext _userContext;
 
-
-        public UserGroupProvider(ILogger<UserGroupProvider> Logger, DcimDevContext dcimDevContext)
+        public UserGroupProvider(ILogger<UserGroupProvider> Logger, DcimDevContext dcimDevContext,IUserContext userContext)
         {
             this._dcimDevContext = dcimDevContext;
             this._logger = Logger;
+            _userContext = userContext;
         }
 
 
@@ -61,6 +62,30 @@ namespace DemoDotNetCoreApplication.Providers
             }
         }
 
+        public async Task<ApiResponse<List<UserGroup>>> getUserPracticeGroups(string practice = "")
+        {
+            try
+            {
+                var user = await _dcimDevContext.Users.FirstOrDefaultAsync(u => u.Email == _userContext.Email);
+                if (user == null)
+                {
+                    throw new Exception("User not found.");
+                }
+
+                var practiceToUse = !string.IsNullOrEmpty(practice) ? practice : user.Practice;
+
+                List<UserGroup> roles = await _dcimDevContext.UserGroups.Where(g => g.Practice == practiceToUse).ToListAsync();
+
+                return new ApiResponse<List<UserGroup>>(ApiResponseType.Success, roles);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+        }
+
+
 
         public async Task<ApiResponse<bool>> DeleteUserGroup(List<int> ids)
         {
@@ -98,8 +123,7 @@ namespace DemoDotNetCoreApplication.Providers
 
                 existingGroup.Name = group.Name;
                 existingGroup.Description = group.Description;
-                //existingGroup.ModifiedBy = _userContext.Email;
-                //existingGroup.ModifiedDate = DateTime.UtcNow;
+                existingGroup.Practice = group.Practice;
 
                 _dcimDevContext.UserGroups.Update(existingGroup);
                 await _dcimDevContext.SaveChangesAsync();

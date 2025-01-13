@@ -7,7 +7,6 @@ using DemoDotNetCoreApplication.Constatns;
 namespace DemoDotNetCoreApplication.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     public class GroupUsersController : ControllerBase
     {
@@ -23,6 +22,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [Route("add_group_user")]
         public async Task<IActionResult> AddGroupUsers(GroupUser group)
         {
@@ -77,11 +77,11 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpGet]
         [Route("get_user_groups")]
-        public async Task<IActionResult> getUserGroups()
+        public async Task<IActionResult> getUserGroups([FromQuery] string practice)
         {
             try
             {
-                var result = await this._userGroupUsersProvider.getUserGroups();
+                var result = await this._userGroupUsersProvider.GetUserGroups(practice);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -91,6 +91,7 @@ namespace DemoDotNetCoreApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [Route("update_group_user")]
         public async Task<IActionResult> UpdateGroupUsers(GroupUser group)
         {
