@@ -19,7 +19,6 @@
     using System.Linq;
     using DemoDotNetCoreApplication.Contracts;
     using Microsoft.AspNetCore.Mvc.ApiExplorer;
-    using DemoDotNetCoreApplication.Constatns;
     using static DemoDotNetCoreApplication.Constatns.Constants;
 
     namespace JWTAuthentication.Controllers

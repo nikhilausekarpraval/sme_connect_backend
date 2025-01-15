@@ -11,6 +11,13 @@
             public const string NotFound = "NotFound";
         }
 
+        public enum DiscussionStatus
+        {
+            Open,
+            Closed,
+            Star
+        }
+
         public static string[] Claims =  { "DeleteTask", "ViewReport", "ManageSystem" };
 
         public static class ApiErrors
