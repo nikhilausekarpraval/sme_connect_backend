@@ -27,8 +27,9 @@ namespace DemoDotNetCoreApplication.Providers
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly DcimDevContext _dcimDevContext;
         private readonly ILogger<AuthenticationProvider> _logger;
+        private readonly IUserContext _userContext;
 
-        public AuthenticationProvider(UserManager<ApplicationUser> userManager, ILogger<AuthenticationProvider> logger, RoleManager<ApplicationRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
+        public AuthenticationProvider(UserManager<ApplicationUser> userManager,IUserContext userContext, ILogger<AuthenticationProvider> logger, RoleManager<ApplicationRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
@@ -36,6 +37,8 @@ namespace DemoDotNetCoreApplication.Providers
             this.signInManager = signInManager;
             _dcimDevContext = dcimDevContext;
             this._logger = logger;
+            _userContext = userContext;
+
         }
 
 
@@ -132,7 +135,7 @@ namespace DemoDotNetCoreApplication.Providers
                     return new ResponseDto { status = ApiResponseType.NotFound, statusText = ApiErrors.DuplicateEmailOrUser, message = "" };
 
                 ApplicationUser user = Helper.GetApplicationUser(model);
-
+                user.ModifiedBy = _userContext.Email;
                 var result = await userManager.CreateAsync(user, model.password);
 
                 if (!result.Succeeded)
@@ -222,6 +225,8 @@ namespace DemoDotNetCoreApplication.Providers
                     currentUser.UserName = user.userName;
                     currentUser.PhoneNumber = user.phoneNumber;
                     currentUser.Practice = user.practice;
+                    currentUser.ModifiedBy = _userContext.Email;
+                    currentUser.ModifiedOnDt =  DateTime.Now; 
 
                     var result = await userManager.UpdateAsync(currentUser);
 

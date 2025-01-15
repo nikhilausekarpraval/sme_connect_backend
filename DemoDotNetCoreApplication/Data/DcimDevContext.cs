@@ -157,9 +157,7 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.Email).HasMaxLength(256);
-            entity.Property(e => e.ModifiedOnDt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+            entity.Property(e => e.ModifiedOnDt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
             entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
             entity.Property(e => e.Practice).HasMaxLength(256);

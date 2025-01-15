@@ -47,7 +47,8 @@ namespace DemoDotNetCoreApplication.Helpers
                 UserName = model.userName,
                 DisplayName = model.displayName,
                 PhoneNumber = model.phoneNumber,
-                Practice = model.practice
+                Practice = model.practice,
+                ModifiedOnDt = DateTime.Now,
             };
 
         }
