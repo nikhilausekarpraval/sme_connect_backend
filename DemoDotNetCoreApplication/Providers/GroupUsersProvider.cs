@@ -1,6 +1,7 @@
 ﻿using DemoDotNetCoreApplication.Constatns;
 using DemoDotNetCoreApplication.Contracts;
 using DemoDotNetCoreApplication.Data;
+using DemoDotNetCoreApplication.Dtos;
 using DemoDotNetCoreApplication.Modals;
 using Microsoft.EntityFrameworkCore;
 using static DemoDotNetCoreApplication.Constatns.Constants;
@@ -87,6 +88,49 @@ namespace DemoDotNetCoreApplication.Providers
                 List<GroupUser> roles = await _dcimDevContext.GroupUsers.ToListAsync();
                 await _dcimDevContext.SaveChangesAsync();
                 return new ApiResponse<List<GroupUser>>(ApiResponseType.Success, roles);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<ApiResponse<List<GroupUserDto>>> getGroupAllUsers(string group)
+        {
+            try
+            {
+                var usersWithNames = await _dcimDevContext.GroupUsers
+                                    .Where(gu => gu.Group == group)
+                                    .Join(
+                                        _dcimDevContext.Users,               
+                                        gu => gu.UserEmail,                      
+                                        u => u.Email,                        
+                                        (gu, u) => new                       
+                                        {
+                                            gu.Id,                           
+                                            gu.Group,
+                                            gu.UserEmail,
+                                            u.DisplayName,
+                                            gu.GroupRole,
+                                            gu.ModifiedOnDt,
+                                            gu.ModifiedBy
+                                        })
+                                    .ToListAsync();
+
+                                    var userDtos = usersWithNames.Select(u => new GroupUserDto
+                                    {
+                                        Id = u.Id,
+                                        Group = u.Group,
+                                        UserEmail = u.UserEmail,
+                                        Name = u.DisplayName,
+                                        GroupRole = u.GroupRole,
+                                        ModifiedBy = u.ModifiedBy,
+                                        ModifiedOnDt = u.ModifiedOnDt
+
+                                    }).ToList();
+
+                return new ApiResponse<List<GroupUserDto>>(ApiResponseType.Success, userDtos);
             }
             catch (Exception ex)
             {

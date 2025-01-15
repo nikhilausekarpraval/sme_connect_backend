@@ -59,6 +59,21 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_group_all_users")]
+        public async Task<IActionResult> GetGroupAllUsers([FromQuery] string group)
+        {
+            try
+            {
+                var result = await this._userGroupUsersProvider.getGroupAllUsers(group);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
 
         [HttpDelete]
         [Route("delete_group_users")]

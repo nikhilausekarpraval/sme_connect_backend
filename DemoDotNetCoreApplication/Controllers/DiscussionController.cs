@@ -62,11 +62,11 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpDelete]
         [Route("delete_discussion")]
-        public async Task<IActionResult> DeleteDiscussion(string discussionsIds)
+        public async Task<IActionResult> DeleteDiscussion([FromBody] string discussion)
         {
             try
             {
-                var result = await this._discussionProvider.DeleteDiscussion(discussionsIds);
+                var result = await this._discussionProvider.DeleteDiscussion(discussion);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)

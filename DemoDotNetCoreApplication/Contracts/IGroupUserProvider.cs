@@ -1,4 +1,5 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿using DemoDotNetCoreApplication.Dtos;
+using DemoDotNetCoreApplication.Modals;
 
 namespace DemoDotNetCoreApplication.Contracts
 {
@@ -13,5 +14,7 @@ namespace DemoDotNetCoreApplication.Contracts
         public Task<ApiResponse<bool>> UpdateGroupUser(GroupUser group);
 
         public Task<ApiResponse<List<GroupUser>>> GetUserGroups(string practice);
+
+        public Task<ApiResponse<List<GroupUserDto>>> getGroupAllUsers(string group);
     }
 }
