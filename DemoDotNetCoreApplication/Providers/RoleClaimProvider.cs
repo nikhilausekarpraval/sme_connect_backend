@@ -133,18 +133,15 @@ namespace DemoDotNetCoreApplication.Providers
 
 
 
-        public async Task<string> AddClaimToRole(List<AddClaimToRoleDto> roleClaims)
+        public async Task<string> AddClaimToRole(AddClaimToRoleDto roleClaim)
         {
             try
             {
-                var role = await _roleManager.FindByIdAsync(roleClaims[0].roleId);
+                var role = await _roleManager.FindByIdAsync(roleClaim?.roleId);
                 if (role == null)
                 {
                     return AccessConfigurationErrorMessage.RoleNotFound;
                 }
-
-                foreach (var roleClaim in roleClaims)
-                {
 
                     Claim claim = new Claim(roleClaim.claimType, roleClaim.claimValue);
 
@@ -162,7 +159,6 @@ namespace DemoDotNetCoreApplication.Providers
                     }
 
                     var result = await _roleManager.AddClaimAsync(role, claim);
-                }
 
                 var roleResult = await _roleManager.UpdateAsync(role);
 

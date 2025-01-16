@@ -24,7 +24,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
         [HttpPost]
         [Route("add_claim_to_role")]
-        public async Task<IActionResult> AddRoleClaim([FromBody] List<AddClaimToRoleDto> RoleClaim)
+        public async Task<IActionResult> AddRoleClaim([FromBody] AddClaimToRoleDto RoleClaim)
         {
 
             try

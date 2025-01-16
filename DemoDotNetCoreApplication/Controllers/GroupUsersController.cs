@@ -20,9 +20,8 @@ namespace DemoDotNetCoreApplication.Controllers
             _userContext = userContext;
         }
 
-
+        //update here access
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         [Route("add_group_user")]
         public async Task<IActionResult> AddGroupUsers(GroupUser group)
         {
