@@ -1,4 +1,4 @@
-﻿namespace DemoDotNetCoreApplication.Modals
+﻿namespace SMEConnectSignalRServer.Modals
 {
         public class FileAttachment
         {

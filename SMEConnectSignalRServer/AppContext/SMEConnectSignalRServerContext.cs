@@ -1,7 +1,8 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿
 using MongoDB.Driver;
+using SMEConnectSignalRServer.Modals;
 
-namespace DemoDotNetCoreApplication.Data
+namespace SMEConnectSignalRServer.AppContext
 {
     public class SMEConnectSignalRServerContext
     {
