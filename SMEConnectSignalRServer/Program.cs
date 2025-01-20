@@ -1,3 +1,4 @@
+using DemoDotNetCoreApplication.Data;
 using Microsoft.AspNetCore.Http.Connections;
 using SMEConnectSignalRServer.Models;
 
@@ -5,6 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+
+var mongoDbConnectionString = Environment.GetEnvironmentVariable("MongoDbConnection")
+                              ?? builder.Configuration.GetConnectionString("MongoDbConnection");
+
+builder.Services.AddSingleton<SMEConnectSignalRServerContext>(provider =>
+    new SMEConnectSignalRServerContext(mongoDbConnectionString));
 
 var app = builder.Build();
 
