@@ -8,12 +8,15 @@ namespace SMEConnectSignalRServer.AppContext
     {
         private readonly IMongoDatabase _database;
 
-        public SMEConnectSignalRServerContext(string connectionString)
+        public SMEConnectSignalRServerContext(IConfiguration configuration) 
         {
+            var connectionString = configuration.GetConnectionString("MongoDbConnection");
+
             var client = new MongoClient(connectionString);
-            _database = client.GetDatabase("smeconnect.8vs6a.mongodb.net"); 
+            _database = client.GetDatabase("sample_mflix"); 
         }
 
         public IMongoCollection<Message> Messages => _database.GetCollection<Message>("messages");
     }
+
 }

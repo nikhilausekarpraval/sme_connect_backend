@@ -2,31 +2,31 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SMEConnectSignalRServer.Dtos;
+using SMEConnectSignalRServer.Interfaces;
 using SMEConnectSignalRServer.Modals;
 using SMEConnectSignalRServer.Services;
 
 namespace SMEConnectSignalRServer.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
-        private MessagesService _messageService;
+        private IMessageService _messageService;
 
-        MessageController(MessagesService messageService) {
-            _messageService = messageService;
+        public MessageController(IMessageService messageService)
+        {
+            this._messageService = messageService;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("get-discussion-chat")]
-        [Authorize]
         public async Task<IActionResult> GetDiscussionMessages([FromBody] UserDto userDto)
         {
             try
             {
                 var result = await this._messageService.GetDiscussionChat(userDto);
-                return new JsonResult(Ok(result));
+                return new JsonResult(Ok("result"));
             }
             catch (Exception ex)
             {
@@ -36,7 +36,6 @@ namespace SMEConnectSignalRServer.Controllers
 
         [HttpPost]
         [Route("add-message")]
-        [Authorize]
         public async Task<IActionResult> AddMessage([FromForm] MessageDto messageDto, [FromForm] List<IFormFile> attachments)
         {
             try
@@ -76,9 +75,8 @@ namespace SMEConnectSignalRServer.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpDelete]
         [Route("delete-message")]
-        [Authorize]
         public async Task<IActionResult> DeleteMessage([FromBody] List<int> messageIds)
         {
             try
@@ -92,9 +90,8 @@ namespace SMEConnectSignalRServer.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPut]
         [Route("update-message")]
-        [Authorize]
         public async Task<IActionResult> UpdateMessage([FromBody] Message message)
         {
             try

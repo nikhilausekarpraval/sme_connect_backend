@@ -7,13 +7,14 @@ using SMEConnectSignalRServer.Modals;
 
 namespace SMEConnectSignalRServer.Services
 {
-    public class MessagesService : IMessageService
+    public class MessageService : IMessageService
     {
         private SMEConnectSignalRServerContext _sMEConnectSignalRServerContext1;
-        private readonly ILogger _logger;
+        private ILogger<MessageService> _logger;
 
-        public MessagesService(SMEConnectSignalRServerContext sMEConnectSignalRServerContext, ILogger logger) {
-                _sMEConnectSignalRServerContext1 = sMEConnectSignalRServerContext;
+        public MessageService(SMEConnectSignalRServerContext sMEConnectSignalRServerContext,ILogger<MessageService> logger)
+        {
+            _sMEConnectSignalRServerContext1 = sMEConnectSignalRServerContext;
             _logger = logger;
         }
 
@@ -28,7 +29,7 @@ namespace SMEConnectSignalRServer.Services
                 );
 
                 var result = await _sMEConnectSignalRServerContext1.Messages.Find(filter).ToListAsync();
-                return result;
+                return null;
             }
             catch (Exception ex)
             {
@@ -42,7 +43,7 @@ namespace SMEConnectSignalRServer.Services
             try
             {
                 await _sMEConnectSignalRServerContext1.Messages.InsertOneAsync(message);
-                return true; 
+                return true;
             }
             catch (Exception ex)
             {
@@ -55,9 +56,9 @@ namespace SMEConnectSignalRServer.Services
         {
             try
             {
-                var filter = Builders<Message>.Filter.In(m => m.Id, messageIds); 
+                var filter = Builders<Message>.Filter.In(m => m.Id, messageIds);
                 var result = await _sMEConnectSignalRServerContext1.Messages.DeleteManyAsync(filter);
-                return result.DeletedCount; 
+                return result.DeletedCount;
             }
             catch (Exception ex)
             {
@@ -71,7 +72,7 @@ namespace SMEConnectSignalRServer.Services
         {
             try
             {
-                var filter = Builders<Message>.Filter.Eq(m => m.Id, message.Id); 
+                var filter = Builders<Message>.Filter.Eq(m => m.Id, message.Id);
                 var update = Builders<Message>.Update
                     .Set(m => m.Text, message.Text)
                     .Set(m => m.ReplyedTo, message.ReplyedTo);

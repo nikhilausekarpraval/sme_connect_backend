@@ -1,17 +1,21 @@
-using DemoDotNetCoreApplication.Data;
+
 using Microsoft.AspNetCore.Http.Connections;
+using SMEConnectSignalRServer.AppContext;
+using SMEConnectSignalRServer.Interfaces;
 using SMEConnectSignalRServer.Models;
+using SMEConnectSignalRServer.Services;
+using System.Diagnostics.CodeAnalysis;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddSignalR();
 
-var mongoDbConnectionString = Environment.GetEnvironmentVariable("MongoDbConnection")
-                              ?? builder.Configuration.GetConnectionString("MongoDbConnection");
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
-builder.Services.AddSingleton<SMEConnectSignalRServerContext>(provider =>
-    new SMEConnectSignalRServerContext(mongoDbConnectionString));
+builder.Services.AddScoped<SMEConnectSignalRServerContext>();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -25,23 +29,25 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 app.UseCors(options => options
     .AllowAnyMethod()
     .AllowAnyHeader()
     .SetIsOriginAllowed(origin => true) // Allow any origin
     .AllowCredentials());
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<ChatHub>("/chathub");  // Define SignalR hub route
-    endpoints.MapControllers();
-});
-
-//app.MapHub<ChatHub>("/chathub", options =>
+//app.UseEndpoints(endpoints =>
 //{
-//    options.Transports =
-//        HttpTransportType.WebSockets |
-//        HttpTransportType.LongPolling;
+//    endpoints.MapHub<ChatHub>("/chathub");  // Define SignalR hub route
+//    endpoints.MapControllers();
 //});
 
+app.MapHub<ChatHub>("/chathub", options =>
+{
+    options.Transports =
+        HttpTransportType.WebSockets |
+        HttpTransportType.LongPolling;
+});
+
+app.MapControllers();
 app.Run();

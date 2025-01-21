@@ -8,13 +8,13 @@ namespace SMEConnectSignalRServer.Interfaces
     {
         public  Task<List<Message>> GetDiscussionChat(UserDto userDto);
 
-        public  Task<bool> AddMessage(Message message);
+        public Task<bool> AddMessage(Message message);
 
 
-        public  Task<long> DeleteMessagesByFilter(List<int> messageIds);
+        public Task<long> DeleteMessagesByFilter(List<int> messageIds);
 
 
-        public  Task<Message> UpdateMessage(Message message);
-       
+        public Task<Message> UpdateMessage(Message message);
+
     }
 }
