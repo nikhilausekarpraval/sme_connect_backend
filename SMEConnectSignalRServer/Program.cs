@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<ChatHub>();
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 

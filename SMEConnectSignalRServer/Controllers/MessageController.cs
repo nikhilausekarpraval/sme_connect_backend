@@ -36,7 +36,7 @@ namespace SMEConnectSignalRServer.Controllers
 
         [HttpPost]
         [Route("add-message")]
-        public async Task<IActionResult> AddMessage([FromForm] MessageDto messageDto, [FromForm] List<IFormFile> attachments)
+        public async Task<IActionResult> AddMessage([FromForm] MessageDto messageDto)
         {
             try
             {
@@ -51,21 +51,24 @@ namespace SMEConnectSignalRServer.Controllers
                     Attachments = new List<FileAttachment>()
                 };
 
-                foreach (var file in attachments)
+                if(messageDto.Attachments != null)
                 {
-                    if (file.Length > 0)
+                    foreach (var file in messageDto.Attachments)
                     {
-                        using var memoryStream = new MemoryStream();
-                        await file.CopyToAsync(memoryStream);
-                        message.Attachments.Add(new FileAttachment
+                        if (file?.Length > 0)
                         {
-                            FileName = file.FileName,
-                            ContentType = file.ContentType,
-                            Content = memoryStream.ToArray()
-                        });
+                            using var memoryStream = new MemoryStream();
+                            await file.CopyToAsync(memoryStream);
+                            message.Attachments.Add(new FileAttachment
+                            {
+                                FileName = file.FileName,
+                                ContentType = file.ContentType,
+                                Content = memoryStream.ToArray()
+                            });
+                        }
                     }
                 }
-
+                
                 var result = await _messageService.AddMessage(message);
                 return Ok(result);
             }

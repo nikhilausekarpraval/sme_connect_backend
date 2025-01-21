@@ -1,7 +1,9 @@
-﻿namespace SMEConnectSignalRServer.Interfaces
+﻿using SMEConnectSignalRServer.Modals;
+
+namespace SMEConnectSignalRServer.Interfaces
 {
     public interface IChatClient
     {
-        Task ReceiveMessage(string user, string message);
+        Task ReceiveMessage(Message message);
     }
 }

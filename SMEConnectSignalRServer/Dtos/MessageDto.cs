@@ -7,6 +7,7 @@
         public string? Discussion { get; set; }
         public string? Group { get; set; }
         public string? Practice { get; set; }
+        public List<IFormFile>? Attachments { get; set; }
     }
 
 }

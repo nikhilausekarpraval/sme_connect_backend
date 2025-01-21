@@ -1,9 +1,11 @@
 ﻿
+using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 using SMEConnectSignalRServer.AppContext;
 using SMEConnectSignalRServer.Dtos;
 using SMEConnectSignalRServer.Interfaces;
 using SMEConnectSignalRServer.Modals;
+using SMEConnectSignalRServer.Models;
 
 namespace SMEConnectSignalRServer.Services
 {
@@ -11,11 +13,13 @@ namespace SMEConnectSignalRServer.Services
     {
         private SMEConnectSignalRServerContext _sMEConnectSignalRServerContext1;
         private ILogger<MessageService> _logger;
+        private readonly IHubContext<ChatHub, IChatClient> _hubContext;
 
-        public MessageService(SMEConnectSignalRServerContext sMEConnectSignalRServerContext,ILogger<MessageService> logger)
+        public MessageService(SMEConnectSignalRServerContext sMEConnectSignalRServerContext,ILogger<MessageService> logger, IHubContext<ChatHub, IChatClient> hubContext)
         {
             _sMEConnectSignalRServerContext1 = sMEConnectSignalRServerContext;
             _logger = logger;
+            _hubContext = hubContext;
         }
 
         public async Task<List<Message>> GetDiscussionChat(UserDto userDto)
@@ -42,7 +46,12 @@ namespace SMEConnectSignalRServer.Services
         {
             try
             {
+                //first we are brodcasting message to all users
+                await _hubContext.Clients.All.ReceiveMessage(message);
+
+                // saving message into db
                 await _sMEConnectSignalRServerContext1.Messages.InsertOneAsync(message);
+
                 return true;
             }
             catch (Exception ex)
