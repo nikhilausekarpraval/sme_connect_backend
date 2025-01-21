@@ -12,6 +12,8 @@ namespace SMEConnectSignalRServer.Modals
 
         public string? UserName { get;set;}
 
+        public string? DisplayName { get; set; }
+
         public DateTime? CreatedDate { get; set; } = DateTime.Now;
 
         public List<FileAttachment>? Attachments { get; set; } = new List<FileAttachment>();

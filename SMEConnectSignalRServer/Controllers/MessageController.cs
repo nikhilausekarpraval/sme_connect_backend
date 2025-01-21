@@ -36,7 +36,7 @@ namespace SMEConnectSignalRServer.Controllers
 
         [HttpPost]
         [Route("add-message")]
-        public async Task<IActionResult> AddMessage([FromForm] MessageDto messageDto)
+        public async Task<IActionResult> AddMessage([FromBody] MessageDto messageDto)
         {
             try
             {
@@ -45,10 +45,12 @@ namespace SMEConnectSignalRServer.Controllers
                     Text = messageDto.Text,
                     UserName = messageDto.UserName,
                     CreatedDate = DateTime.Now,
+                    ReplyedTo = messageDto.ReplyedTo,
                     Discussion = messageDto.Discussion,
                     Group = messageDto.Group,
                     Practice = messageDto.Practice,
-                    Attachments = new List<FileAttachment>()
+                    Attachments = new List<FileAttachment>(),
+                    DisplayName = messageDto.DisplayName
                 };
 
                 if(messageDto.Attachments != null)
