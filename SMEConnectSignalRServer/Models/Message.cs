@@ -1,8 +1,12 @@
-﻿namespace SMEConnectSignalRServer.Modals
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+
+namespace SMEConnectSignalRServer.Modals
 {
     public class Message
     {
-        public int Id { get; set; }
+        [BsonId]
+        public ObjectId Id { get; set; }
 
         public string? Text { get; set; }
 

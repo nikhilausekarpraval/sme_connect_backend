@@ -80,7 +80,7 @@ namespace SMEConnectSignalRServer.Controllers
 
         [HttpDelete]
         [Route("delete-message")]
-        public async Task<IActionResult> DeleteMessage([FromBody] List<int> messageIds)
+        public async Task<IActionResult> DeleteMessage([FromBody] List<dynamic> messageIds)
         {
             try
             {

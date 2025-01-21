@@ -61,7 +61,7 @@ namespace SMEConnectSignalRServer.Services
             }
         }
 
-        public async Task<long> DeleteMessagesByFilter(List<int> messageIds)
+        public async Task<long> DeleteMessagesByFilter(List<dynamic> messageIds)
         {
             try
             {

@@ -11,7 +11,7 @@ namespace SMEConnectSignalRServer.Interfaces
         public Task<bool> AddMessage(Message message);
 
 
-        public Task<long> DeleteMessagesByFilter(List<int> messageIds);
+        public Task<long> DeleteMessagesByFilter(List<dynamic> messageIds);
 
 
         public Task<Message> UpdateMessage(Message message);

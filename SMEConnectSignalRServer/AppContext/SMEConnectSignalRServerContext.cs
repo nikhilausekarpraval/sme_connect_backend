@@ -13,7 +13,7 @@ namespace SMEConnectSignalRServer.AppContext
             var connectionString = configuration.GetConnectionString("MongoDbConnection");
 
             var client = new MongoClient(connectionString);
-            _database = client.GetDatabase("sample_mflix"); 
+            _database = client.GetDatabase("sme_connect"); 
         }
 
         public IMongoCollection<Message> Messages => _database.GetCollection<Message>("messages");
