@@ -33,7 +33,7 @@ namespace SMEConnectSignalRServer.Services
                 );
 
                 var result = await _sMEConnectSignalRServerContext1.Messages.Find(filter).ToListAsync();
-                return null;
+                return result;
             }
             catch (Exception ex)
             {
