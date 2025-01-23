@@ -26,7 +26,7 @@ namespace SMEConnectSignalRServer.Controllers
             try
             {
                 var result = await this._messageService.GetDiscussionChat(userDto);
-                return new JsonResult(Ok("result"));
+                return new JsonResult(Ok(result));
             }
             catch (Exception ex)
             {
