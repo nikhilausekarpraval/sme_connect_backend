@@ -36,7 +36,7 @@ namespace SMEConnectSignalRServer.Controllers
 
         [HttpPost]
         [Route("add-message")]
-        public async Task<IActionResult> AddMessage([FromBody] MessageDto messageDto)
+        public async Task<IActionResult> AddMessage([FromForm] MessageDto messageDto)
         {
             try
             {
