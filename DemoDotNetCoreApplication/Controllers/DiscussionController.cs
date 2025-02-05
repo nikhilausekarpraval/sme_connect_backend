@@ -8,7 +8,7 @@ namespace DemoDotNetCoreApplication.Controllers
 {
 
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [Route("api/[controller]")]
     public class DiscussionController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace DemoDotNetCoreApplication.Controllers
             this._userContext = userContext;
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("add_discussion")]
         public async Task<IActionResult> AddDiscussion(Discussion discussion)
@@ -44,6 +44,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
 
         }
+
         [HttpGet]
         [Route("get_discussions")]
         public async Task<IActionResult> GetDiscussions([FromQuery] string groupName)
@@ -59,7 +60,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("delete_discussion")]
         public async Task<IActionResult> DeleteDiscussion([FromBody] string discussion)
@@ -75,6 +76,7 @@ namespace DemoDotNetCoreApplication.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("update_discussion")]
         public async Task<IActionResult> UpdateDiscussion(Discussion discussion)
