@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
-
-namespace SMEConnect.Modals
+﻿namespace SMEConnect.Modals
 {
     public class ApiResponse<T>
     {

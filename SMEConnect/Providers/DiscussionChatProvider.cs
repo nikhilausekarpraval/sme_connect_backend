@@ -1,8 +1,8 @@
-﻿using SMEConnect.Constatns;
+﻿using Microsoft.EntityFrameworkCore;
+using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Modals;
-using Microsoft.EntityFrameworkCore;
 
 namespace SMEConnect.Providers
 {

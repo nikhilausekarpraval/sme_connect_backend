@@ -1,11 +1,11 @@
-﻿using SMEConnect.Contracts;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Dtos;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using static SMEConnect.Constatns.Constants;
 using System.Security.Claims;
+using static SMEConnect.Constatns.Constants;
 
 namespace SMEConnect.Providers
 {
@@ -15,11 +15,12 @@ namespace SMEConnect.Providers
         private ILogger<RoleClaimProvider> _logger;
         private RoleManager<ApplicationRole> _roleManager;
 
-        public RoleClaimProvider(DcimDevContext dcimDevContext,RoleManager<ApplicationRole> roleManager, ILogger<RoleClaimProvider> logger) {
-         this._decimDevContext = dcimDevContext;
+        public RoleClaimProvider(DcimDevContext dcimDevContext, RoleManager<ApplicationRole> roleManager, ILogger<RoleClaimProvider> logger)
+        {
+            this._decimDevContext = dcimDevContext;
             _logger = logger;
             _roleManager = roleManager;
-        
+
         }
 
         public async Task<List<IdentityRoleClaim<string>>> GetRoleClaims()
@@ -40,20 +41,20 @@ namespace SMEConnect.Providers
         {
             try
             {
-            var roleClaimsWithRoles = await (from roleClaim in _decimDevContext.RoleClaims
-                                                join role in _decimDevContext.Roles on roleClaim.RoleId equals role.Id
-                                                group new { roleClaim, role } by new { roleClaim.ClaimType, roleClaim.ClaimValue } into grouped
-                                                select new RoleClaimWithRolesDto
-                                                {
-                                                    id = grouped.First().roleClaim.Id, 
-                                                    claimType = grouped.Key.ClaimType,
-                                                    claimValue = grouped.Key.ClaimValue,
-                                                    roles = grouped.Select(g => new RoleDto
-                                                    {
-                                                        Id = g.role.Id,
-                                                        Name = g.role.Name
-                                                    }).Distinct().ToList() 
-                                                }).ToListAsync();
+                var roleClaimsWithRoles = await (from roleClaim in _decimDevContext.RoleClaims
+                                                 join role in _decimDevContext.Roles on roleClaim.RoleId equals role.Id
+                                                 group new { roleClaim, role } by new { roleClaim.ClaimType, roleClaim.ClaimValue } into grouped
+                                                 select new RoleClaimWithRolesDto
+                                                 {
+                                                     id = grouped.First().roleClaim.Id,
+                                                     claimType = grouped.Key.ClaimType,
+                                                     claimValue = grouped.Key.ClaimValue,
+                                                     roles = grouped.Select(g => new RoleDto
+                                                     {
+                                                         Id = g.role.Id,
+                                                         Name = g.role.Name
+                                                     }).Distinct().ToList()
+                                                 }).ToListAsync();
 
                 return roleClaimsWithRoles;
             }
@@ -143,22 +144,22 @@ namespace SMEConnect.Providers
                     return AccessConfigurationErrorMessage.RoleNotFound;
                 }
 
-                    Claim claim = new Claim(roleClaim.claimType, roleClaim.claimValue);
+                Claim claim = new Claim(roleClaim.claimType, roleClaim.claimValue);
 
-                    var existingClaims = await _roleManager.GetClaimsAsync(role);
+                var existingClaims = await _roleManager.GetClaimsAsync(role);
 
-                    var existingClaim = existingClaims.FirstOrDefault(c => c.Type == roleClaim.claimType);
+                var existingClaim = existingClaims.FirstOrDefault(c => c.Type == roleClaim.claimType);
 
-                    if (existingClaim != null)
+                if (existingClaim != null)
+                {
+                    var removeResult = await _roleManager.RemoveClaimAsync(role, existingClaim);
+                    if (!removeResult.Succeeded)
                     {
-                        var removeResult = await _roleManager.RemoveClaimAsync(role, existingClaim);
-                        if (!removeResult.Succeeded)
-                        {
-                            throw new Exception("Failed to remove existing claim.");
-                        }
+                        throw new Exception("Failed to remove existing claim.");
                     }
+                }
 
-                    var result = await _roleManager.AddClaimAsync(role, claim);
+                var result = await _roleManager.AddClaimAsync(role, claim);
 
                 var roleResult = await _roleManager.UpdateAsync(role);
 

@@ -17,7 +17,7 @@ namespace SMEConnectSignalRServer.Services
         private ILogger<MessageService> _logger;
         private readonly IHubContext<ChatHub, IChatClient> _hubContext;
 
-        public MessageService(SMEConnectSignalRServerContext sMEConnectSignalRServerContext,ILogger<MessageService> logger, IHubContext<ChatHub, IChatClient> hubContext)
+        public MessageService(SMEConnectSignalRServerContext sMEConnectSignalRServerContext, ILogger<MessageService> logger, IHubContext<ChatHub, IChatClient> hubContext)
         {
             _sMEConnectSignalRServerContext1 = sMEConnectSignalRServerContext;
             _logger = logger;
@@ -51,8 +51,8 @@ namespace SMEConnectSignalRServer.Services
             {
                 var fiveDaysAgo = DateTime.UtcNow.AddDays(-5);
 
-            var pipeline = new[]
-                {
+                var pipeline = new[]
+                    {
                     new BsonDocument("$match", new BsonDocument
                     {
                         { "Practice", userDto.Practice },

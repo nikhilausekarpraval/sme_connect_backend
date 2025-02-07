@@ -1,20 +1,17 @@
-﻿using SMEConnect.Data;
-using SMEConnect.Dtos;
-using SMEConnect.Helpers;
-using SMEConnect.Modals.JWTAuthentication.Authentication;
-using SMEConnect.Modals;
-using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using static SMEConnect.Constatns.Constants;
 using Microsoft.EntityFrameworkCore;
 using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Dtos;
+using SMEConnect.Helpers;
+using SMEConnect.Modals;
+using SMEConnect.Modals.JWTAuthentication.Authentication;
 using System.Data;
-using AutoMapper;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using static SMEConnect.Constatns.Constants;
 
 namespace SMEConnect.Providers
 {
@@ -29,7 +26,7 @@ namespace SMEConnect.Providers
         private readonly ILogger<AuthenticationProvider> _logger;
         private readonly IUserContext _userContext;
 
-        public AuthenticationProvider(UserManager<ApplicationUser> userManager,IUserContext userContext, ILogger<AuthenticationProvider> logger, RoleManager<ApplicationRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
+        public AuthenticationProvider(UserManager<ApplicationUser> userManager, IUserContext userContext, ILogger<AuthenticationProvider> logger, RoleManager<ApplicationRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
@@ -113,7 +110,7 @@ namespace SMEConnect.Providers
                     return new ResponseDto { status = ApiResponseType.Success, statusText = "", message = "", data = accessToken };
                 }
 
-                return new ResponseDto { status = ApiResponseType.Failure, statusText = AccessConfigurationErrorMessage.WrongEmailPassword, message = AccessConfigurationErrorMessage.WrongEmailPassword , data =null};
+                return new ResponseDto { status = ApiResponseType.Failure, statusText = AccessConfigurationErrorMessage.WrongEmailPassword, message = AccessConfigurationErrorMessage.WrongEmailPassword, data = null };
 
             }
             catch (Exception ex)
@@ -226,7 +223,7 @@ namespace SMEConnect.Providers
                     currentUser.PhoneNumber = user.phoneNumber;
                     currentUser.Practice = user.practice;
                     currentUser.ModifiedBy = _userContext.Email;
-                    currentUser.ModifiedOnDt =  DateTime.Now; 
+                    currentUser.ModifiedOnDt = DateTime.Now;
 
                     var result = await userManager.UpdateAsync(currentUser);
 
@@ -308,7 +305,7 @@ namespace SMEConnect.Providers
                     }
                     else
                     {
-                      return  new ResponseDto { statusText = AccessConfigurationErrorMessage.OldPasswordIncorrect, status = ApiResponseType.Failure, message = "" };
+                        return new ResponseDto { statusText = AccessConfigurationErrorMessage.OldPasswordIncorrect, status = ApiResponseType.Failure, message = "" };
                     }
                 }
                 else
@@ -355,12 +352,12 @@ namespace SMEConnect.Providers
 
                             var updateResult = await userManager.UpdateAsync(currentUser);
 
-                            return updateResult.Succeeded ? 
-                            
+                            return updateResult.Succeeded ?
+
                                  new ResponseDto { statusText = AccessConfigurationSccessMessage.PasswordUserUpdated, status = ApiResponseType.Success, message = "" }
                             :
                                  new ResponseDto { statusText = AccessConfigurationErrorMessage.FaildToUpdateUser, status = ApiResponseType.Failure, message = "" };
-                            
+
                         }
                         else
                         {
@@ -369,7 +366,7 @@ namespace SMEConnect.Providers
                     }
                     else
                     {
-                        return new ResponseDto { statusText = AccessConfigurationErrorMessage.QuestionOrAnswerIsWrong, status  = ApiResponseType.Failure, message = "" };
+                        return new ResponseDto { statusText = AccessConfigurationErrorMessage.QuestionOrAnswerIsWrong, status = ApiResponseType.Failure, message = "" };
                     }
                 }
 
@@ -429,7 +426,7 @@ namespace SMEConnect.Providers
 
         public ApplicationRole getApplicationUser(string id)
         {
-            return  new ApplicationRole()
+            return new ApplicationRole()
             {
                 Name = id,
                 ModifiedBy = ""

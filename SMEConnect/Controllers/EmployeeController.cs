@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Dtos;
 using SMEConnect.Helpers;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using static SMEConnect.Constatns.Constants;
 
 namespace SMEConnect.Controllers
@@ -20,7 +20,7 @@ namespace SMEConnect.Controllers
         private readonly IEmployeeProvider _employeeProvider;
         private readonly IMapper _mapper;
 
-        public EmployeeController(ILogger<EmployeeController> logger, IEmployeeProvider employeeProvider,IMapper mapper)
+        public EmployeeController(ILogger<EmployeeController> logger, IEmployeeProvider employeeProvider, IMapper mapper)
         {
             _logger = logger;
             _employeeProvider = employeeProvider;
@@ -32,7 +32,7 @@ namespace SMEConnect.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
-            var response =  await _employeeProvider.GetEmployee(id);
+            var response = await _employeeProvider.GetEmployee(id);
             var employeeDtos = _mapper.Map<EmployeeTasksDto>(response.Data);
             if (response.Status == Constants.ApiResponseType.Success)
             {
@@ -62,7 +62,7 @@ namespace SMEConnect.Controllers
                     return StatusCode(500, response.Message); // 500 Internal Server Error
                 }
             }
-            catch (Exception ex) {  }
+            catch (Exception ex) { }
 
             return BadRequest();
         }
@@ -94,7 +94,7 @@ namespace SMEConnect.Controllers
         [HttpPut("update")]
         public async Task<ActionResult> UpdateEmployee([FromBody] EmployeeDto employeeDto)
         {
-           
+
             var response = await _employeeProvider.UpdateEmployee(_mapper.Map<Employee>(employeeDto));
 
             if (response.Status == Constants.ApiResponseType.Success)

@@ -1,6 +1,4 @@
-﻿using SMEConnect.Modals;
-
-namespace SMEConnect.Dtos
+﻿namespace SMEConnect.Dtos
 {
     public class TaskItemsDto
     {

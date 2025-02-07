@@ -1,8 +1,8 @@
-﻿using SMEConnect.Contracts;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SMEConnect.Modals;
 using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Modals;
 
 namespace SMEConnect.Controllers
 {

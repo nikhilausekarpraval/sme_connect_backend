@@ -1,6 +1,6 @@
 ﻿namespace SMEConnect.Dtos
 {
-    public class ResetPasswordDto 
+    public class ResetPasswordDto
     {
         public string userName { get; set; }
 

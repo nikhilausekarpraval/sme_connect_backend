@@ -1,12 +1,11 @@
-﻿using SMEConnect.Dtos;
-using SMEConnect.Modals;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static SMEConnect.Constatns.Constants;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
-using System.Linq;
+using SMEConnect.Dtos;
+using SMEConnect.Modals;
+using System.Security.Claims;
+using static SMEConnect.Constatns.Constants;
 
 
 namespace SMEConnect.Providers
@@ -21,7 +20,7 @@ namespace SMEConnect.Providers
         private IUserContext _userContext;
 
 
-        public AdminProvider(IServiceProvider serviceProvider, ILogger<AdminProvider> Logger, DcimDevContext decimDevContext,IUserContext userContext)
+        public AdminProvider(IServiceProvider serviceProvider, ILogger<AdminProvider> Logger, DcimDevContext decimDevContext, IUserContext userContext)
         {
             this._userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             this._roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
@@ -30,7 +29,7 @@ namespace SMEConnect.Providers
             this._logger = Logger;
         }
 
-        public async Task<string> AddRole( RoleDto role)
+        public async Task<string> AddRole(RoleDto role)
         {
 
             try
@@ -38,7 +37,7 @@ namespace SMEConnect.Providers
                 var roleExist = await _roleManager.RoleExistsAsync(role.Name);
                 if (!roleExist)
                 {
-                    await _roleManager.CreateAsync(new ApplicationRole { Name = role.Name ,ModifiedBy =_userContext.Email});
+                    await _roleManager.CreateAsync(new ApplicationRole { Name = role.Name, ModifiedBy = _userContext.Email });
                     return AccessConfigurationSccessMessage.NewRoleAdded;
                 }
                 else
@@ -49,13 +48,13 @@ namespace SMEConnect.Providers
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1,ex,ex.Message);
+                this._logger.LogError(1, ex, ex.Message);
                 return AccessConfigurationErrorMessage.ErrorWhileCreatingRole;
             }
 
         }
 
-        public async Task<string> AddRoleToUser( AssignRoleDto role)
+        public async Task<string> AddRoleToUser(AssignRoleDto role)
         {
             try
             {
@@ -69,22 +68,23 @@ namespace SMEConnect.Providers
                     }
                     else
                     {
-                       return result.Errors.First().Description;
+                        return result.Errors.First().Description;
                     }
-                }else
+                }
+                else
                 {
                     return AccessConfigurationErrorMessage.UserNotFound;
                 }
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1,ex, ex.Message);
+                this._logger.LogError(1, ex, ex.Message);
                 return AccessConfigurationErrorMessage.FailedToAddRoleToUser;
             }
 
         }
 
-        public async Task<string> AddClaimToUser( AssignClaimDto userClaim)
+        public async Task<string> AddClaimToUser(AssignClaimDto userClaim)
         {
             try
             {
@@ -95,8 +95,9 @@ namespace SMEConnect.Providers
                     var result = await _userManager.AddClaimAsync(user, claim);
 
                     return result.Succeeded ? AccessConfigurationSccessMessage.ClaimAddedToUser : AccessConfigurationErrorMessage.FailedToAddClaimToUser;
-                    
-                }else
+
+                }
+                else
                 {
                     return AccessConfigurationErrorMessage.UserNotFound;
                 }
@@ -139,7 +140,8 @@ namespace SMEConnect.Providers
                         Claims = _decimDevContext.RoleClaims
                             .Where(rc => rc.RoleId == role.Id)
                             .Select(rc => new IdentityRoleClaim<string>
-                            {   Id = rc.Id,
+                            {
+                                Id = rc.Id,
                                 RoleId = rc.RoleId,
                                 ClaimType = rc.ClaimType,
                                 ClaimValue = rc.ClaimValue
@@ -197,17 +199,17 @@ namespace SMEConnect.Providers
                             join userRole in _decimDevContext.UserRoles on user.Id equals userRole.UserId
                             join role in _decimDevContext.Roles on userRole.RoleId equals role.Id
                             join userClaims in _decimDevContext.UserClaims on user.Id equals userClaims.UserId into userClaimsGroup
-                            from userClaims in userClaimsGroup.DefaultIfEmpty() 
+                            from userClaims in userClaimsGroup.DefaultIfEmpty()
                             select new { user, role, userClaims };
 
                 var userRolesData = await query.ToListAsync();
 
 
                 var userWithRoles = userRolesData
-                                    .GroupBy(x => x.user.Id) 
+                                    .GroupBy(x => x.user.Id)
                                     .Select(g =>
                                     {
-                                        var user = g.First().user; 
+                                        var user = g.First().user;
                                         return new ApplicationUser
                                         {
                                             Id = user.Id,
@@ -220,7 +222,7 @@ namespace SMEConnect.Providers
                                             Practice = user.Practice,
                                             Claims = g
                                             .Where(x => x.userClaims != null)
-                                            .GroupBy(c => new { c.userClaims.ClaimType, c.userClaims.ClaimValue }) 
+                                            .GroupBy(c => new { c.userClaims.ClaimType, c.userClaims.ClaimValue })
                                             .Select(x => new UserClaimDto
                                             {
                                                 Id = x.First().userClaims.Id,
@@ -228,8 +230,8 @@ namespace SMEConnect.Providers
                                                 ClaimType = x.Key.ClaimType,
                                                 ClaimValue = x.Key.ClaimValue,
                                             }).ToList(),
-                                             Roles = g
-                                            .GroupBy(r => r.role.Id)  
+                                            Roles = g
+                                            .GroupBy(r => r.role.Id)
                                             .Select(x => new RoleDto
                                             {
                                                 Id = x.Key,

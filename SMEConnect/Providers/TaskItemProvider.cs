@@ -1,11 +1,8 @@
-﻿using SMEConnect.Constatns;
+﻿using Microsoft.EntityFrameworkCore;
+using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Formats.Asn1;
 
 namespace SMEConnect.Providers
 {
@@ -23,7 +20,7 @@ namespace SMEConnect.Providers
         {
             try
             {
-                var taskItems = await _context.Tasks.ToListAsync(); 
+                var taskItems = await _context.Tasks.ToListAsync();
                 return new ApiResponse<List<SMEConnect.Modals.Task>>(Constants.ApiResponseType.Success, taskItems);
             }
             catch (Exception ex)
@@ -56,7 +53,7 @@ namespace SMEConnect.Providers
                 var taskItem = await _context.Tasks.FindAsync(id);
                 if (taskItem != null)
                 {
-                     _context.Tasks.Remove(taskItem);
+                    _context.Tasks.Remove(taskItem);
                     await _context.SaveChangesAsync();
                     return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
                 }

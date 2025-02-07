@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SMEConnect.Dtos
+﻿namespace SMEConnect.Dtos
 {
     public class EmployeeTasksDto
     {

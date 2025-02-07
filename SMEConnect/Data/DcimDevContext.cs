@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SMEConnect.Contracts;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace SMEConnect.Data;
 
-public partial class DcimDevContext : IdentityDbContext<ApplicationUser,ApplicationRole,string>
+public partial class DcimDevContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -23,7 +20,7 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
 
     public virtual DbSet<SMEConnect.Modals.Task> Tasks { get; set; }
 
-    public   override  DbSet<ApplicationUser>  Users { get; set; }
+    public override DbSet<ApplicationUser> Users { get; set; }
 
     public virtual DbSet<Practice> Practices { get; set; }
 
@@ -53,7 +50,7 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
             if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
             {
                 entry.Entity.ModifiedOnDt = DateTime.UtcNow;
-                entry.Entity.ModifiedBy = currentUserEmail; 
+                entry.Entity.ModifiedBy = currentUserEmail;
             }
         }
 

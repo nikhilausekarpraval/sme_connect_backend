@@ -1,24 +1,17 @@
 ﻿namespace SMEConnect.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+    using SMEConnect.Contracts;
     using SMEConnect.Data;
     using SMEConnect.Dtos;
     using SMEConnect.Modals;
     using SMEConnect.Modals.JWTAuthentication.Authentication;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Http.HttpResults;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Data.SqlClient;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
     using System;
     using System.Threading.Tasks;
-    using SMEConnect.Helpers;
-    using System.Linq;
-    using SMEConnect.Contracts;
-    using Microsoft.AspNetCore.Mvc.ApiExplorer;
     using static SMEConnect.Constatns.Constants;
 
     namespace JWTAuthentication.Controllers
@@ -53,14 +46,14 @@
                 // var user = await userManager.FindByEmailAsync(model.UserName);
                 try
                 {
-                  var result =  await this._authenticationProvider.Login(model);
+                    var result = await this._authenticationProvider.Login(model);
                     return new JsonResult(result?.data != null ? Ok(result.data) : Unauthorized(result));
                 }
                 catch (Exception ex)
                 {
-                    return new JsonResult( NotFound(new ResponseDto { message = "Error", status = "", statusText = ex.Message }));
+                    return new JsonResult(NotFound(new ResponseDto { message = "Error", status = "", statusText = ex.Message }));
                 }
-                
+
             }
 
             //[HttpPost]
@@ -118,9 +111,9 @@
 
                     return new JsonResult(Ok(result));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    return new JsonResult(NotFound(new ResponseDto { status = "Error", message = ex.Message, statusText = ex.Message })); 
+                    return new JsonResult(NotFound(new ResponseDto { status = "Error", message = ex.Message, statusText = ex.Message }));
                 }
 
             }
@@ -138,7 +131,7 @@
                 }
                 catch (Exception ex)
                 {
-                    return new JsonResult(NotFound(new ResponseDto { status = "Error", message = "" ,statusText = ex.Message}));
+                    return new JsonResult(NotFound(new ResponseDto { status = "Error", message = "", statusText = ex.Message }));
                 }
 
             }
@@ -156,7 +149,7 @@
                 }
                 catch (Exception ex)
                 {
-                    return new JsonResult(NotFound(new ResponseDto { statusText = ex.Message, status="Error", message="" }));
+                    return new JsonResult(NotFound(new ResponseDto { statusText = ex.Message, status = "Error", message = "" }));
                 }
 
             }
@@ -189,7 +182,7 @@
                     var result = await this._authenticationProvider.RegisterAdmin(model);
                     return new JsonResult(result.statusText == AccessConfigurationSccessMessage.UserCreated ? Ok(result) : BadRequest(result));
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     return new JsonResult(NotFound(ex.Message));
                 }

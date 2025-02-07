@@ -18,7 +18,7 @@
             Star
         }
 
-        public static string[] Claims =  { "DeleteTask", "ViewReport", "ManageSystem" };
+        public static string[] Claims = { "DeleteTask", "ViewReport", "ManageSystem" };
 
         public static class ApiErrors
         {
@@ -92,5 +92,5 @@
         {
             public static string selectUsers = "SELECT * FROM AspNetUsers WHERE Email = @email";
         }
-}
+    }
 }

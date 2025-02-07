@@ -6,7 +6,7 @@ namespace SMEConnectSignalRServer.Interfaces
 {
     public interface IMessageService
     {
-        public  Task<List<Message>> GetDiscussionChat(UserDto userDto);
+        public Task<List<Message>> GetDiscussionChat(UserDto userDto);
 
         public Task<bool> AddMessage(Message message);
 

@@ -4,7 +4,6 @@ using SMEConnectSignalRServer.AppContext;
 using SMEConnectSignalRServer.Interfaces;
 using SMEConnectSignalRServer.Models;
 using SMEConnectSignalRServer.Services;
-using System.Diagnostics.CodeAnalysis;
 
 var builder = WebApplication.CreateBuilder(args);
 

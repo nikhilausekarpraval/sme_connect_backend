@@ -1,9 +1,9 @@
-﻿using SMEConnect.Constatns;
+﻿using Microsoft.EntityFrameworkCore;
+using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Dtos;
 using SMEConnect.Modals;
-using Microsoft.EntityFrameworkCore;
 using static SMEConnect.Constatns.Constants;
 
 namespace SMEConnect.Providers
@@ -102,12 +102,12 @@ namespace SMEConnect.Providers
                 var usersWithNames = await _dcimDevContext.GroupUsers
                                     .Where(gu => gu.Group == group)
                                     .Join(
-                                        _dcimDevContext.Users,               
-                                        gu => gu.UserEmail,                      
-                                        u => u.Email,                        
-                                        (gu, u) => new                       
+                                        _dcimDevContext.Users,
+                                        gu => gu.UserEmail,
+                                        u => u.Email,
+                                        (gu, u) => new
                                         {
-                                            gu.Id,                           
+                                            gu.Id,
                                             gu.Group,
                                             gu.UserEmail,
                                             u.DisplayName,
@@ -117,17 +117,17 @@ namespace SMEConnect.Providers
                                         })
                                     .ToListAsync();
 
-                                    var userDtos = usersWithNames.Select(u => new GroupUserDto
-                                    {
-                                        Id = u.Id,
-                                        Group = u.Group,
-                                        UserEmail = u.UserEmail,
-                                        Name = u.DisplayName,
-                                        GroupRole = u.GroupRole,
-                                        ModifiedBy = u.ModifiedBy,
-                                        ModifiedOnDt = u.ModifiedOnDt
+                var userDtos = usersWithNames.Select(u => new GroupUserDto
+                {
+                    Id = u.Id,
+                    Group = u.Group,
+                    UserEmail = u.UserEmail,
+                    Name = u.DisplayName,
+                    GroupRole = u.GroupRole,
+                    ModifiedBy = u.ModifiedBy,
+                    ModifiedOnDt = u.ModifiedOnDt
 
-                                    }).ToList();
+                }).ToList();
 
                 return new ApiResponse<List<GroupUserDto>>(ApiResponseType.Success, userDtos);
             }

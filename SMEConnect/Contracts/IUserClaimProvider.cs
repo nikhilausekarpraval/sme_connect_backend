@@ -1,6 +1,6 @@
-﻿using SMEConnect.Dtos;
+﻿using Microsoft.AspNetCore.Identity;
+using SMEConnect.Dtos;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Identity;
 
 namespace SMEConnect.Contracts
 {

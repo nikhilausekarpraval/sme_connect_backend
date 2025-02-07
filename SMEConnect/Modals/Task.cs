@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SMEConnect.Modals;
+﻿namespace SMEConnect.Modals;
 
 public partial class Task
 {

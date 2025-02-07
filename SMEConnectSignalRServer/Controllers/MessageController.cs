@@ -1,10 +1,7 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SMEConnectSignalRServer.Dtos;
 using SMEConnectSignalRServer.Interfaces;
 using SMEConnectSignalRServer.Modals;
-using SMEConnectSignalRServer.Services;
 
 namespace SMEConnectSignalRServer.Controllers
 {
@@ -53,7 +50,7 @@ namespace SMEConnectSignalRServer.Controllers
                     DisplayName = messageDto.DisplayName
                 };
 
-                if(messageDto.Attachments != null)
+                if (messageDto.Attachments != null)
                 {
                     foreach (var file in messageDto.Attachments)
                     {
@@ -70,7 +67,7 @@ namespace SMEConnectSignalRServer.Controllers
                         }
                     }
                 }
-                
+
                 var result = await _messageService.AddMessage(message);
                 return Ok(result);
             }

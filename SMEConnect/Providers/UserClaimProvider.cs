@@ -1,11 +1,11 @@
-﻿using SMEConnect.Contracts;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Dtos;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using static SMEConnect.Constatns.Constants;
 using System.Security.Claims;
+using static SMEConnect.Constatns.Constants;
 
 namespace SMEConnect.Providers
 {

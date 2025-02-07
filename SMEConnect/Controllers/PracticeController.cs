@@ -1,9 +1,8 @@
-﻿using SMEConnect.Constatns;
-using SMEConnect.Contracts;
-using SMEConnect.Dtos;
-using SMEConnect.Modals;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Modals;
 
 namespace SMEConnect.Controllers
 {
@@ -17,7 +16,7 @@ namespace SMEConnect.Controllers
         private IPracticeProvider _practiceProvider;
         private IUserContext _userContext;
 
-        public PracticeController(IPracticeProvider practiceProvider,IUserContext userContext)
+        public PracticeController(IPracticeProvider practiceProvider, IUserContext userContext)
         {
             this._practiceProvider = practiceProvider;
             this._userContext = userContext;
@@ -78,7 +77,7 @@ namespace SMEConnect.Controllers
 
         [HttpDelete]
         [Route("delete_practices")]
-        public async Task<IActionResult> DeletePractices( List<int> practicesIds)
+        public async Task<IActionResult> DeletePractices(List<int> practicesIds)
         {
             try
             {

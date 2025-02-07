@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Dtos;
 using SMEConnect.Helpers;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
 using static SMEConnect.Constatns.Constants;
 
 
@@ -23,7 +22,7 @@ namespace SMEConnect.Controllers
         private readonly IEmployeeProvider _employeeProvider;
         private readonly IMapper _mapper;
 
-        public TaskItemController(ILogger<TaskItemController> logger, ITaskItemProvider taskItemProvider,IMapper mapper,IEmployeeProvider employeeProvider)
+        public TaskItemController(ILogger<TaskItemController> logger, ITaskItemProvider taskItemProvider, IMapper mapper, IEmployeeProvider employeeProvider)
         {
             _logger = logger;
             _taskItemProvider = taskItemProvider;
@@ -60,7 +59,7 @@ namespace SMEConnect.Controllers
             }
             else
             {
-                _logger.LogWarning(Helper.GetErrorEntityWithIdNotFound(ModuleName.TaskItem,id));
+                _logger.LogWarning(Helper.GetErrorEntityWithIdNotFound(ModuleName.TaskItem, id));
                 return NotFound(response.Message);
             }
         }
@@ -74,7 +73,7 @@ namespace SMEConnect.Controllers
                 return BadRequest(ApiErrors.NullTask);
             }
 
-            if(taskItemDto.EmployeeId == 0)
+            if (taskItemDto.EmployeeId == 0)
             {
                 taskItemDto.EmployeeId = null;
             }
@@ -86,7 +85,7 @@ namespace SMEConnect.Controllers
 
             if (response.Status == Constants.ApiResponseType.Success)
             {
-                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItemDto.Id}, taskItemDto);
+                return CreatedAtAction(nameof(GetTaskItem), new { id = taskItemDto.Id }, taskItemDto);
             }
             else
             {
@@ -97,15 +96,16 @@ namespace SMEConnect.Controllers
 
 
         [HttpPut("update")]
-        public async Task<ActionResult> UpdateTaskItem( [FromBody] TaskItemsDto taskItemDto)
+        public async Task<ActionResult> UpdateTaskItem([FromBody] TaskItemsDto taskItemDto)
         {
             if (taskItemDto != null)
             {
-                if(taskItemDto.EmployeeId == null)
+                if (taskItemDto.EmployeeId == null)
                 {
-                    return  StatusCode(404, ApiErrors.TaskNotFound);
+                    return StatusCode(404, ApiErrors.TaskNotFound);
 
-                }else
+                }
+                else
                 {
                     ApiResponse<Employee> result = await _employeeProvider.GetEmployee(taskItemDto.EmployeeId);
                     if (result.Status != Constants.ApiResponseType.Success)

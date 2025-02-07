@@ -1,7 +1,7 @@
-﻿using SMEConnect.Contracts;
+﻿using Microsoft.AspNetCore.Identity;
+using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Identity;
 
 namespace SMEConnect.Providers
 {

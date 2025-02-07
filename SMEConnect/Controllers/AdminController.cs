@@ -1,8 +1,7 @@
-﻿using SMEConnect.Contracts;
-using SMEConnect.Dtos;
-using SMEConnect.Modals;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SMEConnect.Contracts;
+using SMEConnect.Dtos;
 using static SMEConnect.Constatns.Constants;
 
 
@@ -14,9 +13,10 @@ namespace SMEConnect.Controllers
     public class AdminController : ControllerBase
     {
 
-      private IAdminProvider _adminProvider;
+        private IAdminProvider _adminProvider;
 
-      public  AdminController(IServiceProvider serviceProvider,IAdminProvider adminProvider) {
+        public AdminController(IServiceProvider serviceProvider, IAdminProvider adminProvider)
+        {
             this._adminProvider = adminProvider;
         }
 
@@ -28,20 +28,20 @@ namespace SMEConnect.Controllers
 
             try
             {
-              var result =  await this._adminProvider.AddRole(role);
-               return result == AccessConfigurationErrorMessage.RoleExist ? new JsonResult(NotFound(result)) : new JsonResult(Ok(result));
+                var result = await this._adminProvider.AddRole(role);
+                return result == AccessConfigurationErrorMessage.RoleExist ? new JsonResult(NotFound(result)) : new JsonResult(Ok(result));
             }
             catch (Exception ex)
             {
                 return new JsonResult(NotFound(ex));
             }
-            
+
         }
 
 
         [HttpPost]
         [Route("add_role_to_user")]
-        public async Task<IActionResult> AddRoleToUser([FromBody]  AssignRoleDto addRoleToUser)
+        public async Task<IActionResult> AddRoleToUser([FromBody] AssignRoleDto addRoleToUser)
         {
             try
             {

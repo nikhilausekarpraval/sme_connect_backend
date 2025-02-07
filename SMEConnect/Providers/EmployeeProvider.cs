@@ -1,12 +1,8 @@
-﻿using AutoMapper;
+﻿using Microsoft.EntityFrameworkCore;
 using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
 
 namespace SMEConnect.Providers
 {
@@ -24,7 +20,7 @@ namespace SMEConnect.Providers
 
         public async Task<ApiResponse<List<Employee>>> getEmployees()
         {
-           
+
             try
             {
                 //var employees = await _context.Employees.Include(e => e.taskItems).Where(e => e.taskItems.Any(t => t.employeeId == e.Id)).ToListAsync();
@@ -67,7 +63,7 @@ namespace SMEConnect.Providers
                 if (employee != null)
                 {
                     _context.Employees.Remove(employee);
-                   await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
                     return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
                 }
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, false, "Employee not found.");

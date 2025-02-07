@@ -1,5 +1,5 @@
-﻿using SMEConnect.Contracts;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using SMEConnect.Contracts;
 
 namespace SMEConnect.Modals
 {

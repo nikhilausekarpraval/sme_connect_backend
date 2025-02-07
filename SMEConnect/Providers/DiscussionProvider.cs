@@ -1,8 +1,8 @@
-﻿using SMEConnect.Constatns;
+﻿using Microsoft.EntityFrameworkCore;
+using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Modals;
-using Microsoft.EntityFrameworkCore;
 
 namespace SMEConnect.Providers
 {
@@ -23,7 +23,7 @@ namespace SMEConnect.Providers
             try
             {
                 var discussion = await _context.Discussions.Where(d => d.GroupName == groupId).ToListAsync();
-                return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Success, discussion ,"");
+                return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Success, discussion, "");
             }
             catch (Exception ex)
             {

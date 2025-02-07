@@ -1,5 +1,5 @@
-﻿using SMEConnect.Modals;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using SMEConnect.Modals;
 
 namespace SMEConnect.Providers
 {

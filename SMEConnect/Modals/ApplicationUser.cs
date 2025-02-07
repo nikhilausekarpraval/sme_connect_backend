@@ -1,5 +1,5 @@
-﻿using SMEConnect.Dtos;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using SMEConnect.Dtos;
 
 namespace SMEConnect.Modals
 {
@@ -7,7 +7,7 @@ namespace SMEConnect.Modals
     {
         public string? DisplayName { get; set; }
 
-        public string? Practice {  get; set; }
+        public string? Practice { get; set; }
 
         public string? ModifiedBy { get; set; }
 

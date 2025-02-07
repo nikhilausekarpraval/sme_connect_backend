@@ -1,9 +1,8 @@
-﻿using SMEConnect.Data;
-using SMEConnect.Modals;
+﻿using Microsoft.EntityFrameworkCore;
 using SMEConnect.Constatns;
-using Microsoft.EntityFrameworkCore;
 using SMEConnect.Contracts;
-using SMEConnect.Dtos;
+using SMEConnect.Data;
+using SMEConnect.Modals;
 
 namespace SMEConnect.Providers
 {
@@ -12,7 +11,7 @@ namespace SMEConnect.Providers
         private readonly DcimDevContext _context;
         private readonly ILogger _logger;
 
-        public PracticeProvider(DcimDevContext context,ILogger<PracticeProvider> logger)
+        public PracticeProvider(DcimDevContext context, ILogger<PracticeProvider> logger)
         {
             _context = context;
             _logger = logger;
@@ -70,7 +69,7 @@ namespace SMEConnect.Providers
                 return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, ex.Message);
             }
         }
-    
+
         public async Task<ApiResponse<bool>> CreatePractice(Practice practice)
         {
             try

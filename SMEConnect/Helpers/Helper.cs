@@ -1,12 +1,10 @@
-﻿using System.Text;
-using System.Security.Cryptography;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using System.Security.Claims;
-using Microsoft.Extensions.Configuration;
-using SMEConnect.Modals;
+﻿using Microsoft.IdentityModel.Tokens;
 using SMEConnect.Dtos;
+using SMEConnect.Modals;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SMEConnect.Helpers
 {
@@ -25,7 +23,7 @@ namespace SMEConnect.Helpers
             return $"{entity} with ID {id} not found.";
         }
 
-        public static dynamic GetAuthToken(List<Claim> authClaims,IConfiguration _configuration)
+        public static dynamic GetAuthToken(List<Claim> authClaims, IConfiguration _configuration)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 

@@ -1,8 +1,8 @@
-﻿using SMEConnect.Constatns;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SMEConnect.Constatns;
 using SMEConnect.Dtos;
 using SMEConnect.Providers;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace SMEConnect.Controllers
 {
@@ -77,11 +77,11 @@ namespace SMEConnect.Controllers
 
                 if (response.Status == Constants.ApiResponseType.Success)
                 {
-                    return new JsonResult(Ok(response)); 
+                    return new JsonResult(Ok(response));
                 }
                 else
                 {
-                    return new JsonResult(StatusCode(500, response.Message)); 
+                    return new JsonResult(StatusCode(500, response.Message));
                 }
             }
             catch (Exception ex)

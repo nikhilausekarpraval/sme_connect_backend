@@ -1,6 +1,5 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
-using static SMEConnect.Constatns.Constants;
 
 namespace SMEConnect.Modals
 {

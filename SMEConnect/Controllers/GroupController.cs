@@ -1,11 +1,8 @@
-﻿using SMEConnect.Contracts;
-using SMEConnect.Data;
-using SMEConnect.Providers;
-using SMEConnect.Dtos;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SMEConnect.Modals;
 using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Modals;
 
 namespace SMEConnect.Controllers
 {
@@ -17,7 +14,7 @@ namespace SMEConnect.Controllers
         private IGroupProvider _userGroupProvider;
         private IUserContext _userContext;
 
-        public GroupController(IGroupProvider userGroupProvider,IUserContext userContext)
+        public GroupController(IGroupProvider userGroupProvider, IUserContext userContext)
         {
             this._userGroupProvider = userGroupProvider;
             _userContext = userContext;
@@ -27,7 +24,7 @@ namespace SMEConnect.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [Route("add_group")]
-        public async Task<IActionResult> AddGroup( UserGroup group)
+        public async Task<IActionResult> AddGroup(UserGroup group)
         {
 
             try
@@ -73,7 +70,7 @@ namespace SMEConnect.Controllers
                 var userRole = roleClaim?.Value;
 
                 var result = await this._userGroupProvider.getUserPracticeGroups(practice);
-                
+
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -81,13 +78,13 @@ namespace SMEConnect.Controllers
                 return new JsonResult(NotFound(ex.Message));
             }
         }
-    
+
 
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
         [Route("delete_groups")]
-        public async Task<IActionResult> DeleteGroup( List<int> groupIds)
+        public async Task<IActionResult> DeleteGroup(List<int> groupIds)
         {
             try
             {

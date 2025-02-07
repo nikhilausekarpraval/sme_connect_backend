@@ -1,13 +1,15 @@
-using SMEConnect.Contracts;
-using SMEConnect.Data;
-using SMEConnect.Modals;
-using SMEConnect.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Modals;
+using SMEConnect.Providers;
+using SMEConnectSignalRServer.Interfaces;
+using SMEConnectSignalRServer.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,11 +64,11 @@ builder.Services.AddScoped<IPracticeProvider, PracticeProvider>();
 builder.Services.AddScoped<IGroupProvider, UserGroupProvider>();
 builder.Services.AddScoped<IRoleClaimProvider, RoleClaimProvider>();
 builder.Services.AddScoped<RoleClaimProvider>();
-builder.Services.AddScoped<IGroupUserProvider,GroupUserProvider>();
+builder.Services.AddScoped<IGroupUserProvider, GroupUserProvider>();
 builder.Services.AddScoped<IUserClaimProvider, UserClaimProvider>();
 builder.Services.AddScoped<IDiscussionProvider, DiscussionProvider>();
 builder.Services.AddScoped<IDiscussionChatProvider, DiscussionChatProvider>();
-
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 
 builder.Services.AddAuthorization(options =>
@@ -90,7 +92,7 @@ builder.Services.AddAuthorization(options =>
     );
 });
 
-builder.Services.AddControllers(); 
+builder.Services.AddControllers();
 
 
 builder.Services.AddCors(options =>
@@ -171,6 +173,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
-app.MapControllers(); 
+app.MapControllers();
 
 app.Run();

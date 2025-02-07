@@ -1,14 +1,9 @@
-﻿using SMEConnect.Constatns;
+﻿using Microsoft.EntityFrameworkCore;
+using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
-using SMEConnect.Dtos;
 using SMEConnect.Modals;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using static SMEConnect.Constatns.Constants;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SMEConnect.Providers
 {
@@ -18,7 +13,7 @@ namespace SMEConnect.Providers
         private DcimDevContext _dcimDevContext;
         private IUserContext _userContext;
 
-        public UserGroupProvider(ILogger<UserGroupProvider> Logger, DcimDevContext dcimDevContext,IUserContext userContext)
+        public UserGroupProvider(ILogger<UserGroupProvider> Logger, DcimDevContext dcimDevContext, IUserContext userContext)
         {
             this._dcimDevContext = dcimDevContext;
             this._logger = Logger;
@@ -53,7 +48,7 @@ namespace SMEConnect.Providers
             {
                 List<UserGroup> roles = await _dcimDevContext.UserGroups.ToListAsync();
                 await _dcimDevContext.SaveChangesAsync();
-                return new ApiResponse<List<UserGroup>> (ApiResponseType.Success, roles);
+                return new ApiResponse<List<UserGroup>>(ApiResponseType.Success, roles);
             }
             catch (Exception ex)
             {

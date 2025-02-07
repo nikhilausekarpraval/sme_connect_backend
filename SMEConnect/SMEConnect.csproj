@@ -33,4 +33,8 @@
     <Folder Include="Constants\Enum\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SMEConnectSignalRServer\SMEConnectSignalRServer.csproj" />
+  </ItemGroup>
+
 </Project>

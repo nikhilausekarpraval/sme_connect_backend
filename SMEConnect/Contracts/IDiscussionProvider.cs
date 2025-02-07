@@ -4,7 +4,7 @@ namespace SMEConnect.Contracts
 {
     public interface IDiscussionProvider
     {
-        public Task<ApiResponse<List<Discussion>>> getDiscussions (string groupId);
+        public Task<ApiResponse<List<Discussion>>> getDiscussions(string groupId);
 
         public Task<ApiResponse<bool>> DeleteDiscussion(string discussions);
 
