@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DemoDotNetCoreApplication.Modals;
+namespace SMEConnect.Modals;
 
 public partial class Employee
 {

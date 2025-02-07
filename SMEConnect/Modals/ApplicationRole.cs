@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace DemoDotNetCoreApplication.Modals
+namespace SMEConnect.Modals
 {
     public class ApplicationRole : IdentityRole
     {

@@ -1,12 +1,17 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Modals;
 
-namespace DemoDotNetCoreApplication.Contracts
+namespace SMEConnect.Contracts
 {
     public interface IDiscussionProvider
     {
         public Task<ApiResponse<List<Discussion>>> getDiscussions (string groupId);
 
         public Task<ApiResponse<bool>> DeleteDiscussion(string discussions);
+
+        public Task<ApiResponse<List<Discussion>>> GetSimilerDiscussionFromGroup(string discussion);
+
+        public Task<ApiResponse<List<Discussion>>> getRecentDiscussions(string discussion);
+
 
         public Task<ApiResponse<bool>> CreateDiscussion(Discussion Discussion);
 

@@ -1,4 +1,4 @@
-﻿namespace DemoDotNetCoreApplication.Constatns
+﻿namespace SMEConnect.Constatns
 {
     public class Constants
     {

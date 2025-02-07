@@ -1,7 +1,7 @@
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Modals;
-using DemoDotNetCoreApplication.Providers;
+using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Modals;
+using SMEConnect.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -66,6 +66,7 @@ builder.Services.AddScoped<IGroupUserProvider,GroupUserProvider>();
 builder.Services.AddScoped<IUserClaimProvider, UserClaimProvider>();
 builder.Services.AddScoped<IDiscussionProvider, DiscussionProvider>();
 builder.Services.AddScoped<IDiscussionChatProvider, DiscussionChatProvider>();
+
 
 
 builder.Services.AddAuthorization(options =>

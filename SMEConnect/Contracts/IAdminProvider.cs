@@ -1,10 +1,10 @@
-﻿using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Identity;
-using static DemoDotNetCoreApplication.Constatns.Constants;
+using static SMEConnect.Constatns.Constants;
 using System.Security.Claims;
 
-namespace DemoDotNetCoreApplication.Contracts
+namespace SMEConnect.Contracts
 {
     public interface IAdminProvider
     {

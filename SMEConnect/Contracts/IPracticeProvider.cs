@@ -1,7 +1,7 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Modals;
 using Microsoft.EntityFrameworkCore;
 
-namespace DemoDotNetCoreApplication.Contracts
+namespace SMEConnect.Contracts
 {
     public interface IPracticeProvider
     {

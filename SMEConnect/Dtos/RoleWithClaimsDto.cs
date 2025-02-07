@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace DemoDotNetCoreApplication.Dtos
+namespace SMEConnect.Dtos
 {
     public class RoleWithClaimsDto
     {

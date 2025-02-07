@@ -1,10 +1,10 @@
-﻿using DemoDotNetCoreApplication.Constatns;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Modals;
 using Microsoft.EntityFrameworkCore;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
 
     public class DiscussionChatProvider : IDiscussionChatProvider

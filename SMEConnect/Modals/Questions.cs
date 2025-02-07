@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace DemoDotNetCoreApplication.Modals
+namespace SMEConnect.Modals
 {
     public class Questions
     {

@@ -1,9 +1,9 @@
-﻿using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Identity;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
 
     public class UserContextProvider

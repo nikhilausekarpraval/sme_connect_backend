@@ -1,8 +1,8 @@
-﻿using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Helpers;
-using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Data;
+using SMEConnect.Dtos;
+using SMEConnect.Helpers;
+using SMEConnect.Modals.JWTAuthentication.Authentication;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +10,13 @@ using Microsoft.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static DemoDotNetCoreApplication.Constatns.Constants;
+using static SMEConnect.Constatns.Constants;
 using Microsoft.EntityFrameworkCore;
-using DemoDotNetCoreApplication.Contracts;
+using SMEConnect.Contracts;
 using System.Data;
 using AutoMapper;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
     public class AuthenticationProvider : IAuthenticationProvider
     {

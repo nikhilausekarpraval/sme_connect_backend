@@ -1,10 +1,10 @@
-﻿using DemoDotNetCoreApplication.Constatns;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Modals;
 using Microsoft.EntityFrameworkCore;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
 
     public class DiscussionProvider : IDiscussionProvider
@@ -54,6 +54,35 @@ namespace DemoDotNetCoreApplication.Providers
             {
                 this._logger.LogError(1, ex, ex.Message);
                 return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, ex.Message);
+            }
+        }
+
+
+        public async Task<ApiResponse<List<Discussion>>> getRecentDiscussions(string discussion)
+        {
+            try
+            {
+                var discussions = await _context.Discussions.Where(d => d.GroupName == discussion).ToListAsync();
+                return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Success, discussions, "");
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Failure, null, ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse<List<Discussion>>> GetSimilerDiscussionFromGroup(string discussion)
+        {
+            try
+            {
+                var discussions = await _context.Discussions.Where(d => d.GroupName == discussion).ToListAsync();
+                return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Success, discussions, "");
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Failure, null, ex.Message);
             }
         }
 

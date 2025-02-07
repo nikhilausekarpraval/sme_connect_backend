@@ -1,11 +1,11 @@
-﻿using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Modals;
-using DemoDotNetCoreApplication.Constatns;
+﻿using SMEConnect.Data;
+using SMEConnect.Modals;
+using SMEConnect.Constatns;
 using Microsoft.EntityFrameworkCore;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Dtos;
+using SMEConnect.Contracts;
+using SMEConnect.Dtos;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
     public class PracticeProvider : IPracticeProvider
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DemoDotNetCoreApplication.Dtos
+namespace SMEConnect.Dtos
 {
     public class EmployeeTasksDto
     {

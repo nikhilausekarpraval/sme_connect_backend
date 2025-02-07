@@ -1,4 +1,4 @@
-﻿namespace DemoDotNetCoreApplication.Dtos
+﻿namespace SMEConnect.Dtos
 {
     public class AddClaimToUserDto
     {

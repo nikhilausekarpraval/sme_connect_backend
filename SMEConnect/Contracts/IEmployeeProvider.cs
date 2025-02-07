@@ -1,7 +1,7 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Modals;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
-namespace DemoDotNetCoreApplication.Contracts
+namespace SMEConnect.Contracts
 {
     public interface IEmployeeProvider
     {

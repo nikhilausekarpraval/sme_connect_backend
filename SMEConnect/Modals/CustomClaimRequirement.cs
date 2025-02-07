@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace DemoDotNetCoreApplication.Modals
+namespace SMEConnect.Modals
 {
     public class CustomClaimRequirement : IAuthorizationRequirement
     {

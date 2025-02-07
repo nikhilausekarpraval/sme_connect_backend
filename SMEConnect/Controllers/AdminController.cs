@@ -1,12 +1,12 @@
-﻿using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Contracts;
+using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static DemoDotNetCoreApplication.Constatns.Constants;
+using static SMEConnect.Constatns.Constants;
 
 
-namespace DemoDotNetCoreApplication.Controllers
+namespace SMEConnect.Controllers
 {
     [ApiController]
     [Authorize(Roles = "Admin")]

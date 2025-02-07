@@ -1,4 +1,4 @@
-﻿namespace DemoDotNetCoreApplication.Modals
+﻿namespace SMEConnect.Modals
 {
     namespace JWTAuthentication.Authentication
     {

@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using DemoDotNetCoreApplication.Constatns;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Modals;
+using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
     public class EmployeeProvider : IEmployeeProvider
     {

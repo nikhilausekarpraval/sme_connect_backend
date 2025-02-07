@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
+using SMEConnect.Dtos;
+using SMEConnect.Modals;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
     public class AutoMapperProvider : Profile
     {
@@ -10,8 +10,8 @@ namespace DemoDotNetCoreApplication.Providers
             CreateMap<Employee, EmployeeDto>();
             CreateMap<EmployeeDto, Employee>();
 
-            CreateMap<DemoDotNetCoreApplication.Modals.Task, TaskItemsDto>();
-            CreateMap<TaskItemsDto, DemoDotNetCoreApplication.Modals.Task>();
+            CreateMap<SMEConnect.Modals.Task, TaskItemsDto>();
+            CreateMap<TaskItemsDto, SMEConnect.Modals.Task>();
 
             CreateMap<Employee,EmployeeTasksDto>();
             CreateMap<EmployeeTasksDto, Employee>();

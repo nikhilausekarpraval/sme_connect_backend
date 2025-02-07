@@ -1,6 +1,6 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Modals;
 
-namespace DemoDotNetCoreApplication.Dtos
+namespace SMEConnect.Dtos
 {
     public class TaskItemsDto
     {

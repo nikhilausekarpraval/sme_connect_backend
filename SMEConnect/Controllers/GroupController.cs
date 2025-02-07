@@ -1,13 +1,13 @@
-﻿using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Providers;
-using DemoDotNetCoreApplication.Dtos;
+﻿using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Providers;
+using SMEConnect.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using DemoDotNetCoreApplication.Modals;
-using DemoDotNetCoreApplication.Constatns;
+using SMEConnect.Modals;
+using SMEConnect.Constatns;
 
-namespace DemoDotNetCoreApplication.Controllers
+namespace SMEConnect.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

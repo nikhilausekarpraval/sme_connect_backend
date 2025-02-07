@@ -1,8 +1,8 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
-using static DemoDotNetCoreApplication.Constatns.Constants;
+using static SMEConnect.Constatns.Constants;
 
-namespace DemoDotNetCoreApplication.Modals
+namespace SMEConnect.Modals
 {
     public class Discussion
     {

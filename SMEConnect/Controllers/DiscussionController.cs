@@ -1,10 +1,10 @@
-﻿using DemoDotNetCoreApplication.Constatns;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DemoDotNetCoreApplication.Controllers
+namespace SMEConnect.Controllers
 {
 
     [ApiController]
@@ -68,6 +68,37 @@ namespace DemoDotNetCoreApplication.Controllers
             try
             {
                 var result = await this._discussionProvider.DeleteDiscussion(discussion);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
+
+        [HttpGet]
+        [Route("get_recent_discussions")]
+        public async Task<IActionResult> GetRecentDiscussionFromGroup([FromQuery] string group)
+        {
+            try
+            {
+                var result = await this._discussionProvider.getRecentDiscussions(group);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
+        [HttpGet]
+        [Route("get_similer_discussions")]
+        public async Task<IActionResult> GetSimilerDiscussionFromGroup([FromQuery] string group)
+        {
+            try
+            {
+                var result = await this._discussionProvider.GetSimilerDiscussionFromGroup(group);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)

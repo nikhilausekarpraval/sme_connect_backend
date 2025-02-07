@@ -1,8 +1,8 @@
-﻿using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Modals;
-using static DemoDotNetCoreApplication.Constatns.Constants;
+﻿using SMEConnect.Data;
+using SMEConnect.Modals;
+using static SMEConnect.Constatns.Constants;
 
-namespace DemoDotNetCoreApplication.Contracts
+namespace SMEConnect.Contracts
 {
     public interface IGroupProvider
     {

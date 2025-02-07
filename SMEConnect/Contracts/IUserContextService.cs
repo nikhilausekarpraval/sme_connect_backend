@@ -1,4 +1,4 @@
-﻿namespace DemoDotNetCoreApplication.Contracts
+﻿namespace SMEConnect.Contracts
 {
     public interface IUserContextService
     {

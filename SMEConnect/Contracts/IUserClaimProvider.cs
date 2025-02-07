@@ -1,8 +1,8 @@
-﻿using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Identity;
 
-namespace DemoDotNetCoreApplication.Contracts
+namespace SMEConnect.Contracts
 {
     public interface IUserClaimProvider
     {

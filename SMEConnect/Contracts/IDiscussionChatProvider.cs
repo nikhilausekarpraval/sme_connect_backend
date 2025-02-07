@@ -1,6 +1,6 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Modals;
 
-namespace DemoDotNetCoreApplication.Contracts
+namespace SMEConnect.Contracts
 {
     public interface IDiscussionChatProvider
     {

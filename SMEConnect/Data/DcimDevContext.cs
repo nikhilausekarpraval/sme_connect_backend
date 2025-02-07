@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Modals;
+using SMEConnect.Contracts;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace DemoDotNetCoreApplication.Data;
+namespace SMEConnect.Data;
 
 public partial class DcimDevContext : IdentityDbContext<ApplicationUser,ApplicationRole,string>
 {
@@ -21,7 +21,7 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
 
     public virtual DbSet<Employee> Employees { get; set; }
 
-    public virtual DbSet<DemoDotNetCoreApplication.Modals.Task> Tasks { get; set; }
+    public virtual DbSet<SMEConnect.Modals.Task> Tasks { get; set; }
 
     public   override  DbSet<ApplicationUser>  Users { get; set; }
 
@@ -107,7 +107,7 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser,Applicat
                 .HasColumnName("position");
         });
 
-        modelBuilder.Entity<DemoDotNetCoreApplication.Modals.Task>(entity =>
+        modelBuilder.Entity<SMEConnect.Modals.Task>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__task__3213E83F05BE6225");
 

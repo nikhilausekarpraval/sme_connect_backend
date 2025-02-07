@@ -1,9 +1,9 @@
-﻿namespace DemoDotNetCoreApplication.Controllers
+﻿namespace SMEConnect.Controllers
 {
-    using DemoDotNetCoreApplication.Data;
-    using DemoDotNetCoreApplication.Dtos;
-    using DemoDotNetCoreApplication.Modals;
-    using DemoDotNetCoreApplication.Modals.JWTAuthentication.Authentication;
+    using SMEConnect.Data;
+    using SMEConnect.Dtos;
+    using SMEConnect.Modals;
+    using SMEConnect.Modals.JWTAuthentication.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.HttpResults;
@@ -15,11 +15,11 @@
     using Microsoft.Extensions.Configuration;
     using System;
     using System.Threading.Tasks;
-    using DemoDotNetCoreApplication.Helpers;
+    using SMEConnect.Helpers;
     using System.Linq;
-    using DemoDotNetCoreApplication.Contracts;
+    using SMEConnect.Contracts;
     using Microsoft.AspNetCore.Mvc.ApiExplorer;
-    using static DemoDotNetCoreApplication.Constatns.Constants;
+    using static SMEConnect.Constatns.Constants;
 
     namespace JWTAuthentication.Controllers
     {

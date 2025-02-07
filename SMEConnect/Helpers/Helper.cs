@@ -5,10 +5,10 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
-using DemoDotNetCoreApplication.Modals;
-using DemoDotNetCoreApplication.Dtos;
+using SMEConnect.Modals;
+using SMEConnect.Dtos;
 
-namespace DemoDotNetCoreApplication.Helpers
+namespace SMEConnect.Helpers
 {
     public class Helper
     {

@@ -1,4 +1,4 @@
-﻿namespace DemoDotNetCoreApplication.Providers
+﻿namespace SMEConnect.Providers
 {
     public class MessagesProvider
     {

@@ -1,7 +1,7 @@
-﻿using DemoDotNetCoreApplication.Contracts;
+﻿using SMEConnect.Contracts;
 using Microsoft.AspNetCore.Identity;
 
-namespace DemoDotNetCoreApplication.Modals
+namespace SMEConnect.Modals
 {
 
     public class RoleClaim : IdentityRoleClaim<int>, IAuditableEntity

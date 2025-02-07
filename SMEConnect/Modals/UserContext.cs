@@ -1,6 +1,6 @@
-﻿using DemoDotNetCoreApplication.Contracts;
+﻿using SMEConnect.Contracts;
 
-namespace DemoDotNetCoreApplication.Modals
+namespace SMEConnect.Modals
 {
 
     public class UserContext : IUserContext

@@ -1,4 +1,4 @@
-﻿namespace DemoDotNetCoreApplication.Modals
+﻿namespace SMEConnect.Modals
 {
     public class GroupUser
     {

@@ -1,13 +1,13 @@
-﻿using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static DemoDotNetCoreApplication.Constatns.Constants;
+using static SMEConnect.Constatns.Constants;
 using System.Security.Claims;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
     public class RoleClaimProvider : IRoleClaimProvider
     {

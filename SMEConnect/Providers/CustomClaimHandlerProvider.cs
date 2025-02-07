@@ -1,7 +1,7 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Modals;
 using Microsoft.AspNetCore.Authorization;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
     public class CustomClaimHandlerProvider : AuthorizationHandler<CustomClaimRequirement>
     {

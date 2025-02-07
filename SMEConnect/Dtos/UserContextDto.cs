@@ -2,9 +2,9 @@
 using System.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using DemoDotNetCoreApplication.Modals;
+using SMEConnect.Modals;
 
-namespace DemoDotNetCoreApplication.Dtos
+namespace SMEConnect.Dtos
 {
     public class UserContextDto
     {

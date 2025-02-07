@@ -1,13 +1,12 @@
-﻿using DemoDotNetCoreApplication.Constatns;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Data;
-using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Data;
+using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using Microsoft.EntityFrameworkCore;
-using static DemoDotNetCoreApplication.Constatns.Constants;
+using static SMEConnect.Constatns.Constants;
 
-
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
     public class GroupUserProvider : IGroupUserProvider
     {

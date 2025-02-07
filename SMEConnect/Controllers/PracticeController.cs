@@ -1,11 +1,11 @@
-﻿using DemoDotNetCoreApplication.Constatns;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DemoDotNetCoreApplication.Controllers
+namespace SMEConnect.Controllers
 {
 
     [ApiController]

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
-namespace DemoDotNetCoreApplication.Modals
+namespace SMEConnect.Modals
 {
     public class ApiResponse<T>
     {

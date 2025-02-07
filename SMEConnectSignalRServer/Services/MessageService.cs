@@ -1,5 +1,7 @@
 ﻿
+
 using Microsoft.AspNetCore.SignalR;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using SMEConnectSignalRServer.AppContext;
 using SMEConnectSignalRServer.Dtos;
@@ -41,6 +43,81 @@ namespace SMEConnectSignalRServer.Services
                 throw;
             }
         }
+
+
+        public async Task<List<string>> GetRecentDiscussionsFromGroups(UserDto userDto)
+        {
+            try
+            {
+                var fiveDaysAgo = DateTime.UtcNow.AddDays(-5);
+
+            var pipeline = new[]
+                {
+                    new BsonDocument("$match", new BsonDocument
+                    {
+                        { "Practice", userDto.Practice },
+                        { "CreatedDate", new BsonDocument { { "$gte", fiveDaysAgo } } }
+                    }),
+
+                    new BsonDocument("$group", new BsonDocument
+                    {
+                        { "_id", "$Discussion" }
+                    }),
+
+                    new BsonDocument("$project", new BsonDocument
+                    {
+                        { "Discussion", "$_id" },
+                        { "_id", 0 }
+                    })
+                };
+
+                var result = await _sMEConnectSignalRServerContext1.Messages
+                    .Aggregate<BsonDocument>(pipeline)
+                    .ToListAsync();
+
+                var distinctDiscussionNames = result
+                    .Select(d => d["Discussion"].AsString)
+                    .Where(d => !string.IsNullOrEmpty(d))
+                    .ToList();
+
+                return distinctDiscussionNames;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(1, $"{ex.Message}", ex);
+                throw;
+            }
+        }
+
+        public async Task<List<string>> GetSimilarDiscussions(string practice, string groupName, string discussionName, string discussionDescription)
+        {
+            try
+            {
+                var filter = Builders<Message>.Filter.And(
+                    Builders<Message>.Filter.Eq(m => m.Practice, practice),
+                    Builders<Message>.Filter.Eq(m => m.Group, groupName),
+                    Builders<Message>.Filter.Or(
+                        Builders<Message>.Filter.Regex(m => m.Text, new BsonRegularExpression(discussionName, "i")),
+                        Builders<Message>.Filter.Regex(m => m.Text, new BsonRegularExpression(discussionDescription, "i"))
+                    )
+                );
+
+                var messageDiscussions = await _sMEConnectSignalRServerContext1.Messages
+                    .Find(filter)
+                    .Project(m => m.Discussion)
+                    .ToListAsync();
+
+                var uniqueDiscussions = messageDiscussions.Distinct().ToList();
+
+                return uniqueDiscussions;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetSimilarDiscussions: {Message}", ex.Message);
+                throw;
+            }
+        }
+
 
         public async Task<bool> AddMessage(Message message)
         {

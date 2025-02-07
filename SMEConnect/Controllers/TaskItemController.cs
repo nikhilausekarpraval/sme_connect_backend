@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
-using DemoDotNetCoreApplication.Constatns;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Helpers;
-using DemoDotNetCoreApplication.Modals;
+using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Dtos;
+using SMEConnect.Helpers;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using static DemoDotNetCoreApplication.Constatns.Constants;
+using static SMEConnect.Constatns.Constants;
 
 
-namespace DemoDotNetCoreApplication.Controllers
+namespace SMEConnect.Controllers
 {
 
     [ApiController]
@@ -33,7 +33,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpGet("get")]
-        public async Task<ActionResult<IEnumerable<DemoDotNetCoreApplication.Modals.Task>>> Get()
+        public async Task<ActionResult<IEnumerable<SMEConnect.Modals.Task>>> Get()
         {
             var response = await _taskItemProvider.getTaskItems();
 
@@ -50,7 +50,7 @@ namespace DemoDotNetCoreApplication.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<DemoDotNetCoreApplication.Modals.Task>> GetTaskItem(int id)
+        public async Task<ActionResult<SMEConnect.Modals.Task>> GetTaskItem(int id)
         {
             var response = await _taskItemProvider.GetTaskItem(id);
 
@@ -78,7 +78,7 @@ namespace DemoDotNetCoreApplication.Controllers
             {
                 taskItemDto.EmployeeId = null;
             }
-            var task = _mapper.Map<DemoDotNetCoreApplication.Modals.Task>(taskItemDto);
+            var task = _mapper.Map<SMEConnect.Modals.Task>(taskItemDto);
             task.CreatedOnDt = DateOnly.FromDateTime(DateTime.Today);
             task.CreatedBy = RoleName.Admin;// this will updated from context
 

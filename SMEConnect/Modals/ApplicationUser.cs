@@ -1,7 +1,7 @@
-﻿using DemoDotNetCoreApplication.Dtos;
+﻿using SMEConnect.Dtos;
 using Microsoft.AspNetCore.Identity;
 
-namespace DemoDotNetCoreApplication.Modals
+namespace SMEConnect.Modals
 {
     public class ApplicationUser : IdentityUser
     {

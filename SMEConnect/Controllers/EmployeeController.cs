@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using DemoDotNetCoreApplication.Constatns;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Helpers;
-using DemoDotNetCoreApplication.Modals;
+using SMEConnect.Constatns;
+using SMEConnect.Contracts;
+using SMEConnect.Dtos;
+using SMEConnect.Helpers;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static DemoDotNetCoreApplication.Constatns.Constants;
+using static SMEConnect.Constatns.Constants;
 
-namespace DemoDotNetCoreApplication.Controllers
+namespace SMEConnect.Controllers
 {
 
     [ApiController]

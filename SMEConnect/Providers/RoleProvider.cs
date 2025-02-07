@@ -1,8 +1,8 @@
-﻿using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Modals;
 using Microsoft.AspNetCore.Identity;
 using Task = System.Threading.Tasks.Task;
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
     public class RoleProvider
     {

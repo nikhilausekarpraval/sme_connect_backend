@@ -1,15 +1,15 @@
-﻿using DemoDotNetCoreApplication.Dtos;
-using DemoDotNetCoreApplication.Modals;
+﻿using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-using static DemoDotNetCoreApplication.Constatns.Constants;
-using DemoDotNetCoreApplication.Contracts;
-using DemoDotNetCoreApplication.Data;
+using static SMEConnect.Constatns.Constants;
+using SMEConnect.Contracts;
+using SMEConnect.Data;
 using System.Linq;
 
 
-namespace DemoDotNetCoreApplication.Providers
+namespace SMEConnect.Providers
 {
     public class AdminProvider : IAdminProvider
     {

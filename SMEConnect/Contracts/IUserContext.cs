@@ -1,4 +1,4 @@
-﻿namespace DemoDotNetCoreApplication.Contracts
+﻿namespace SMEConnect.Contracts
 {
     /// <summary>
     /// Class IUserContext.
