@@ -8,8 +8,6 @@ using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Modals;
 using SMEConnect.Providers;
-using SMEConnectSignalRServer.Interfaces;
-using SMEConnectSignalRServer.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,7 +66,7 @@ builder.Services.AddScoped<IGroupUserProvider, GroupUserProvider>();
 builder.Services.AddScoped<IUserClaimProvider, UserClaimProvider>();
 builder.Services.AddScoped<IDiscussionProvider, DiscussionProvider>();
 builder.Services.AddScoped<IDiscussionChatProvider, DiscussionChatProvider>();
-builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddHttpClient<IDiscussionProvider,DiscussionProvider>();
 
 
 builder.Services.AddAuthorization(options =>

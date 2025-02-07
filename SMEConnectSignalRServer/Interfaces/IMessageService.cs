@@ -10,9 +10,11 @@ namespace SMEConnectSignalRServer.Interfaces
 
         public Task<bool> AddMessage(Message message);
 
-
         public Task<long> DeleteMessagesByFilter(List<dynamic> messageIds);
 
+        public Task<List<string>> GetRecentDiscussionsFromGroups(DiscussionsDTO userDto);
+
+        public Task<List<string>> GetSimilarDiscussions(DiscussionsDTO discussionsDTO);
 
         public Task<Message> UpdateMessage(Message message);
 

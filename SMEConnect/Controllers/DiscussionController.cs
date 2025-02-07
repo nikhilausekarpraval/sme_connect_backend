@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SMEConnect.Constatns;
 using SMEConnect.Contracts;
+using SMEConnect.Dtos;
 using SMEConnect.Modals;
+using SMEConnectSignalRServer.Dtos;
 
 namespace SMEConnect.Controllers
 {
@@ -77,13 +79,13 @@ namespace SMEConnect.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         [Route("get_recent_discussions")]
-        public async Task<IActionResult> GetRecentDiscussionFromGroup([FromQuery] string group)
+        public async Task<IActionResult> GetRecentDiscussionFromGroup([FromBody] DiscussionsDTO discussionsDTO)
         {
             try
             {
-                var result = await this._discussionProvider.getRecentDiscussions(group);
+                var result = await this._discussionProvider.GetRecentDiscussions(discussionsDTO);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -92,13 +94,13 @@ namespace SMEConnect.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("get_similer_discussions")]
-        public async Task<IActionResult> GetSimilerDiscussionFromGroup([FromQuery] string group)
+        public async Task<IActionResult> GetSimilerDiscussionFromGroup([FromBody] DiscussionsDTO discussionsDTO)
         {
             try
             {
-                var result = await this._discussionProvider.GetSimilerDiscussionFromGroup(group);
+                var result = await this._discussionProvider.GetSimilarDiscussionsFromGroup(discussionsDTO);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)

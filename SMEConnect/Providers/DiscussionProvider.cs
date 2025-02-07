@@ -1,8 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson.IO;
 using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Modals;
+using SMEConnectSignalRServer.Dtos;
+using System.Text.Json;
+using System.Text;
+
 
 namespace SMEConnect.Providers
 {
@@ -11,11 +16,15 @@ namespace SMEConnect.Providers
     {
         private readonly DcimDevContext _context;
         private readonly ILogger _logger;
+        private readonly HttpClient _httpClient;
+        private readonly IUserContext _userContext;
 
-        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger)
+        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger, HttpClient httpClient,IUserContext userContext)
         {
             _context = context;
             _logger = logger;
+            _httpClient = httpClient;
+            _userContext = userContext;
         }
 
         public async Task<ApiResponse<List<Discussion>>> getDiscussions(string groupId)
@@ -58,33 +67,86 @@ namespace SMEConnect.Providers
         }
 
 
-        public async Task<ApiResponse<List<Discussion>>> getRecentDiscussions(string discussion)
+        public async Task<ApiResponse<List<Discussion>>> GetRecentDiscussions(DiscussionsDTO discussion)
         {
             try
             {
-                var discussions = await _context.Discussions.Where(d => d.GroupName == discussion).ToListAsync();
+                var jsonContent = new StringContent(JsonSerializer.Serialize(discussion), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("http://localhost:5234/api/message/get-recent-discussions", jsonContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Failure, null, "Failed to fetch recent discussions");
+                }
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                var apiResponse = JsonSerializer.Deserialize<ApiResponseWrapper<List<string>>>(responseContent);
+                var discussionNames = apiResponse?.Value ?? new List<string>();
+
+                if (discussionNames == null || !discussionNames.Any())
+                {
+                    return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Success, new List<Discussion>(), "No discussions found.");
+                }
+
+                var discussions = await _context.Discussions
+                    .Where(d => discussionNames.Contains(d.Name))
+                    .ToListAsync();
+
                 return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Success, discussions, "");
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1, ex, ex.Message);
+                _logger.LogError(ex, "Error fetching recent discussions.");
                 return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Failure, null, ex.Message);
             }
         }
 
-        public async Task<ApiResponse<List<Discussion>>> GetSimilerDiscussionFromGroup(string discussion)
+        public async Task<ApiResponse<List<Discussion>>> GetSimilarDiscussionsFromGroup(DiscussionsDTO discussion)
         {
-            try
-            {
-                var discussions = await _context.Discussions.Where(d => d.GroupName == discussion).ToListAsync();
+            try {
+
+                var newDiscussion = await (from d in _context.Discussions
+                                         join gu in _context.GroupUsers on d.GroupName equals gu.Group
+                                         join g in _context.UserGroups on gu.Group equals g.Name
+                                         where d.GroupName == discussion.Group
+                                            && g.Practice == discussion.Practice
+                                            && gu.UserEmail == _userContext.Email
+                                         select d)
+                                .FirstOrDefaultAsync();
+
+                discussion.Discussion = newDiscussion?.Description;
+
+                var jsonContent = new StringContent(JsonSerializer.Serialize(discussion), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("http://localhost:5234/api/message/get-similar-discussions", jsonContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Failure, null, "Failed to fetch similar discussions.");
+                }
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<ApiResponseWrapper<List<string>>>(responseContent);
+                var recentDiscussionNames = apiResponse?.Value ?? new List<string>();
+
+                if (recentDiscussionNames == null || !recentDiscussionNames.Any())
+                {
+                    return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Success, new List<Discussion>(), "No similar discussions found.");
+                }
+
+                var discussions = await _context.Discussions
+                    .Where(d => recentDiscussionNames.Contains(d.Name) && d.GroupName == discussion.Group)
+                    .ToListAsync();
+
                 return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Success, discussions, "");
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1, ex, ex.Message);
+                _logger.LogError(ex, "Error fetching similar discussions.");
                 return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Failure, null, ex.Message);
             }
         }
+
 
         public async Task<ApiResponse<bool>> CreateDiscussion(Discussion discussion)
         {

@@ -1,4 +1,6 @@
-﻿using SMEConnect.Modals;
+﻿
+using SMEConnect.Modals;
+using SMEConnectSignalRServer.Dtos;
 
 namespace SMEConnect.Contracts
 {
@@ -8,10 +10,9 @@ namespace SMEConnect.Contracts
 
         public Task<ApiResponse<bool>> DeleteDiscussion(string discussions);
 
-        public Task<ApiResponse<List<Discussion>>> GetSimilerDiscussionFromGroup(string discussion);
+        public Task<ApiResponse<List<Discussion>>> GetSimilarDiscussionsFromGroup(DiscussionsDTO discussion);
 
-        public Task<ApiResponse<List<Discussion>>> getRecentDiscussions(string discussion);
-
+        public  Task<ApiResponse<List<Discussion>>> GetRecentDiscussions(DiscussionsDTO discussion);
 
         public Task<ApiResponse<bool>> CreateDiscussion(Discussion Discussion);
 

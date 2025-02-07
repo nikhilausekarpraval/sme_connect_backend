@@ -32,6 +32,36 @@ namespace SMEConnectSignalRServer.Controllers
         }
 
         [HttpPost]
+        [Route("get-recent-discussions")]
+        public async Task<IActionResult> GetRecentDiscussions([FromBody] DiscussionsDTO userDto)
+        {
+            try
+            {
+                var result = await this._messageService.GetRecentDiscussionsFromGroups(userDto);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
+        [HttpPost]
+        [Route("get-similar-discussions")]
+        public async Task<IActionResult> GetSimilarDiscussions([FromBody] DiscussionsDTO userDto)
+        {
+            try
+            {
+                var result = await this._messageService.GetSimilarDiscussions(userDto);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
+        [HttpPost]
         [Route("add-message")]
         public async Task<IActionResult> AddMessage([FromForm] MessageDto messageDto)
         {

@@ -45,7 +45,7 @@ namespace SMEConnectSignalRServer.Services
         }
 
 
-        public async Task<List<string>> GetRecentDiscussionsFromGroups(UserDto userDto)
+        public async Task<List<string>> GetRecentDiscussionsFromGroups(DiscussionsDTO userDto)
         {
             try
             {
@@ -89,16 +89,16 @@ namespace SMEConnectSignalRServer.Services
             }
         }
 
-        public async Task<List<string>> GetSimilarDiscussions(string practice, string groupName, string discussionName, string discussionDescription)
+        public async Task<List<string>> GetSimilarDiscussions(DiscussionsDTO discussionsDTO)
         {
             try
             {
                 var filter = Builders<Message>.Filter.And(
-                    Builders<Message>.Filter.Eq(m => m.Practice, practice),
-                    Builders<Message>.Filter.Eq(m => m.Group, groupName),
+                    Builders<Message>.Filter.Eq(m => m.Practice, discussionsDTO.Practice),
+                    Builders<Message>.Filter.Eq(m => m.Group, discussionsDTO.Group),
                     Builders<Message>.Filter.Or(
-                        Builders<Message>.Filter.Regex(m => m.Text, new BsonRegularExpression(discussionName, "i")),
-                        Builders<Message>.Filter.Regex(m => m.Text, new BsonRegularExpression(discussionDescription, "i"))
+                        Builders<Message>.Filter.Regex(m => m.Text, new BsonRegularExpression(discussionsDTO.Discussion, "i")),
+                        Builders<Message>.Filter.Regex(m => m.Text, new BsonRegularExpression(discussionsDTO.Description, "i"))
                     )
                 );
 
