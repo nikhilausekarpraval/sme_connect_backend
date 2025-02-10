@@ -12,12 +12,10 @@ namespace SMEConnect.Controllers
     {
 
         private IGroupProvider _userGroupProvider;
-        private IUserContext _userContext;
 
-        public GroupController(IGroupProvider userGroupProvider, IUserContext userContext)
+        public GroupController(IGroupProvider userGroupProvider)
         {
             this._userGroupProvider = userGroupProvider;
-            _userContext = userContext;
         }
 
 
@@ -29,7 +27,8 @@ namespace SMEConnect.Controllers
 
             try
             {
-                group.ModifiedBy = _userContext.Email;
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                group.ModifiedBy = userContext.Email;
                 var result = await this._userGroupProvider.AddGroup(group);
                 if (result.Status == Constants.ApiResponseType.Failure)
                 {
@@ -68,8 +67,8 @@ namespace SMEConnect.Controllers
             {
                 var roleClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
                 var userRole = roleClaim?.Value;
-
-                var result = await this._userGroupProvider.getUserPracticeGroups(practice);
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                var result = await this._userGroupProvider.getUserPracticeGroups(userContext.Email,practice);
 
                 return new JsonResult(Ok(result));
             }
@@ -104,7 +103,8 @@ namespace SMEConnect.Controllers
         {
             try
             {
-                group.ModifiedBy = _userContext.Email;
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                group.ModifiedBy = userContext.Email;
                 var result = await this._userGroupProvider.UpdateGroup(group);
                 if (result.Status == Constants.ApiResponseType.Failure)
                 {

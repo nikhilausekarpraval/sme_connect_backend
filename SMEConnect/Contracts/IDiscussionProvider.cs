@@ -11,7 +11,7 @@ namespace SMEConnect.Contracts
 
         public Task<ApiResponse<bool>> DeleteDiscussion(string discussions);
 
-        public Task<ApiResponse<List<Discussion>>> GetSimilarDiscussionsFromGroup(DiscussionsDTO discussion);
+        public Task<ApiResponse<List<Discussion>>> GetSimilarDiscussionsFromGroup(DiscussionsDTO discussion, string userEmail);
 
         public  Task<ApiResponse<List<Discussion>>> GetRecentDiscussions(DiscussionsDTO discussion);
 

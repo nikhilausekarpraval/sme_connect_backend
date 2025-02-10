@@ -16,12 +16,10 @@ namespace SMEConnect.Controllers
     {
 
         private IDiscussionProvider _discussionProvider;
-        private IUserContext _userContext;
 
-        public DiscussionController(IDiscussionProvider discussionProvider, IUserContext userContext)
+        public DiscussionController(IDiscussionProvider discussionProvider)
         {
             this._discussionProvider = discussionProvider;
-            this._userContext = userContext;
         }
 
         [Authorize(Roles = "Admin")]
@@ -32,7 +30,8 @@ namespace SMEConnect.Controllers
 
             try
             {
-                discussion.ModifiedBy = _userContext.Email;
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                discussion.ModifiedBy = userContext.Email;
                 var result = await this._discussionProvider.CreateDiscussion(discussion);
                 if (result.Status == Constants.ApiResponseType.Failure)
                 {
@@ -115,7 +114,8 @@ namespace SMEConnect.Controllers
         {
             try
             {
-                var result = await this._discussionProvider.GetSimilarDiscussionsFromGroup(discussionsDTO);
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                var result = await this._discussionProvider.GetSimilarDiscussionsFromGroup(discussionsDTO,userContext.Email);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -131,7 +131,8 @@ namespace SMEConnect.Controllers
         {
             try
             {
-                discussion.ModifiedBy = _userContext.Email;
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                discussion.ModifiedBy = userContext.Email;
                 var result = await this._discussionProvider.UpdateDiscussion(discussion);
                 if (result.Status == Constants.ApiResponseType.Failure)
                 {

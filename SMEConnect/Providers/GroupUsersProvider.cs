@@ -12,14 +12,11 @@ namespace SMEConnect.Providers
     {
         private ILogger<GroupUserProvider> _logger;
         private DcimDevContext _dcimDevContext;
-        private IUserContext _userContext;
 
-
-        public GroupUserProvider(ILogger<GroupUserProvider> Logger, DcimDevContext dcimDevContext, IUserContext userContext)
+        public GroupUserProvider(ILogger<GroupUserProvider> Logger, DcimDevContext dcimDevContext)
         {
             this._dcimDevContext = dcimDevContext;
             this._logger = Logger;
-            _userContext = userContext;
         }
 
 
@@ -44,12 +41,12 @@ namespace SMEConnect.Providers
             }
         }
 
-        public async Task<ApiResponse<List<GroupUser>>> GetUserGroups(string practice = "")
+        public async Task<ApiResponse<List<GroupUser>>> GetUserGroups(string userEmail,string practice = "")
         {
             try
             {
                 var user = await _dcimDevContext.Users
-                    .FirstOrDefaultAsync(u => u.Email == _userContext.Email);
+                    .FirstOrDefaultAsync(u => u.Email == userEmail);
 
                 if (user == null)
                 {

@@ -9,7 +9,7 @@ namespace SMEConnect.Contracts
 
         public Task<ApiResponse<List<UserGroup>>> getGroups();
 
-        public Task<ApiResponse<List<UserGroup>>> getUserPracticeGroups(string practice = "");
+        public Task<ApiResponse<List<UserGroup>>> getUserPracticeGroups(string userEmail,string practice = "");
 
         public Task<ApiResponse<bool>> DeleteUserGroup(List<int> ids);
 

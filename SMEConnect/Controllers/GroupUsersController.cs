@@ -7,17 +7,16 @@ using SMEConnect.Modals;
 namespace SMEConnect.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class GroupUsersController : ControllerBase
     {
 
         private IGroupUserProvider _userGroupUsersProvider;
-        private IUserContext _userContext;
 
-        public GroupUsersController(IGroupUserProvider userGroupUsersProvider, IUserContext userContext)
+        public GroupUsersController(IGroupUserProvider userGroupUsersProvider)
         {
             this._userGroupUsersProvider = userGroupUsersProvider;
-            _userContext = userContext;
         }
 
         //update here access
@@ -28,7 +27,8 @@ namespace SMEConnect.Controllers
 
             try
             {
-                group.ModifiedBy = _userContext.Email;
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                group.ModifiedBy = userContext.Email;
                 var result = await this._userGroupUsersProvider.AddGroupUser(group);
                 if (result.Status == Constants.ApiResponseType.Failure)
                 {
@@ -95,7 +95,8 @@ namespace SMEConnect.Controllers
         {
             try
             {
-                var result = await this._userGroupUsersProvider.GetUserGroups(practice);
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                var result = await this._userGroupUsersProvider.GetUserGroups(userContext.Email,practice);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -111,7 +112,8 @@ namespace SMEConnect.Controllers
         {
             try
             {
-                group.ModifiedBy = _userContext.Email;
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                group.ModifiedBy = userContext.Email;
                 var result = await this._userGroupUsersProvider.UpdateGroupUser(group);
                 if (result.Status == Constants.ApiResponseType.Failure)
                 {

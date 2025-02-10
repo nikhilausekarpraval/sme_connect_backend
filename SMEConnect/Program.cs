@@ -12,7 +12,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<DcimDevContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -42,15 +41,14 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddHttpContextAccessor();
+//builder.Services.AddScoped<UserContextProvider>();
+//builder.Services.AddScoped<IUserContext, UserContext>(serviceProvider =>
+//{
+//    var userContextProvider = serviceProvider.GetRequiredService<UserContextProvider>();
+//    return (UserContext)userContextProvider.GenerateContext(serviceProvider).GetAwaiter().GetResult();
+//});
 
-builder.Services.AddScoped<IUserContext, UserContext>();
-builder.Services.AddScoped<UserContextProvider>();
-// Register GenerateContext method (via UserContextProvider)
-builder.Services.AddScoped<IUserContext>((serviceProvider) =>
-{
-    var userContextProvider = serviceProvider.GetRequiredService<UserContextProvider>();
-    return userContextProvider.GenerateContext(serviceProvider).Result;
-});
 
 builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
 builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
@@ -133,7 +131,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -168,6 +165,7 @@ app.UseCors("AllowAllOrigins");
 
 
 app.UseAuthentication();
+app.UseMiddleware<UserContextMiddlewareProvider>();
 app.UseAuthorization();
 
 

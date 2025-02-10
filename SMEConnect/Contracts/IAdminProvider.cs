@@ -5,7 +5,8 @@ namespace SMEConnect.Contracts
 {
     public interface IAdminProvider
     {
-        public Task<string> AddRole(RoleDto role);
+
+        public Task<string> AddRole(RoleDto role, string modifiyedBy);
 
         public Task<ApiResponse<string>> DeleteRoles(List<string> roleIds);
 

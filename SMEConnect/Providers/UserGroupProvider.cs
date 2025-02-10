@@ -11,13 +11,11 @@ namespace SMEConnect.Providers
     {
         private ILogger<UserGroupProvider> _logger;
         private DcimDevContext _dcimDevContext;
-        private IUserContext _userContext;
 
-        public UserGroupProvider(ILogger<UserGroupProvider> Logger, DcimDevContext dcimDevContext, IUserContext userContext)
+        public UserGroupProvider(ILogger<UserGroupProvider> Logger, DcimDevContext dcimDevContext)
         {
             this._dcimDevContext = dcimDevContext;
             this._logger = Logger;
-            _userContext = userContext;
         }
 
 
@@ -57,11 +55,11 @@ namespace SMEConnect.Providers
             }
         }
 
-        public async Task<ApiResponse<List<UserGroup>>> getUserPracticeGroups(string practice = "")
+        public async Task<ApiResponse<List<UserGroup>>> getUserPracticeGroups(string userEmail,string practice)
         {
             try
             {
-                var user = await _dcimDevContext.Users.FirstOrDefaultAsync(u => u.Email == _userContext.Email);
+                var user = await _dcimDevContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
                 if (user == null)
                 {
                     throw new Exception("User not found.");

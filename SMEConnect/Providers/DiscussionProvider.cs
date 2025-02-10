@@ -18,14 +18,13 @@ namespace SMEConnect.Providers
         private readonly DcimDevContext _context;
         private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
-        private readonly IUserContext _userContext;
 
-        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger, HttpClient httpClient,IUserContext userContext)
+
+        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger, HttpClient httpClient)
         {
             _context = context;
             _logger = logger;
             _httpClient = httpClient;
-            _userContext = userContext;
         }
 
         public async Task<ApiResponse<List<Discussion>>> getDiscussions(string groupId)
@@ -103,7 +102,7 @@ namespace SMEConnect.Providers
             }
         }
 
-        public async Task<ApiResponse<List<Discussion>>> GetSimilarDiscussionsFromGroup(DiscussionsDTO discussion)
+        public async Task<ApiResponse<List<Discussion>>> GetSimilarDiscussionsFromGroup(DiscussionsDTO discussion,string userEmail)
         {
             try {
 
@@ -112,7 +111,7 @@ namespace SMEConnect.Providers
                                          join g in _context.UserGroups on gu.Group equals g.Name
                                          where d.GroupName == discussion.Group
                                             && g.Practice == discussion.Practice
-                                            && gu.UserEmail == _userContext.Email
+                                            && gu.UserEmail == userEmail
                                          select d)
                                 .FirstOrDefaultAsync();
 

@@ -14,12 +14,11 @@ namespace SMEConnect.Controllers
     {
 
         private IPracticeProvider _practiceProvider;
-        private IUserContext _userContext;
 
-        public PracticeController(IPracticeProvider practiceProvider, IUserContext userContext)
+        public PracticeController(IPracticeProvider practiceProvider)
         {
             this._practiceProvider = practiceProvider;
-            this._userContext = userContext;
+    
         }
 
 
@@ -30,7 +29,8 @@ namespace SMEConnect.Controllers
 
             try
             {
-                practice.ModifiedBy = _userContext.Email;
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                practice.ModifiedBy = userContext.Email;
                 var result = await this._practiceProvider.CreatePractice(practice);
                 if (result.Status == Constants.ApiResponseType.Failure)
                 {
@@ -96,7 +96,8 @@ namespace SMEConnect.Controllers
         {
             try
             {
-                practice.ModifiedBy = _userContext.Email;
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                practice.ModifiedBy = userContext.Email;
                 var result = await this._practiceProvider.UpdatePractice(practice);
                 if (result.Status == Constants.ApiResponseType.Failure)
                 {

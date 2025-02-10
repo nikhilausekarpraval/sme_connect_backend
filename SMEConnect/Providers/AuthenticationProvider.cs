@@ -24,9 +24,9 @@ namespace SMEConnect.Providers
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly DcimDevContext _dcimDevContext;
         private readonly ILogger<AuthenticationProvider> _logger;
-        private readonly IUserContext _userContext;
 
-        public AuthenticationProvider(UserManager<ApplicationUser> userManager, IUserContext userContext, ILogger<AuthenticationProvider> logger, RoleManager<ApplicationRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
+
+        public AuthenticationProvider(UserManager<ApplicationUser> userManager, ILogger<AuthenticationProvider> logger, RoleManager<ApplicationRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, DcimDevContext dcimDevContext)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
@@ -34,7 +34,6 @@ namespace SMEConnect.Providers
             this.signInManager = signInManager;
             _dcimDevContext = dcimDevContext;
             this._logger = logger;
-            _userContext = userContext;
 
         }
 
@@ -122,7 +121,7 @@ namespace SMEConnect.Providers
         }
 
 
-        public async Task<ResponseDto> Register(RegisterModelDto model)
+        public async Task<ResponseDto> Register(RegisterModelDto model,string userEmail)
         {
             try
             {
@@ -132,7 +131,7 @@ namespace SMEConnect.Providers
                     return new ResponseDto { status = ApiResponseType.NotFound, statusText = ApiErrors.DuplicateEmailOrUser, message = "" };
 
                 ApplicationUser user = Helper.GetApplicationUser(model);
-                user.ModifiedBy = _userContext.Email;
+                user.ModifiedBy = userEmail;
                 var result = await userManager.CreateAsync(user, model.password);
 
                 if (!result.Succeeded)
@@ -211,7 +210,7 @@ namespace SMEConnect.Providers
         }
 
         // update who can access this method currently can done without password
-        public async Task<ResponseDto> UpdateUser(RegisterModelDto user)
+        public async Task<ResponseDto> UpdateUser(RegisterModelDto user,string userEmail)
         {
             try
             {
@@ -222,7 +221,7 @@ namespace SMEConnect.Providers
                     currentUser.UserName = user.userName;
                     currentUser.PhoneNumber = user.phoneNumber;
                     currentUser.Practice = user.practice;
-                    currentUser.ModifiedBy = _userContext.Email;
+                    currentUser.ModifiedBy = userEmail;
                     currentUser.ModifiedOnDt = DateTime.Now;
 
                     var result = await userManager.UpdateAsync(currentUser);

@@ -17,19 +17,17 @@ namespace SMEConnect.Providers
         private RoleManager<ApplicationRole> _roleManager;
         private ILogger<AdminProvider> _logger;
         private DcimDevContext _decimDevContext;
-        private IUserContext _userContext;
 
 
-        public AdminProvider(IServiceProvider serviceProvider, ILogger<AdminProvider> Logger, DcimDevContext decimDevContext, IUserContext userContext)
+        public AdminProvider(IServiceProvider serviceProvider, ILogger<AdminProvider> Logger, DcimDevContext decimDevContext)
         {
             this._userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             this._roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
             this._decimDevContext = decimDevContext;
-            this._userContext = userContext;
             this._logger = Logger;
         }
 
-        public async Task<string> AddRole(RoleDto role)
+        public async Task<string> AddRole(RoleDto role,string modifiyedBy)
         {
 
             try
@@ -37,7 +35,7 @@ namespace SMEConnect.Providers
                 var roleExist = await _roleManager.RoleExistsAsync(role.Name);
                 if (!roleExist)
                 {
-                    await _roleManager.CreateAsync(new ApplicationRole { Name = role.Name, ModifiedBy = _userContext.Email });
+                    await _roleManager.CreateAsync(new ApplicationRole { Name = role.Name, ModifiedBy = modifiyedBy });
                     return AccessConfigurationSccessMessage.NewRoleAdded;
                 }
                 else

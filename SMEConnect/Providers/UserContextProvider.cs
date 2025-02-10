@@ -35,25 +35,20 @@ namespace SMEConnect.Providers
         /// <returns>IUserContext.</returns>
         public async Task<IUserContext> GenerateContext(IServiceProvider serviceProvider)
         {
-            var httpProvider = serviceProvider.GetService<IHttpContextAccessor>();
+            var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
 
-            UserContext u = new();
-            if (httpProvider != null && httpProvider.HttpContext.User.Identity.IsAuthenticated)
+            if (httpContextAccessor.HttpContext == null || !httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                u.Name = GetClaimValue(httpProvider, "name");
-                u.Email = GetClaimValue(httpProvider, "emailaddress");
-
+                return new UserContext(); // Return an empty context if no user is logged in
             }
 
-            // Store the user context in the UserContextService
-            var userContextService = serviceProvider.GetService<IUserContextService>();
-            if (userContextService != null)
+            var userContext = new UserContext
             {
-                userContextService.UserContext = u;
-            }
+                Name = GetClaimValue(httpContextAccessor, "name"),
+                Email = GetClaimValue(httpContextAccessor, "emailaddress")
+            };
 
-
-            return await GetLoggedInUser(u);
+            return await GetLoggedInUser(userContext);
         }
 
         /// <summary>

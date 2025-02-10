@@ -7,11 +7,11 @@ namespace SMEConnect.Contracts
     {
         public Task<ResponseDto> Login(LoginModalDto model);
 
-        public Task<ResponseDto> Register(RegisterModelDto model);
+        public Task<ResponseDto> Register(RegisterModelDto model, string userEmail);
 
         public Task<ResponseDto> Logout();
 
-        public Task<ResponseDto> UpdateUser(RegisterModelDto user);
+        public Task<ResponseDto> UpdateUser(RegisterModelDto user,string userEmail);
 
         public Task<ResponseDto> ResetPassword(ResetPasswordDto user);
 

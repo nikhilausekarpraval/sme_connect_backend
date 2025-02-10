@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SMEConnect.Contracts;
 using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using static SMEConnect.Constatns.Constants;
 
 
@@ -28,7 +29,8 @@ namespace SMEConnect.Controllers
 
             try
             {
-                var result = await this._adminProvider.AddRole(role);
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                var result = await this._adminProvider.AddRole(role,userContext.Email );
                 return result == AccessConfigurationErrorMessage.RoleExist ? new JsonResult(NotFound(result)) : new JsonResult(Ok(result));
             }
             catch (Exception ex)

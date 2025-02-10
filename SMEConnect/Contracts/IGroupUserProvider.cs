@@ -13,7 +13,7 @@ namespace SMEConnect.Contracts
 
         public Task<ApiResponse<bool>> UpdateGroupUser(GroupUser group);
 
-        public Task<ApiResponse<List<GroupUser>>> GetUserGroups(string practice);
+        public Task<ApiResponse<List<GroupUser>>> GetUserGroups(string userEmail,string practice);
 
         public Task<ApiResponse<List<GroupUserDto>>> getGroupAllUsers(string group);
     }
