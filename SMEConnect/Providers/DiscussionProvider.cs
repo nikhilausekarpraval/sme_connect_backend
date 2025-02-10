@@ -243,6 +243,7 @@ namespace SMEConnect.Providers
 
                 existingdiscussion.Name = discussion.Name;
                 existingdiscussion.Description = discussion.Description;
+                existingdiscussion.Status = discussion.Status;
 
                 _context.Discussions.Update(existingdiscussion);
                 await _context.SaveChangesAsync();
