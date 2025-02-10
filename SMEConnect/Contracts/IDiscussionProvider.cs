@@ -1,4 +1,5 @@
 ﻿
+using SMEConnect.Dtos;
 using SMEConnect.Modals;
 using SMEConnectSignalRServer.Dtos;
 
@@ -13,6 +14,8 @@ namespace SMEConnect.Contracts
         public Task<ApiResponse<List<Discussion>>> GetSimilarDiscussionsFromGroup(DiscussionsDTO discussion);
 
         public  Task<ApiResponse<List<Discussion>>> GetRecentDiscussions(DiscussionsDTO discussion);
+
+        public Task<ApiResponse<List<GroupUserDto>>> GetDiscussionUsers(DiscussionsDTO discussion);
 
         public Task<ApiResponse<bool>> CreateDiscussion(Discussion Discussion);
 

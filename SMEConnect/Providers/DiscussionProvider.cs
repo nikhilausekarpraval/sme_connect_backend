@@ -7,6 +7,7 @@ using SMEConnect.Modals;
 using SMEConnectSignalRServer.Dtos;
 using System.Text.Json;
 using System.Text;
+using SMEConnect.Dtos;
 
 
 namespace SMEConnect.Providers
@@ -144,6 +145,67 @@ namespace SMEConnect.Providers
             {
                 _logger.LogError(ex, "Error fetching similar discussions.");
                 return new ApiResponse<List<Discussion>>(Constants.ApiResponseType.Failure, null, ex.Message);
+            }
+        }
+
+
+        public async Task<ApiResponse<List<GroupUserDto>>> GetDiscussionUsers(DiscussionsDTO discussion)
+        {
+            try
+            {
+                var jsonContent = new StringContent(JsonSerializer.Serialize(discussion), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("http://localhost:5234/api/message/get-discussion-users", jsonContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new ApiResponse<List<GroupUserDto>>(Constants.ApiResponseType.Failure, null, "Failed to fetch discussion users.");
+                }
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<ApiResponseWrapper<List<string>>>(responseContent);
+                var userNames = apiResponse?.Value ?? new List<string>();
+
+                if (userNames == null || !userNames.Any())
+                {
+                    return new ApiResponse<List<GroupUserDto>>(Constants.ApiResponseType.Success, new List<GroupUserDto>(), "No users found.");
+                }
+
+                var usersWithNames = await _context.GroupUsers
+                                   .Where(gu => gu.Group == discussion.Group && userNames.Contains(gu.UserEmail))
+                                   .Join(
+                                       _context.Users,
+                                       gu => gu.UserEmail,
+                                       u => u.Email,
+                                       (gu, u) => new
+                                       {
+                                           gu.Id,
+                                           gu.Group,
+                                           gu.UserEmail,
+                                           u.DisplayName,
+                                           gu.GroupRole,
+                                           gu.ModifiedOnDt,
+                                           gu.ModifiedBy
+                                       })
+                                   .ToListAsync();
+
+                var userDtos = usersWithNames.Select(u => new GroupUserDto
+                {
+                    Id = u.Id,
+                    Group = u.Group,
+                    UserEmail = u.UserEmail,
+                    Name = u.DisplayName,
+                    GroupRole = u.GroupRole,
+                    ModifiedBy = u.ModifiedBy,
+                    ModifiedOnDt = u.ModifiedOnDt
+
+                }).ToList();
+
+                return new ApiResponse<List<GroupUserDto>>(Constants.ApiResponseType.Success, userDtos, "");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching discussion users.");
+                return new ApiResponse<List<GroupUserDto>>(Constants.ApiResponseType.Failure, null, ex.Message);
             }
         }
 

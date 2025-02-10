@@ -118,6 +118,32 @@ namespace SMEConnectSignalRServer.Services
             }
         }
 
+        public async Task<List<string>> GetDiscussionsUsers(DiscussionsDTO discussionsDTO)
+        {
+            try
+            {
+                var filter = Builders<Message>.Filter.And(
+                    Builders<Message>.Filter.Eq(m => m.Practice, discussionsDTO.Practice),
+                    Builders<Message>.Filter.Eq(m => m.Group, discussionsDTO.Group),
+                    Builders<Message>.Filter.Eq(m => m.Discussion, discussionsDTO.Discussion)
+                );
+
+                var messageUsers = await _sMEConnectSignalRServerContext1.Messages
+                    .Find(filter)
+                    .Project(m => m.UserName)
+                    .ToListAsync();
+
+                var uniqueUsers = messageUsers.Distinct().ToList();
+
+                return uniqueUsers;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetSimilarDiscussions: {Message}", ex.Message);
+                throw;
+            }
+        }
+
 
         public async Task<bool> AddMessage(Message message)
         {

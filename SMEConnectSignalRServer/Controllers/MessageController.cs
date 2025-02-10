@@ -62,6 +62,21 @@ namespace SMEConnectSignalRServer.Controllers
         }
 
         [HttpPost]
+        [Route("get-discussion-users")]
+        public async Task<IActionResult> GetDiscussionUsers([FromBody] DiscussionsDTO userDto)
+        {
+            try
+            {
+                var result = await this._messageService.GetDiscussionsUsers(userDto);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
+        [HttpPost]
         [Route("add-message")]
         public async Task<IActionResult> AddMessage([FromForm] MessageDto messageDto)
         {

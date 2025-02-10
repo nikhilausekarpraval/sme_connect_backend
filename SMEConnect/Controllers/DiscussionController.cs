@@ -95,6 +95,21 @@ namespace SMEConnect.Controllers
         }
 
         [HttpPost]
+        [Route("get_discussion_users")]
+        public async Task<IActionResult> GetDiscussionUsers([FromBody] DiscussionsDTO discussionsDTO)
+        {
+            try
+            {
+                var result = await this._discussionProvider.GetDiscussionUsers(discussionsDTO);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex));
+            }
+        }
+
+        [HttpPost]
         [Route("get_similer_discussions")]
         public async Task<IActionResult> GetSimilerDiscussionFromGroup([FromBody] DiscussionsDTO discussionsDTO)
         {

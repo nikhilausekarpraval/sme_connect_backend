@@ -16,6 +16,8 @@ namespace SMEConnectSignalRServer.Interfaces
 
         public Task<List<string>> GetSimilarDiscussions(DiscussionsDTO discussionsDTO);
 
+        public Task<List<string>> GetDiscussionsUsers(DiscussionsDTO discussionsDTO);
+
         public Task<Message> UpdateMessage(Message message);
 
     }
