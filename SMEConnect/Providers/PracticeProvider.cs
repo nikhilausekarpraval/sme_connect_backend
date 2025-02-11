@@ -85,6 +85,7 @@ namespace SMEConnect.Providers
 
                 var newAnn = new Announcement() { GroupName = "", PracticeName = practice.Name, UserName = practice.ModifiedBy, CreatedBy = practice.ModifiedBy, Message = new AnnouncementMessages(practice.Name).NewPracticeAdded };
 
+                await _context.Announcements.AddAsync(newAnn);
                 await _context.Practices.AddAsync(practice);
                 await _context.SaveChangesAsync();
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
