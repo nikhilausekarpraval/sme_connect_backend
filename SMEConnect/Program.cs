@@ -64,7 +64,9 @@ builder.Services.AddScoped<IGroupUserProvider, GroupUserProvider>();
 builder.Services.AddScoped<IUserClaimProvider, UserClaimProvider>();
 builder.Services.AddScoped<IDiscussionProvider, DiscussionProvider>();
 builder.Services.AddScoped<IDiscussionChatProvider, DiscussionChatProvider>();
+builder.Services.AddScoped<IAnnouncementProvider, AnnouncementProvider>();
 builder.Services.AddHttpClient<IDiscussionProvider,DiscussionProvider>();
+
 
 
 builder.Services.AddAuthorization(options =>

@@ -39,6 +39,24 @@
 
         }
 
+        internal class AnnouncementMessages
+        {
+            private readonly string _itemName;
+            private readonly string _userName;
+
+            public AnnouncementMessages(string itemName,string userName="")
+            {
+                _itemName = itemName;
+                _userName = userName;
+            }
+
+            public string NewGroupAdded => $"A new {_itemName} group has been created!";
+            public string NewPracticeAdded => $"A new {_itemName} practice has been introduced!";
+            public string NewDiscussionAdded => $"A new discussion {_itemName} has started!";
+            public string NewUserJoinedGroup => $"A new member, {_userName}, has joined the {_itemName} group!";
+        }
+
+
         public static class ModuleName
         {
             public static string Employee = "Employee";

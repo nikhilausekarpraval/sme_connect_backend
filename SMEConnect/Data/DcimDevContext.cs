@@ -36,6 +36,8 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser, Applica
 
     public virtual DbSet<DiscussionChat> DiscussionChat { get; set; }
 
+    public virtual DbSet<Announcement> Announcements { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 

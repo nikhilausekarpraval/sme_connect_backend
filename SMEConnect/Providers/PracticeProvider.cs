@@ -3,6 +3,7 @@ using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Modals;
+using static SMEConnect.Constatns.Constants;
 
 namespace SMEConnect.Providers
 {
@@ -10,11 +11,13 @@ namespace SMEConnect.Providers
     {
         private readonly DcimDevContext _context;
         private readonly ILogger _logger;
+        private readonly IAnnouncementProvider _announcementProvider;
 
-        public PracticeProvider(DcimDevContext context, ILogger<PracticeProvider> logger)
+        public PracticeProvider(DcimDevContext context, ILogger<PracticeProvider> logger, IAnnouncementProvider announcementProvider)
         {
             _context = context;
             _logger = logger;
+            _announcementProvider = announcementProvider;
         }
 
         public async Task<ApiResponse<List<Practice>>> getPractices()
@@ -79,6 +82,8 @@ namespace SMEConnect.Providers
                 {
                     return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, "A practice with the same name already exists.");
                 }
+
+                var newAnn = new Announcement() { GroupName = "", PracticeName = practice.Name, UserName = practice.ModifiedBy, CreatedBy = practice.ModifiedBy, Message = new AnnouncementMessages(practice.Name).NewPracticeAdded };
 
                 await _context.Practices.AddAsync(practice);
                 await _context.SaveChangesAsync();

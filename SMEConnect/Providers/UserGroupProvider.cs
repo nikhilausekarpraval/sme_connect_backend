@@ -11,11 +11,12 @@ namespace SMEConnect.Providers
     {
         private ILogger<UserGroupProvider> _logger;
         private DcimDevContext _dcimDevContext;
-
-        public UserGroupProvider(ILogger<UserGroupProvider> Logger, DcimDevContext dcimDevContext)
+        private IAnnouncementProvider _announcementProvider;
+        public UserGroupProvider(ILogger<UserGroupProvider> Logger, DcimDevContext dcimDevContext,IAnnouncementProvider announcementProvider)
         {
             this._dcimDevContext = dcimDevContext;
             this._logger = Logger;
+            _announcementProvider = announcementProvider;
         }
 
 
@@ -29,6 +30,9 @@ namespace SMEConnect.Providers
                     return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, "A group with the same name already exists.");
                 }
 
+                var newAnn = new Announcement() { GroupName = group.Name, PracticeName = group.Practice, UserName = group.ModifiedBy, CreatedBy = group.ModifiedBy, Message = new AnnouncementMessages(group.Name).NewGroupAdded };
+
+                await _announcementProvider.AddAnnouncement(newAnn);
                 await _dcimDevContext.UserGroups.AddAsync(group);
                 await _dcimDevContext.SaveChangesAsync();
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);

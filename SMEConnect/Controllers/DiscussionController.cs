@@ -22,7 +22,6 @@ namespace SMEConnect.Controllers
             this._discussionProvider = discussionProvider;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("add_discussion")]
         public async Task<IActionResult> AddDiscussion(Discussion discussion)

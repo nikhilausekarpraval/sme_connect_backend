@@ -8,6 +8,7 @@ using SMEConnectSignalRServer.Dtos;
 using System.Text.Json;
 using System.Text;
 using SMEConnect.Dtos;
+using static SMEConnect.Constatns.Constants;
 
 
 namespace SMEConnect.Providers
@@ -18,13 +19,15 @@ namespace SMEConnect.Providers
         private readonly DcimDevContext _context;
         private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
+        private readonly IAnnouncementProvider _announcementProvider;
 
 
-        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger, HttpClient httpClient)
+        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger, HttpClient httpClient, IAnnouncementProvider announcementProvider)
         {
             _context = context;
             _logger = logger;
             _httpClient = httpClient;
+            _announcementProvider = announcementProvider;
         }
 
         public async Task<ApiResponse<List<Discussion>>> getDiscussions(string groupId)
@@ -219,6 +222,11 @@ namespace SMEConnect.Providers
                     return new ApiResponse<bool>(Constants.ApiResponseType.Failure, false, "A discussion with the same name already exists.");
                 }
 
+                var user = await _context.UserGroups.FirstAsync(u => u.Name == discussion.GroupName);
+
+                var newAnn = new Announcement() { GroupName = discussion.GroupName, PracticeName = user.Practice, UserName = discussion.ModifiedBy, CreatedBy = discussion.ModifiedBy, Message = new AnnouncementMessages(discussion.Name).NewDiscussionAdded };
+
+                await _announcementProvider.AddAnnouncement(newAnn);
                 await _context.Discussions.AddAsync(discussion);
                 await _context.SaveChangesAsync();
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
