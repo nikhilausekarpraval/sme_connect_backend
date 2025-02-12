@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using SMEConnectSignalRServer.Interfaces;
 using SMEConnectSignalRServer.Modals;
 
+
 namespace SMEConnectSignalRServer.Models
 {
+    [Authorize]
     public class ChatHub : Hub<IChatClient>
     {
         public async Task SendMessage(Message message)

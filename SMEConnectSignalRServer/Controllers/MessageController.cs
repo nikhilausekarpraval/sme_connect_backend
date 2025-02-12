@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SMEConnectSignalRServer.Dtos;
 using SMEConnectSignalRServer.Interfaces;
 using SMEConnectSignalRServer.Modals;
 
 namespace SMEConnectSignalRServer.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MessageController : ControllerBase

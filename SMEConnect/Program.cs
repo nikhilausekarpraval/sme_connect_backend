@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SMEConnect.Contracts;
+using SMEConnect.Controllers;
 using SMEConnect.Data;
 using SMEConnect.Modals;
 using SMEConnect.Providers;
@@ -65,6 +66,7 @@ builder.Services.AddScoped<IUserClaimProvider, UserClaimProvider>();
 builder.Services.AddScoped<IDiscussionProvider, DiscussionProvider>();
 builder.Services.AddScoped<IDiscussionChatProvider, DiscussionChatProvider>();
 builder.Services.AddScoped<IAnnouncementProvider, AnnouncementProvider>();
+builder.Services.AddScoped<ISignalRCommonProvider, SignalRCommonProvider>();
 builder.Services.AddHttpClient<IDiscussionProvider,DiscussionProvider>();
 
 

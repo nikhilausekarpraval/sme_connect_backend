@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Dtos;
+using SMEConnect.Helpers;
 using SMEConnect.Modals;
 using SMEConnectSignalRServer.Dtos;
 
@@ -83,7 +84,7 @@ namespace SMEConnect.Controllers
         {
             try
             {
-                var result = await this._discussionProvider.GetRecentDiscussions(discussionsDTO);
+                var result = await this._discussionProvider.GetRecentDiscussions(discussionsDTO, Helper.GetAccessToken(this.HttpContext));
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -98,7 +99,7 @@ namespace SMEConnect.Controllers
         {
             try
             {
-                var result = await this._discussionProvider.GetDiscussionUsers(discussionsDTO);
+                var result = await this._discussionProvider.GetDiscussionUsers(discussionsDTO,Helper.GetAccessToken(this.HttpContext));
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -114,7 +115,8 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                var result = await this._discussionProvider.GetSimilarDiscussionsFromGroup(discussionsDTO,userContext.Email);
+                
+                var result = await this._discussionProvider.GetSimilarDiscussionsFromGroup(discussionsDTO,userContext.Email, Helper.GetAccessToken(this.HttpContext));
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)

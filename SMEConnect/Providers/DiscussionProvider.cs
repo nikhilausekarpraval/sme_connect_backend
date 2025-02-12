@@ -9,6 +9,8 @@ using System.Text.Json;
 using System.Text;
 using SMEConnect.Dtos;
 using static SMEConnect.Constatns.Constants;
+using SMEConnect.Controllers;
+using SMEConnect.Helpers;
 
 
 namespace SMEConnect.Providers
@@ -20,14 +22,16 @@ namespace SMEConnect.Providers
         private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
         private readonly IAnnouncementProvider _announcementProvider;
+        private readonly ISignalRCommonProvider _signalRCommonProvider;
 
 
-        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger, HttpClient httpClient, IAnnouncementProvider announcementProvider)
+        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger, HttpClient httpClient, IAnnouncementProvider announcementProvider,ISignalRCommonProvider signalRCommonProvider)
         {
             _context = context;
             _logger = logger;
             _httpClient = httpClient;
             _announcementProvider = announcementProvider;
+            _signalRCommonProvider = signalRCommonProvider;
         }
 
         public async Task<ApiResponse<List<Discussion>>> getDiscussions(string groupId)
@@ -70,12 +74,12 @@ namespace SMEConnect.Providers
         }
 
 
-        public async Task<ApiResponse<List<Discussion>>> GetRecentDiscussions(DiscussionsDTO discussion)
+        public async Task<ApiResponse<List<Discussion>>> GetRecentDiscussions(DiscussionsDTO discussion, string token)
         {
             try
             {
-                var jsonContent = new StringContent(JsonSerializer.Serialize(discussion), Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("http://localhost:5234/api/message/get-recent-discussions", jsonContent);
+                
+                var response = await _signalRCommonProvider.PostAsync(this._httpClient,SignalRChatURLS.SignalRBaseURL,SignalRChatURLS.SignalRGetRecentDiscussions,discussion,token);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -105,7 +109,7 @@ namespace SMEConnect.Providers
             }
         }
 
-        public async Task<ApiResponse<List<Discussion>>> GetSimilarDiscussionsFromGroup(DiscussionsDTO discussion,string userEmail)
+        public async Task<ApiResponse<List<Discussion>>> GetSimilarDiscussionsFromGroup(DiscussionsDTO discussion,string userEmail,string token)
         {
             try {
 
@@ -120,8 +124,7 @@ namespace SMEConnect.Providers
 
                 discussion.Discussion = newDiscussion?.Description;
 
-                var jsonContent = new StringContent(JsonSerializer.Serialize(discussion), Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("http://localhost:5234/api/message/get-similar-discussions", jsonContent);
+                var response = await _signalRCommonProvider.PostAsync(this._httpClient, SignalRChatURLS.SignalRBaseURL, SignalRChatURLS.SignalRGetSimilarDiscussions, discussion, token);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -151,12 +154,11 @@ namespace SMEConnect.Providers
         }
 
 
-        public async Task<ApiResponse<List<GroupUserDto>>> GetDiscussionUsers(DiscussionsDTO discussion)
+        public async Task<ApiResponse<List<GroupUserDto>>> GetDiscussionUsers(DiscussionsDTO discussion,string token)
         {
             try
             {
-                var jsonContent = new StringContent(JsonSerializer.Serialize(discussion), Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("http://localhost:5234/api/message/get-discussion-users", jsonContent);
+                var response = await _signalRCommonProvider.PostAsync(this._httpClient, SignalRChatURLS.SignalRBaseURL, SignalRChatURLS.SignalRGetDiscussionUsers, discussion, token);
 
                 if (!response.IsSuccessStatusCode)
                 {

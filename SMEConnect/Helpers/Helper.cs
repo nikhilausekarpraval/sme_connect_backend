@@ -1,10 +1,13 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using SMEConnect.Dtos;
 using SMEConnect.Modals;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Text.Json;
 
 namespace SMEConnect.Helpers
 {
@@ -69,6 +72,32 @@ namespace SMEConnect.Helpers
                     model.answer2,
                     model.answer3
                 };
+        }
+
+        public static string GetAccessToken(HttpContext httpContext)
+        {
+            if (httpContext.Request.Headers.ContainsKey("Authorization"))
+            {
+                return httpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+            }
+            return null; 
+        }
+
+        public static StringContent GetSerializedData<T>(T data)
+        {
+           return new StringContent(
+                JsonSerializer.Serialize(data),
+                Encoding.UTF8,
+                "application/json");
+        }
+
+        public static void AddAuthorizationHeader(HttpClient httpClient, string token)
+        {
+            if (!string.IsNullOrEmpty(token))
+            {
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
         }
     }
 }
