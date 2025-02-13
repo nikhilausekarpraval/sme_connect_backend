@@ -9,6 +9,7 @@ namespace SMEConnect.Controllers
 
     [ApiController]
     [Authorize(Roles = "Admin")]
+    [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
     [Route("api/[controller]")]
     public class RoleClaimController : ControllerBase
     {

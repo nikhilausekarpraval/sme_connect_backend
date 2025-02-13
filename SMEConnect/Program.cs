@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SMEConnect.Contracts;
@@ -19,16 +20,15 @@ builder.Services.AddDbContext<DcimDevContext>(options =>
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
         .AddEntityFrameworkStores<DcimDevContext>()
-        .AddDefaultTokenProviders();
+.AddDefaultTokenProviders();
 
 
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
 })
-.AddJwtBearer(options =>
+.AddJwtBearer("CustomJwt", options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -40,16 +40,10 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
-});
+})
+.AddMicrosoftIdentityWebApi(builder.Configuration, "AzureAd", "AzureAD");
 
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddScoped<UserContextProvider>();
-//builder.Services.AddScoped<IUserContext, UserContext>(serviceProvider =>
-//{
-//    var userContextProvider = serviceProvider.GetRequiredService<UserContextProvider>();
-//    return (UserContext)userContextProvider.GenerateContext(serviceProvider).GetAwaiter().GetResult();
-//});
-
 
 builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
 builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();

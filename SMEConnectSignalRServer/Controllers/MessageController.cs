@@ -6,7 +6,7 @@ using SMEConnectSignalRServer.Modals;
 
 namespace SMEConnectSignalRServer.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
     [ApiController]
     [Route("api/[controller]")]
     public class MessageController : ControllerBase

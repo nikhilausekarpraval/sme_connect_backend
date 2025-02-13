@@ -11,7 +11,7 @@ namespace SMEConnect.Controllers
 {
 
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
     [Route("api/[controller]")]
     public class DiscussionController : ControllerBase
     {
@@ -125,6 +125,7 @@ namespace SMEConnect.Controllers
             }
         }
 
+        [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("update_discussion")]

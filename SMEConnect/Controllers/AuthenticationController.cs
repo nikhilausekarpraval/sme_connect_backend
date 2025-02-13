@@ -120,7 +120,7 @@
             }
 
             [HttpPut]
-            [Authorize]
+            [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
             [Route("update_user")]
             public async Task<IActionResult> UpdateUser([FromBody] RegisterModelDto user)
             {
@@ -139,7 +139,7 @@
             }
 
             [HttpPut]
-            [Authorize]
+            [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
             [Route("reset_password")]
             public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto user)
             {

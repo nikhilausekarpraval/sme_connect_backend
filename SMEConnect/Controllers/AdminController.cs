@@ -9,6 +9,7 @@ using static SMEConnect.Constatns.Constants;
 namespace SMEConnect.Controllers
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
     [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     public class AdminController : ControllerBase

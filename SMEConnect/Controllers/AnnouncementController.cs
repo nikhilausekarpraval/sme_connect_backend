@@ -8,7 +8,7 @@ using SMEConnect.Modals;
 namespace SMEConnect.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
     [Route("api/[controller]")]
     public class AnnouncementController : ControllerBase
     {

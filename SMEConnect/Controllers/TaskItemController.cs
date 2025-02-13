@@ -14,6 +14,7 @@ namespace SMEConnect.Controllers
 
     [ApiController]
     [Route("task")]
+    [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
     [Authorize(Roles = "User")]
     public class TaskItemController : ControllerBase
     {
@@ -130,6 +131,7 @@ namespace SMEConnect.Controllers
 
 
         [HttpDelete("delete")]
+        [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [Authorize(Policy = "CanDelete")]
         public async Task<ActionResult> DeleteTaskItem([FromQuery] int taskId)
         {

@@ -7,7 +7,7 @@ using SMEConnect.Modals;
 namespace SMEConnect.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
     [Route("api/[controller]")]
     public class GroupUsersController : ControllerBase
     {
@@ -107,6 +107,7 @@ namespace SMEConnect.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [Route("update_group_user")]
         public async Task<IActionResult> UpdateGroupUsers(GroupUser group)
         {

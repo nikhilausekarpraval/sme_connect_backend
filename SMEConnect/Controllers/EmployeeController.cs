@@ -110,6 +110,7 @@ namespace SMEConnect.Controllers
 
         [HttpDelete("delete")]
         [Authorize(Policy = "CanDelete")]
+        [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         public async Task<ActionResult> DeleteEmployee([FromQuery] int employeeId)
         {
             var response = await _employeeProvider.DeleteEmployee(employeeId);

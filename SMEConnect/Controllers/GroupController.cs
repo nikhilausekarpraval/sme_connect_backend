@@ -21,6 +21,7 @@ namespace SMEConnect.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [Route("add_group")]
         public async Task<IActionResult> AddGroup(UserGroup group)
         {
@@ -80,6 +81,7 @@ namespace SMEConnect.Controllers
 
 
 
+        [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [HttpDelete]
         [Authorize(Roles = "Admin")]
         [Route("delete_groups")]
@@ -97,6 +99,7 @@ namespace SMEConnect.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [Route("update_group")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateGroup(UserGroup group)
