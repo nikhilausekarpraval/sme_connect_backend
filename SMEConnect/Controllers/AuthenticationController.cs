@@ -37,6 +37,21 @@
                 this._authenticationProvider = authenticationProvider;
             }
 
+            [HttpPost]
+            [Authorize]
+            [Route("get-user-context")]
+            public async Task<IActionResult> GetUserContext([FromBody] string userEmail)
+            {
+                try
+                {
+                    var result = await this._authenticationProvider.GetUserContext(userEmail);
+                    return new JsonResult(result?.data != null ? Ok(result.data) : Unauthorized(result));
+                }
+                catch (Exception ex)
+                {
+                    return new JsonResult(NotFound(new ResponseDto { message = "Error", status = "", statusText = ex.Message }));
+                }
+            }
 
 
             [HttpPost]

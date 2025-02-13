@@ -37,6 +37,73 @@ namespace SMEConnect.Providers
 
         }
 
+        public async Task<ResponseDto> GetUserContext(string userEmail)
+        {
+            try
+            {
+                string sqlQuery = Query.selectUsers;
+                var emailParam = new SqlParameter("@email", userEmail);
+                var user = await _dcimDevContext.Users.FromSqlRaw(sqlQuery, emailParam).FirstAsync(); ;
+
+                var newname = user.DisplayName;
+                IList<string> gUserRoles;
+                IList<Claim> gUserClaims;
+                IList<Claim>? gRoleClaims = null;
+
+                    var userRoles = await userManager.GetRolesAsync(user);
+                    gUserRoles = userRoles;
+
+                    var userClaims = await userManager.GetClaimsAsync(user);
+                    gUserClaims = userClaims;
+
+                    var authClaims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(ClaimTypes.Email, user?.Email),
+
+                    };
+
+                    var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProvider>());
+                    var mapper = config.CreateMapper();
+
+                    // Mapping string roles to RoleDto
+                    IList<RoleDto> roleDtos = mapper.Map<IList<RoleDto>>(gUserRoles);
+                    user.Roles = roleDtos;
+
+                    foreach (var userRole in userRoles)
+                    {
+                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+
+                        var role = await roleManager.FindByNameAsync(userRole);
+
+                        var roleClaims = await roleManager.GetClaimsAsync(role);
+
+                        foreach (var roleClaim in roleClaims)
+                        {
+                            authClaims.Add(roleClaim);
+                            gRoleClaims = roleClaims;
+                        }
+
+                    }
+
+                    foreach (var userClaim in userClaims)
+                    {
+                        authClaims.Add(userClaim);
+                    }
+
+                    UserContextDto userContextDto = new UserContextDto { User = user, Roles = gUserRoles, UserClaims = gUserClaims, RoleClaims = gRoleClaims };
+ 
+                    return new ResponseDto { status = ApiResponseType.Success, statusText = "", message = "", data = userContextDto };
+                
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+        }
+
 
         public async Task<ResponseDto> Login(LoginModalDto model)
         {

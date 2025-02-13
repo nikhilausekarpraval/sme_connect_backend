@@ -11,6 +11,8 @@ namespace SMEConnect.Contracts
 
         public Task<ResponseDto> Logout();
 
+        public Task<ResponseDto> GetUserContext(string userEmail);
+
         public Task<ResponseDto> UpdateUser(RegisterModelDto user,string userEmail);
 
         public Task<ResponseDto> ResetPassword(ResetPasswordDto user);
