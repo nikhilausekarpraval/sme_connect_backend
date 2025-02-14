@@ -38,7 +38,7 @@
             }
 
             [HttpPost]
-            [Authorize]
+            [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
             [Route("get-user-context")]
             public async Task<IActionResult> GetUserContext([FromBody] string userEmail)
             {
