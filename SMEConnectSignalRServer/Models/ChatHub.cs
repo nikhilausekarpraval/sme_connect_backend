@@ -7,7 +7,7 @@ using SMEConnectSignalRServer.Modals;
 
 namespace SMEConnectSignalRServer.Models
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
     public class ChatHub : Hub<IChatClient>
     {
         public async Task SendMessage(Message message)
