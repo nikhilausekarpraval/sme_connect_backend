@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using SMEConnect.Modals;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using Task = System.Threading.Tasks.Task;
 
 namespace SMEConnect.Providers
@@ -15,9 +19,25 @@ namespace SMEConnect.Providers
 
         public async Task Invoke(HttpContext context, UserManager<ApplicationUser> userManager,RoleManager<ApplicationRole> roleManager)
         {
+
+            var authenticationResult = await context.AuthenticateAsync("AzureAD");  
+            if (!authenticationResult.Succeeded)
+            {
+                authenticationResult = await context.AuthenticateAsync("CustomJwt");  // Fallback to CustomJwt scheme
+            }
+
+            if (authenticationResult.Succeeded)
+            {
+                context.User = authenticationResult.Principal;  // Set the authenticated user
+            }
+            else
+            {
+                context.User = new ClaimsPrincipal(new ClaimsIdentity());  // No user, create an empty principal
+            }
+
             if (context.User.Identity.IsAuthenticated)
             {
-                var email = context.User.Claims.FirstOrDefault(c => c.Type.Contains("emailaddress"))?.Value;
+                var email = context.User.Claims.FirstOrDefault(c => c.Type.Contains("emailaddress") || c.Type.Contains("upn"))?.Value;
 
                 if (!string.IsNullOrEmpty(email))
                 {
@@ -26,13 +46,20 @@ namespace SMEConnect.Providers
                     var userRoles = await userManager.GetRolesAsync(applicationUser);
                     var userClaims = await userManager.GetClaimsAsync(applicationUser);
 
-                    var roleClaims = (await Task.WhenAll(userRoles.Select(async role =>
-                        await roleManager.GetClaimsAsync(await roleManager.FindByNameAsync(role)))))
-                        .Where(c => c != null)
-                        .SelectMany(c => c)
-                        .ToList();
+                    var roleClaims = new List<Claim>();
 
-                    var allClaims = userClaims.Concat(roleClaims).ToList();
+                    foreach (var role in userRoles)
+                    {
+                        var roleEntity = await roleManager.FindByNameAsync(role);
+                        if (roleEntity != null)
+                        {
+                            var claims = await roleManager.GetClaimsAsync(roleEntity);
+                            if (claims != null)
+                            {
+                                roleClaims.AddRange(claims.Where(c => c != null));
+                            }
+                        }
+                    }
 
                     if (applicationUser != null)
                     {

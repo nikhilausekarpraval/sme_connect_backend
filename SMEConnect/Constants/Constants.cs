@@ -118,6 +118,13 @@
             public static string Member = "Member";
         }
 
+        public static class SchemeName
+        {
+            public static string AzureAd = "AzureAd";
+            public static string CustomJwt = "CustomJwt";
+
+        }
+
         public static class SignalRChatURLS
         {
             public static string SignalRBaseURL = "https://localhost:5234/api/message/";

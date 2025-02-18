@@ -59,20 +59,6 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 
-    options.Events = new JwtBearerEvents
-    {
-        OnTokenValidated = async context =>
-        {
-            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
-            var emailClaim = claimsIdentity?.FindFirst(ClaimTypes.Email)
-                             ?? claimsIdentity?.FindFirst("preferred_username");
-
-            if (emailClaim == null)
-            {
-                context.Fail("Email claim missing");
-            }
-        }
-    };
 })
 .AddJwtBearer("CustomJwt", options =>
 {
