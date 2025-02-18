@@ -93,8 +93,15 @@ namespace SMEConnect.Providers
                     }
 
                     UserContextDto userContextDto = new UserContextDto { User = user, Roles = gUserRoles, UserClaims = gUserClaims, RoleClaims = gRoleClaims };
- 
-                    return new ResponseDto { status = ApiResponseType.Success, statusText = "", message = "", data = userContextDto };
+
+                    var accessToken = new
+                    {
+                        token ="",
+                        expiration = "",
+                        userContext = userContextDto
+                    };
+
+                return new ResponseDto { status = ApiResponseType.Success, statusText = "", message = "", data = accessToken };
                 
             }
             catch (Exception ex)

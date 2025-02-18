@@ -15,7 +15,6 @@ namespace SMEConnect.Controllers
     [ApiController]
     [Route("task")]
     [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
-    [Authorize(Roles = "User")]
     public class TaskItemController : ControllerBase
     {
         private readonly ILogger<TaskItemController> _logger;
