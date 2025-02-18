@@ -17,10 +17,12 @@ namespace SMEConnect.Controllers
     {
 
         private IDiscussionProvider _discussionProvider;
+        private IAuthenticationProvider _authenticationProvider;
 
-        public DiscussionController(IDiscussionProvider discussionProvider)
+        public DiscussionController(IDiscussionProvider discussionProvider,IAuthenticationProvider authenticationProvider)
         {
             this._discussionProvider = discussionProvider;
+            _authenticationProvider = authenticationProvider;
         }
 
         [HttpPost]
@@ -31,6 +33,11 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
+                var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email);
+                if(groupRole == "Lead"!)
+                {
+                    return Unauthorized();
+                }
                 discussion.ModifiedBy = userContext.Email;
                 var result = await this._discussionProvider.CreateDiscussion(discussion);
                 if (result.Status == Constants.ApiResponseType.Failure)
@@ -68,6 +75,12 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email);
+                if (groupRole == "Lead"!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._discussionProvider.DeleteDiscussion(discussion);
                 return new JsonResult(Ok(result));
             }
@@ -126,7 +139,6 @@ namespace SMEConnect.Controllers
         }
 
         [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("update_discussion")]
         public async Task<IActionResult> UpdateDiscussion(Discussion discussion)
@@ -134,6 +146,11 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
+                var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email);
+                if (groupRole == "Lead"!)
+                {
+                    return Unauthorized();
+                }
                 discussion.ModifiedBy = userContext.Email;
                 var result = await this._discussionProvider.UpdateDiscussion(discussion);
                 if (result.Status == Constants.ApiResponseType.Failure)

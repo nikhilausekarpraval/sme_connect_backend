@@ -13,7 +13,7 @@ namespace SMEConnect.Providers
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, UserManager<ApplicationUser> userManager)
+        public async Task Invoke(HttpContext context, UserManager<ApplicationUser> userManager,RoleManager<ApplicationRole> roleManager)
         {
             if (context.User.Identity.IsAuthenticated)
             {
@@ -21,7 +21,18 @@ namespace SMEConnect.Providers
 
                 if (!string.IsNullOrEmpty(email))
                 {
+
                     var applicationUser = await userManager.FindByEmailAsync(email);
+                    var userRoles = await userManager.GetRolesAsync(applicationUser);
+                    var userClaims = await userManager.GetClaimsAsync(applicationUser);
+
+                    var roleClaims = (await Task.WhenAll(userRoles.Select(async role =>
+                        await roleManager.GetClaimsAsync(await roleManager.FindByNameAsync(role)))))
+                        .Where(c => c != null)
+                        .SelectMany(c => c)
+                        .ToList();
+
+                    var allClaims = userClaims.Concat(roleClaims).ToList();
 
                     if (applicationUser != null)
                     {
@@ -29,7 +40,11 @@ namespace SMEConnect.Providers
                         {
                             Name = applicationUser?.UserName,
                             Email = applicationUser?.Email,
-                            UserName = applicationUser?.UserName
+                            UserName = applicationUser?.UserName,
+                            Roles = userRoles,
+                            RoleClaims = roleClaims,
+                            UserClaims = userClaims
+
                         };
 
                         context.Items["UserContext"] = userContext;

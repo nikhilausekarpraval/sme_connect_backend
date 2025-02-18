@@ -111,6 +111,13 @@
             public static string selectUsers = "SELECT * FROM AspNetUsers WHERE Email = @email";
         }
 
+        public static class GroupRoles
+        {
+            public static string Lead = "Lead";
+            public static string SME = "SME";
+            public static string Member = "Member";
+        }
+
         public static class SignalRChatURLS
         {
             public static string SignalRBaseURL = "https://localhost:5234/api/message/";

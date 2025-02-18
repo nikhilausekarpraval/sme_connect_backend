@@ -10,6 +10,7 @@ using SMEConnect.Controllers;
 using SMEConnect.Data;
 using SMEConnect.Modals;
 using SMEConnect.Providers;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,8 +26,53 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
 
 builder.Services.AddAuthentication(options =>
 {
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer("AzureAD", options =>
+{
+    var tenantId = builder.Configuration["AzureAd:TenantId"];
+    var clientId = builder.Configuration["AzureAd:ClientId"];
+
+    options.Authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
+    options.Audience = clientId;
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuers = new[]
+        {
+            $"https://sts.windows.net/{tenantId}/",
+            $"https://login.microsoftonline.com/{tenantId}/v2.0"
+        },
+
+        ValidateAudience = true,
+        ValidAudiences = new[]
+        {
+            clientId,
+            $"api://{clientId}"
+        },
+
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidateIssuerSigningKey = true
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+            var emailClaim = claimsIdentity?.FindFirst(ClaimTypes.Email)
+                             ?? claimsIdentity?.FindFirst("preferred_username");
+
+            if (emailClaim == null)
+            {
+                context.Fail("Email claim missing");
+            }
+        }
+    };
 })
 .AddJwtBearer("CustomJwt", options =>
 {
@@ -40,8 +86,8 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
-})
-.AddMicrosoftIdentityWebApi(builder.Configuration, "AzureAd", "AzureAD");
+});
+
 
 builder.Services.AddHttpContextAccessor();
 

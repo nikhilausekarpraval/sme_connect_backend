@@ -8,6 +8,8 @@ using System.Security.Cryptography;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text.Json;
+using SMEConnect.Contracts;
+using static SMEConnect.Constatns.Constants;
 
 namespace SMEConnect.Helpers
 {
@@ -98,6 +100,16 @@ namespace SMEConnect.Helpers
                 httpClient.DefaultRequestHeaders.Authorization =
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             }
+        }
+
+        public static async Task<bool> IsGroupLeadAsync(IAuthenticationProvider authenticationProvider, UserContext userContext)
+        {
+            if (userContext.Roles.Contains("Admin"))
+            {
+                var groupRole = await authenticationProvider.GetUserGroupRole(userContext.Email);
+                return groupRole == GroupRoles.Lead;
+            }
+            return false;
         }
     }
 }

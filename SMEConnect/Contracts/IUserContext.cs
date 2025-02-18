@@ -1,4 +1,6 @@
-﻿namespace SMEConnect.Contracts
+﻿using System.Security.Claims;
+
+namespace SMEConnect.Contracts
 {
     /// <summary>
     /// Class IUserContext.
@@ -24,6 +26,13 @@
         /// </summary>
         /// <value>The email.</value>
         public string Email { get; set; }
+
+
+        public IList<string> Roles { get; set; }
+
+        public IList<Claim> RoleClaims { get; set; }
+
+        public IList<Claim>  UserClaims { get; set; }
 
         /// <summary>
         /// Gets or sets the region.

@@ -104,6 +104,18 @@ namespace SMEConnect.Providers
             }
         }
 
+        public async Task<string> GetUserGroupRole(string userEmail)
+        {
+            var userGroupRole = await (from u in _dcimDevContext.Users
+                                       join gu in _dcimDevContext.GroupUsers on u.Email equals gu.UserEmail
+                                       join ug in _dcimDevContext.UserGroups on gu.Group equals ug.Name
+                                       where u.Email == userEmail && ug.Practice == u.Practice
+                                       select gu.GroupRole)
+                          .FirstOrDefaultAsync();
+
+            return userGroupRole;
+
+        }
 
         public async Task<ResponseDto> Login(LoginModalDto model)
         {
