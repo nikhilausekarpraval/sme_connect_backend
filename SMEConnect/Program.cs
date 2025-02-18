@@ -90,7 +90,6 @@ builder.Services.AddAuthentication(options =>
 
 
 builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddScoped<ITaskItemProvider, TaskItemProvider>();
 builder.Services.AddScoped<IEmployeeProvider, EmployeeProvider>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProvider));
