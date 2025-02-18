@@ -1,5 +1,5 @@
 ﻿
-using SMEConnect.Controllers;
+using SMEConnect.Contracts;
 using SMEConnect.Helpers;
 
 namespace SMEConnect.Providers

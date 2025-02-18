@@ -80,6 +80,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._userGroupUsersProvider.DeleteGroupUser(groupIds);
                 return new JsonResult(Ok(result));
             }
@@ -114,6 +119,10 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 group.ModifiedBy = userContext.Email;
                 var result = await this._userGroupUsersProvider.UpdateGroupUser(group);
                 if (result.Status == Constants.ApiResponseType.Failure)

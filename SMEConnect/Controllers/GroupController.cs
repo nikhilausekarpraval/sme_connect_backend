@@ -20,7 +20,6 @@ namespace SMEConnect.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [Route("add_group")]
         public async Task<IActionResult> AddGroup(UserGroup group)
@@ -29,6 +28,9 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!) {
+                    return Unauthorized();
+                }
                 group.ModifiedBy = userContext.Email;
                 var result = await this._userGroupProvider.AddGroup(group);
                 if (result.Status == Constants.ApiResponseType.Failure)
@@ -46,7 +48,7 @@ namespace SMEConnect.Controllers
 
         [HttpGet]
         [Route("get_groups")]
-        [Authorize(Roles = "Admin")]
+       //update [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetGroups()
         {
             try
@@ -83,12 +85,17 @@ namespace SMEConnect.Controllers
 
         [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
+       // update [Authorize(Roles = "Admin")]
         [Route("delete_groups")]
         public async Task<IActionResult> DeleteGroup(List<int> groupIds)
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._userGroupProvider.DeleteUserGroup(groupIds);
                 return new JsonResult(Ok(result));
             }
@@ -101,12 +108,17 @@ namespace SMEConnect.Controllers
         [HttpPost]
         [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [Route("update_group")]
-        [Authorize(Roles = "Admin")]
+       //update to get inside [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateGroup(UserGroup group)
         {
             try
             {
+
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 group.ModifiedBy = userContext.Email;
                 var result = await this._userGroupProvider.UpdateGroup(group);
                 if (result.Status == Constants.ApiResponseType.Failure)

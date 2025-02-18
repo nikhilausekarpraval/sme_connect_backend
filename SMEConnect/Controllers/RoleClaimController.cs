@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using SMEConnect.Constatns;
 using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using SMEConnect.Providers;
 
 namespace SMEConnect.Controllers
 {
 
     [ApiController]
-    [Authorize(Roles = "Admin")]
     [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
     [Route("api/[controller]")]
     public class RoleClaimController : ControllerBase
@@ -30,6 +30,11 @@ namespace SMEConnect.Controllers
 
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._roleClaimProvider.AddClaimToRole(RoleClaim);
                 return new JsonResult(Ok(result));
             }
@@ -45,6 +50,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._roleClaimProvider.GetRoleClaims();
                 return new JsonResult(Ok(result));
             }
@@ -60,6 +70,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._roleClaimProvider.GetRoleClaimsWithRolesAsync();
                 return new JsonResult(Ok(result));
             }
@@ -74,6 +89,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var response = await _roleClaimProvider.UpdateRoleClaims(employeeDto);
 
                 if (response.Status == Constants.ApiResponseType.Success)
@@ -98,6 +118,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._roleClaimProvider.DeleteRoleClaims(RoleClaimIds);
                 return new JsonResult(Ok(result));
             }

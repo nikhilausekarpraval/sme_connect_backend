@@ -6,7 +6,6 @@ using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SMEConnect.Contracts;
-using SMEConnect.Controllers;
 using SMEConnect.Data;
 using SMEConnect.Modals;
 using SMEConnect.Providers;

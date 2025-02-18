@@ -31,6 +31,10 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 practice.ModifiedBy = userContext.Email;
                 var result = await this._practiceProvider.CreatePractice(practice);
                 if (result.Status == Constants.ApiResponseType.Failure)
@@ -51,6 +55,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._practiceProvider.getPractices();
                 return new JsonResult(Ok(result));
             }
@@ -82,6 +91,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._practiceProvider.DeletePractice(practicesIds);
                 return new JsonResult(Ok(result));
             }
@@ -98,6 +112,10 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 practice.ModifiedBy = userContext.Email;
                 var result = await this._practiceProvider.UpdatePractice(practice);
                 if (result.Status == Constants.ApiResponseType.Failure)

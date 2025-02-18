@@ -1,6 +1,6 @@
 ﻿using SMEConnect.Helpers;
 
-namespace SMEConnect.Controllers
+namespace SMEConnect.Contracts
 {
     public interface ISignalRCommonProvider
     {

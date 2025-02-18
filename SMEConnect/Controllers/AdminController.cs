@@ -31,6 +31,10 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._adminProvider.AddRole(role,userContext.Email );
                 return result == AccessConfigurationErrorMessage.RoleExist ? new JsonResult(NotFound(result)) : new JsonResult(Ok(result));
             }
@@ -48,6 +52,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._adminProvider.AddRoleToUser(addRoleToUser);
                 return new JsonResult(Ok(result));
             }
@@ -63,6 +72,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._adminProvider.AddClaimToUser(userClaim);
                 return new JsonResult(Ok(result));
             }
@@ -78,6 +92,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._adminProvider.GetRolesWithClaims();
                 return new JsonResult(Ok(result));
             }
@@ -111,6 +130,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._adminProvider.DeleteRoles(roles);
                 return new JsonResult(Ok(result));
             }
@@ -142,6 +166,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._adminProvider.DeleteUser(applicationUsers);
                 return new JsonResult(Ok(result));
             }

@@ -34,7 +34,7 @@ namespace SMEConnect.Controllers
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
                 var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email);
-                if(groupRole == "Lead"!)
+                if (groupRole == "Lead"! || userContext.Roles.Contains("Admin")!)
                 {
                     return Unauthorized();
                 }
@@ -77,7 +77,7 @@ namespace SMEConnect.Controllers
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
                 var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email);
-                if (groupRole == "Lead"!)
+                if (groupRole == "Lead"! || userContext.Roles.Contains("Admin")!)
                 {
                     return Unauthorized();
                 }
@@ -147,7 +147,7 @@ namespace SMEConnect.Controllers
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
                 var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email);
-                if (groupRole == "Lead"!)
+                if (groupRole == "Lead"! || userContext.Roles.Contains("Admin")!)
                 {
                     return Unauthorized();
                 }

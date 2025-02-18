@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Dtos;
+using SMEConnect.Modals;
 
 namespace SMEConnect.Controllers
 {
@@ -30,6 +31,11 @@ namespace SMEConnect.Controllers
 
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._UserClaimProvider.AddClaimToUser(UserClaim);
                 return new JsonResult(Ok(result));
             }
@@ -45,6 +51,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._UserClaimProvider.GetUserClaims();
                 return new JsonResult(Ok(result));
             }
@@ -59,6 +70,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var response = await _UserClaimProvider.UpdateUserClaims(employeeDto);
 
                 if (response.Status == Constants.ApiResponseType.Success)
@@ -83,6 +99,11 @@ namespace SMEConnect.Controllers
         {
             try
             {
+                var userContext = HttpContext.Items["UserContext"] as UserContext;
+                if (userContext.Roles.Contains("Admin")!)
+                {
+                    return Unauthorized();
+                }
                 var result = await this._UserClaimProvider.DeleteUserClaims(UserClaimIds);
                 return new JsonResult(Ok(result));
             }

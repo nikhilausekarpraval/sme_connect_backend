@@ -196,6 +196,11 @@
             {
                 try
                 {
+                    var userContext = HttpContext.Items["UserContext"] as UserContext;
+                    if (userContext.Roles.Contains("Admin")!)
+                    {
+                        return Unauthorized();
+                    }
                     var result = await this._authenticationProvider.RegisterAdmin(model);
                     return new JsonResult(result.statusText == AccessConfigurationSccessMessage.UserCreated ? Ok(result) : BadRequest(result));
                 }
