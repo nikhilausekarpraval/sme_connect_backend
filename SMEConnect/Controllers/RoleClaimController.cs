@@ -31,7 +31,7 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                if (userContext.Roles.Contains("Admin")!)
+                if (!userContext.Roles.Contains("Admin"))
                 {
                     return Unauthorized();
                 }
@@ -51,7 +51,7 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                if (userContext.Roles.Contains("Admin")!)
+                if (!userContext.Roles.Contains("Admin"))
                 {
                     return Unauthorized();
                 }
@@ -71,7 +71,7 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                if (userContext.Roles.Contains("Admin")!)
+                if (!userContext.Roles.Contains("Admin"))
                 {
                     return Unauthorized();
                 }
@@ -90,7 +90,7 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                if (userContext.Roles.Contains("Admin")!)
+                if (!userContext.Roles.Contains("Admin"))
                 {
                     return Unauthorized();
                 }
@@ -119,7 +119,7 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                if (userContext.Roles.Contains("Admin")!)
+                if (!userContext.Roles.Contains("Admin"))
                 {
                     return Unauthorized();
                 }
