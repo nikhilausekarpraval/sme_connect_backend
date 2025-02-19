@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SMEConnect.Contracts;
+using SMEConnect.Dtos;
 using SMEConnect.Modals;
 
 namespace SMEConnect.Controllers
@@ -32,13 +33,13 @@ namespace SMEConnect.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("get_group_user_role_claims")]
-        public async Task<IActionResult> GetGroupUserRoleClaims([FromBody] int groupRoleId)
+        public async Task<IActionResult> GetGroupUserRoleClaims([FromBody] RoleIdDto roleId)
         {
             try
             {
-                var result = await this._groupUserRoleClaimProvider.GetGroupUserRoles(groupRoleId);
+                var result = await this._groupUserRoleClaimProvider.GetGroupUserRoles(roleId.RoleId);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)

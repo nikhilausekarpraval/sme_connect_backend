@@ -198,6 +198,7 @@ namespace SMEConnect.Providers
                 existingGroup.UserEmail = group.UserEmail;
                 existingGroup.Group = group.Group;
                 existingGroup.GroupRole = group.GroupRole;
+                existingGroup.ModifiedOnDt = DateTime.Now;
 
                 var groupUserRoleClaims = new List<GroupUserRoleClaim>();
 
