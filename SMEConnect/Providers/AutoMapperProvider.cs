@@ -17,6 +17,8 @@ namespace SMEConnect.Providers
             CreateMap<Employee, EmployeeTasksDto>();
             CreateMap<EmployeeTasksDto, Employee>();
 
+            CreateMap<GroupUserRequestDto, GroupUser>();
+
             CreateMap<string, RoleDto>()
              .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src))
              .ForMember(dest => dest.Id, opt => opt.Ignore());

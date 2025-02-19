@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SMEConnect.Constatns;
 using SMEConnect.Contracts;
 using SMEConnect.Data;
 using SMEConnect.Dtos;
 using SMEConnect.Modals;
+using SMEConnect.Modals.JWTAuthentication.Authentication;
 using static SMEConnect.Constatns.Constants;
 
 namespace SMEConnect.Providers
@@ -13,16 +15,21 @@ namespace SMEConnect.Providers
         private ILogger<GroupUserProvider> _logger;
         private DcimDevContext _dcimDevContext;
         private IAnnouncementProvider _announcementProvider;
+        private IMapper _mapper;
+        private IGroupUserRoleClaimProvider _groupUserRoleProvider;
+        
 
-        public GroupUserProvider(ILogger<GroupUserProvider> Logger, DcimDevContext dcimDevContext, IAnnouncementProvider announcementProvider)
+        public GroupUserProvider(ILogger<GroupUserProvider> Logger, DcimDevContext dcimDevContext, IAnnouncementProvider announcementProvider,IMapper mapper,IGroupUserRoleClaimProvider groupUserRoleClaimProvider)
         {
             this._dcimDevContext = dcimDevContext;
             this._logger = Logger;
             _announcementProvider = announcementProvider;
+            _mapper = mapper;
+            _groupUserRoleProvider = groupUserRoleClaimProvider;
         }
 
 
-        public async Task<ApiResponse<bool>> AddGroupUser(GroupUser group)
+        public async Task<ApiResponse<bool>> AddGroupUser(GroupUserRequestDto group)
         {
             try
             {
@@ -36,8 +43,19 @@ namespace SMEConnect.Providers
 
                 var newAnn = new Announcement() { GroupName = group.Group, PracticeName = user.Practice, UserName = group.ModifiedBy, CreatedBy = group.ModifiedBy, Message = new AnnouncementMessages(group.Group, group.UserEmail).NewUserJoinedGroup};
 
+                GroupUser newGroup = _mapper.Map<GroupUser>(group);
+                await _dcimDevContext.GroupUsers.AddAsync(newGroup);
+                await _dcimDevContext.SaveChangesAsync();
+
+                var groupUserRoleClaims = new List<GroupUserRoleClaim>();
+
+                foreach (var claimName in group.GroupRoleClaims)
+                {
+                    groupUserRoleClaims.Add(new GroupUserRoleClaim { GroupUserId = newGroup.Id, Claim = claimName, Id = 0 });
+                }
+
+                await _groupUserRoleProvider.CreateUpdateGroupClaim(groupUserRoleClaims);
                 await _announcementProvider.AddAnnouncement(newAnn);
-                await _dcimDevContext.GroupUsers.AddAsync(group);
                 await _dcimDevContext.SaveChangesAsync();
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
             }
@@ -167,7 +185,7 @@ namespace SMEConnect.Providers
             }
         }
 
-        public async Task<ApiResponse<bool>> UpdateGroupUser(GroupUser group)
+        public async Task<ApiResponse<bool>> UpdateGroupUser(GroupUserRequestDto group)
         {
             try
             {
@@ -180,10 +198,16 @@ namespace SMEConnect.Providers
                 existingGroup.UserEmail = group.UserEmail;
                 existingGroup.Group = group.Group;
                 existingGroup.GroupRole = group.GroupRole;
-                //existingGroup.ModifiedBy = _userContext.Email;
-                //existingGroup.ModifiedDate = DateTime.UtcNow;
 
-                _dcimDevContext.GroupUsers.Update(existingGroup);
+                var groupUserRoleClaims = new List<GroupUserRoleClaim>();
+
+                foreach (var claimName in group.GroupRoleClaims)
+                {
+                    groupUserRoleClaims.Add(new GroupUserRoleClaim { GroupUserId = group.Id, Claim = claimName, Id = 0 });
+                }
+
+                await _groupUserRoleProvider.CreateUpdateGroupClaim(groupUserRoleClaims);
+                 _dcimDevContext.GroupUsers.Update(existingGroup);
                 await _dcimDevContext.SaveChangesAsync();
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);
             }

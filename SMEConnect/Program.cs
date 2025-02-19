@@ -91,6 +91,7 @@ builder.Services.AddScoped<IDiscussionProvider, DiscussionProvider>();
 builder.Services.AddScoped<IDiscussionChatProvider, DiscussionChatProvider>();
 builder.Services.AddScoped<IAnnouncementProvider, AnnouncementProvider>();
 builder.Services.AddScoped<ISignalRCommonProvider, SignalRCommonProvider>();
+builder.Services.AddScoped<IGroupUserRoleClaimProvider,GroupUserRoleClaimsProvider>();
 builder.Services.AddHttpClient<IDiscussionProvider,DiscussionProvider>();
 
 

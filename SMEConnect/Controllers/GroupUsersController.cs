@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SMEConnect.Constatns;
 using SMEConnect.Contracts;
+using SMEConnect.Dtos;
 using SMEConnect.Modals;
 
 namespace SMEConnect.Controllers
@@ -22,7 +23,7 @@ namespace SMEConnect.Controllers
         //update here access
         [HttpPost]
         [Route("add_group_user")]
-        public async Task<IActionResult> AddGroupUsers(GroupUser group)
+        public async Task<IActionResult> AddGroupUsers(GroupUserRequestDto group)
         {
 
             try
@@ -111,10 +112,9 @@ namespace SMEConnect.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
         [Route("update_group_user")]
-        public async Task<IActionResult> UpdateGroupUsers(GroupUser group)
+        public async Task<IActionResult> UpdateGroupUsers(GroupUserRequestDto group)
         {
             try
             {

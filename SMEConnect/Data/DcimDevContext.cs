@@ -38,6 +38,8 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser, Applica
 
     public virtual DbSet<Announcement> Announcements { get; set; }
 
+    public virtual DbSet<GroupUserRoleClaim> GroupUserRoleClaims { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
