@@ -117,41 +117,52 @@ namespace SMEConnect.Providers
             }
         }
 
-        public async Task<ApiResponse<List<GroupUserDto>>> getGroupAllUsers(string group)
+        public async Task<ApiResponse<List<GetGroupUsersWithRoleClaims>>> getGroupAllUsers(string group)
         {
             try
             {
+
                 var usersWithNames = await _dcimDevContext.GroupUsers
                                     .Where(gu => gu.Group == group)
                                     .Join(
-                                        _dcimDevContext.Users,
-                                        gu => gu.UserEmail,
-                                        u => u.Email,
-                                        (gu, u) => new
+                                        _dcimDevContext.Users, 
+                                        gu => gu.UserEmail,    
+                                        u => u.Email,          
+                                        (gu, u) => new { gu, u }
+                                    )
+                                    .GroupJoin(
+                                        _dcimDevContext.GroupUserRoleClaims, 
+                                        gu => gu.gu.Id,                      
+                                        gc => gc.GroupUserId,                
+                                        (gu, gc) => new
                                         {
-                                            gu.Id,
-                                            gu.Group,
-                                            gu.UserEmail,
-                                            u.DisplayName,
-                                            gu.GroupRole,
-                                            gu.ModifiedOnDt,
-                                            gu.ModifiedBy
-                                        })
+                                            gu.gu.Id,
+                                            gu.gu.Group,
+                                            gu.gu.UserEmail,
+                                            gu.u.DisplayName,
+                                            gu.gu.GroupRole,
+                                            Claims = gc.Select(c => c.Claim).ToList(), 
+                                            gu.gu.ModifiedOnDt,
+                                            gu.gu.ModifiedBy
+                                        }
+                                    )
                                     .ToListAsync();
 
-                var userDtos = usersWithNames.Select(u => new GroupUserDto
+
+                var userDtos = usersWithNames.Select(u => new GetGroupUsersWithRoleClaims
                 {
                     Id = u.Id,
                     Group = u.Group,
                     UserEmail = u.UserEmail,
                     Name = u.DisplayName,
                     GroupRole = u.GroupRole,
+                    GroupRoleClaims = u.Claims,
                     ModifiedBy = u.ModifiedBy,
                     ModifiedOnDt = u.ModifiedOnDt
 
                 }).ToList();
 
-                return new ApiResponse<List<GroupUserDto>>(ApiResponseType.Success, userDtos);
+                return new ApiResponse<List<GetGroupUsersWithRoleClaims>>(ApiResponseType.Success, userDtos);
             }
             catch (Exception ex)
             {

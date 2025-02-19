@@ -15,6 +15,6 @@ namespace SMEConnect.Contracts
 
         public Task<ApiResponse<List<GroupUser>>> GetUserGroups(string userEmail,string practice);
 
-        public Task<ApiResponse<List<GroupUserDto>>> getGroupAllUsers(string group);
+        public Task<ApiResponse<List<GetGroupUsersWithRoleClaims>>> getGroupAllUsers(string group);
     }
 }
