@@ -47,14 +47,15 @@ namespace SMEConnect.Providers
                 await _dcimDevContext.GroupUsers.AddAsync(newGroup);
                 await _dcimDevContext.SaveChangesAsync();
 
-                var groupUserRoleClaims = new List<GroupUserRoleClaim>();
-
-                foreach (var claimName in group.GroupRoleClaims)
+                if (group.GroupRoleClaims != null)
                 {
-                    groupUserRoleClaims.Add(new GroupUserRoleClaim { GroupUserId = newGroup.Id, Claim = claimName, Id = 0 });
+                    var groupUserRoleClaims = new List<GroupUserRoleClaim>();
+                    foreach (var claimName in group.GroupRoleClaims)
+                    {
+                        groupUserRoleClaims.Add(new GroupUserRoleClaim { GroupUserId = newGroup.Id, Claim = claimName, Id = 0 });
+                    }
+                    await _groupUserRoleProvider.CreateUpdateGroupClaim(groupUserRoleClaims);
                 }
-
-                await _groupUserRoleProvider.CreateUpdateGroupClaim(groupUserRoleClaims);
                 await _announcementProvider.AddAnnouncement(newAnn);
                 await _dcimDevContext.SaveChangesAsync();
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);

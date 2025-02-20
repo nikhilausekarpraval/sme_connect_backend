@@ -106,10 +106,14 @@ namespace SMEConnect.Helpers
         {
             if (userContext.Roles.Contains("Admin"))
             {
+                return true;
+            }
+            else
+            {
                 var groupRole = await authenticationProvider.GetUserGroupRole(userContext.Email);
                 return groupRole == GroupRoles.Lead;
             }
-            return false;
+           
         }
     }
 }

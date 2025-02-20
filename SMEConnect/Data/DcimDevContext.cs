@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using SMEConnect.Contracts;
 using SMEConnect.Modals;
 using System.Security.Claims;
@@ -39,6 +40,8 @@ public partial class DcimDevContext : IdentityDbContext<ApplicationUser, Applica
     public virtual DbSet<Announcement> Announcements { get; set; }
 
     public virtual DbSet<GroupUserRoleClaim> GroupUserRoleClaims { get; set; }
+
+    public virtual DbSet<GroupRequest> GroupRequests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=DefaultConnection");
