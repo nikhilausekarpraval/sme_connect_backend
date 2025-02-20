@@ -39,7 +39,7 @@ namespace SMEConnect.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
 
         }
@@ -55,7 +55,7 @@ namespace SMEConnect.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -70,7 +70,37 @@ namespace SMEConnect.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
+            }
+        }
+
+        [HttpGet]
+        [Route("get_lead_group_all_users")]
+        public async Task<IActionResult> GetLeadGroupAllUsers([FromQuery] string userName)
+        {
+            try
+            {
+                var result = await this._userGroupUsersProvider.getLeadUserGroupsUsers(userName);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex.Message));
+            }
+        }
+
+        [HttpGet]
+        [Route("get_is_user_lead")]
+        public async Task<IActionResult> GetIsUserLeadForAnyGroup([FromQuery] string userName)
+        {
+            try
+            {
+                var result = await this._userGroupUsersProvider.getIsUserLeadForGroups(userName);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -91,7 +121,7 @@ namespace SMEConnect.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -107,7 +137,7 @@ namespace SMEConnect.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -133,7 +163,7 @@ namespace SMEConnect.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 

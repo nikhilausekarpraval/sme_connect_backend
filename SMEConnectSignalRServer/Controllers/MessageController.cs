@@ -29,7 +29,7 @@ namespace SMEConnectSignalRServer.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -44,7 +44,7 @@ namespace SMEConnectSignalRServer.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -59,7 +59,7 @@ namespace SMEConnectSignalRServer.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -74,7 +74,7 @@ namespace SMEConnectSignalRServer.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -135,7 +135,7 @@ namespace SMEConnectSignalRServer.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -150,7 +150,7 @@ namespace SMEConnectSignalRServer.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
     }

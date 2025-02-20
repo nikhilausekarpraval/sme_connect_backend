@@ -29,7 +29,7 @@ namespace SMEConnect.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
 
@@ -44,7 +44,7 @@ namespace SMEConnect.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(NotFound(ex));
+                return new JsonResult(NotFound(ex.Message));
             }
         }
     }

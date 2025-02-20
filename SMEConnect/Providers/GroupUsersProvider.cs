@@ -171,7 +171,76 @@ namespace SMEConnect.Providers
             }
         }
 
+        public async Task<ApiResponse<List<GetGroupUsersWithRoleClaims>>> getLeadUserGroupsUsers(string userEmail)
+        {
+            try
+            {
+                var usersWithNames = await _dcimDevContext.Users
+                                            .Where(u => u.Email == userEmail) 
+                                            .Join(
+                                                _dcimDevContext.GroupUsers, 
+                                                u => u.Email,
+                                                gu => gu.UserEmail,
+                                                (u, gu) => new { User = u, GroupUser = gu }
+                                            )
+                                            .GroupJoin(
+                                                _dcimDevContext.GroupUserRoleClaims, 
+                                                gu => gu.GroupUser.Id,
+                                                gc => gc.GroupUserId,
+                                                (gu, gc) => new
+                                                {
+                                                    gu.GroupUser.Id,
+                                                    gu.GroupUser.Group,
+                                                    gu.GroupUser.UserEmail,
+                                                    gu.User.DisplayName,
+                                                    gu.GroupUser.GroupRole,
+                                                    Claims = gc.Select(c => c.Claim).ToList(),
+                                                    gu.GroupUser.ModifiedOnDt,
+                                                    gu.GroupUser.ModifiedBy
+                                                }
+                                            )
+                                            .ToListAsync();
 
+
+                var userDtos = usersWithNames.Select(u => new GetGroupUsersWithRoleClaims
+                {
+                    Id = u.Id,
+                    Group = u.Group,
+                    UserEmail = u.UserEmail,
+                    Name = u.DisplayName,
+                    GroupRole = u.GroupRole,
+                    GroupRoleClaims = u.Claims,
+                    ModifiedBy = u.ModifiedBy,
+                    ModifiedOnDt = u.ModifiedOnDt
+
+                }).ToList();
+
+                return new ApiResponse<List<GetGroupUsersWithRoleClaims>>(ApiResponseType.Success, userDtos);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+        }
+
+
+        public async Task<ApiResponse<bool>> getIsUserLeadForGroups(string userEmail)
+        {
+            try
+            {
+                bool isLead = await _dcimDevContext.GroupUsers
+                    .AnyAsync(gu => gu.UserEmail == userEmail && gu.GroupRole == "Lead");
+
+                return new ApiResponse<bool>(ApiResponseType.Success, isLead);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+        }
+    
         public async Task<ApiResponse<bool>> DeleteGroupUser(List<int> ids)
         {
             try
