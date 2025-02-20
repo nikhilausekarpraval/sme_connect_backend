@@ -102,20 +102,37 @@ namespace SMEConnect.Providers
 
 
 
-        public async Task<ApiResponse<List<GroupUser>>> getGroupUsers()
+        public async Task<ApiResponse<List<GetGroupUsersWithRoleClaims>>> getGroupUsers()
         {
             try
             {
-                List<GroupUser> roles = await _dcimDevContext.GroupUsers.ToListAsync();
-                await _dcimDevContext.SaveChangesAsync();
-                return new ApiResponse<List<GroupUser>>(ApiResponseType.Success, roles);
+                var roles = await _dcimDevContext.GroupUsers
+                    .GroupJoin(
+                        _dcimDevContext.GroupUserRoleClaims, 
+                        gu => gu.Id,
+                        guc => guc.GroupUserId,
+                        (gu, guc) => new GetGroupUsersWithRoleClaims
+                        {
+                            Id = gu.Id,
+                            Group = gu.Group,
+                            UserEmail = gu.UserEmail,
+                            GroupRole = gu.GroupRole,
+                            GroupRoleClaims = guc.Select(c => c.Claim).ToList(), 
+                            ModifiedBy = gu.ModifiedBy,
+                            ModifiedOnDt = gu.ModifiedOnDt
+                        }
+                    )
+                    .ToListAsync();
+
+                return new ApiResponse<List<GetGroupUsersWithRoleClaims>>(ApiResponseType.Success, roles);
             }
             catch (Exception ex)
             {
-                this._logger.LogError(1, ex, ex.Message);
+                this._logger.LogError(ex, "Error fetching group users.");
                 throw;
             }
         }
+
 
         public async Task<ApiResponse<List<GetGroupUsersWithRoleClaims>>> getGroupAllUsers(string group)
         {
@@ -287,7 +304,10 @@ namespace SMEConnect.Providers
                     groupUserRoleClaims.Add(new GroupUserRoleClaim { GroupUserId = group.Id, Claim = claimName, Id = 0 });
                 }
 
-                await _groupUserRoleProvider.CreateUpdateGroupClaim(groupUserRoleClaims);
+                if (group.GroupRoleClaims.Count > 0 && group.GroupRoleClaims[0] != "")
+                {
+                    await _groupUserRoleProvider.CreateUpdateGroupClaim(groupUserRoleClaims);
+                }
                  _dcimDevContext.GroupUsers.Update(existingGroup);
                 await _dcimDevContext.SaveChangesAsync();
                 return new ApiResponse<bool>(Constants.ApiResponseType.Success, true);

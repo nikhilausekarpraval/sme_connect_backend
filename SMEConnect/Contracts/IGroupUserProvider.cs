@@ -7,8 +7,6 @@ namespace SMEConnect.Contracts
     {
         public Task<ApiResponse<bool>> AddGroupUser(GroupUserRequestDto userGroupUser);
 
-        public Task<ApiResponse<List<GroupUser>>> getGroupUsers();
-
         public Task<ApiResponse<bool>> DeleteGroupUser(List<int> ids);
 
         public Task<ApiResponse<bool>> UpdateGroupUser(GroupUserRequestDto group);
@@ -20,5 +18,7 @@ namespace SMEConnect.Contracts
         public Task<ApiResponse<List<GetGroupUsersWithRoleClaims>>> getLeadUserGroupsUsers(string userEmail);
 
         public Task<ApiResponse<bool>> getIsUserLeadForGroups(string userEmail);
+
+        public  Task<ApiResponse<List<GetGroupUsersWithRoleClaims>>> getGroupUsers();
     }
 }
