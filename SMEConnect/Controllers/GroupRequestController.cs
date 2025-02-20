@@ -8,6 +8,8 @@ using SMEConnect.Modals;
 namespace SMEConnect.Controllers
 {
     [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
+    [Route("api/[controller]")]
+    [ApiController]
     public class GroupRequestController : ControllerBase
     {
         private IGroupRequestProvider _groupProvider;

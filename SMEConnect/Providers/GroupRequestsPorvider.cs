@@ -28,14 +28,10 @@ namespace SMEConnect.Providers
         {
             try
             {
-                var userRoles = await (from user in _decimDevContext.Users
-                                       join userRole in _decimDevContext.Roles
-                                           on user.Id equals userRole.Id
-                                       where user.Email == userEmail
-                                       select userRole.Name)
-                                       .ToListAsync();
+                var user = await _decimDevContext.Users.Where(u => u.Email == userEmail).FirstOrDefaultAsync();
+                var userRoles = await _userManager.GetRolesAsync(user);
 
-                if (userRoles.Contains("Admin"))
+                if (userRoles.Contains("Admin") && user != null)
                 {
                     var groupRequests = await _decimDevContext.GroupRequests.ToListAsync();
                     return new ApiResponse<List<GroupRequest>>(ApiResponseType.Success, groupRequests,"");

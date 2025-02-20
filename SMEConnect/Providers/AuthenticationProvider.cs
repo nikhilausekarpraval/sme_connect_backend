@@ -120,7 +120,7 @@ namespace SMEConnect.Providers
                                            join ug in _dcimDevContext.UserGroups on gu.Group equals ug.Name
                                            where u.Email == userEmail && ug.Practice == u.Practice
                                            select gu.GroupRole)
-              .FirstOrDefaultAsync();
+                                          .FirstOrDefaultAsync();
 
                 return userGroupRole;
             }
