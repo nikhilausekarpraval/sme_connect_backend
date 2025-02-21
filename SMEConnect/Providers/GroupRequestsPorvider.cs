@@ -15,13 +15,14 @@ namespace SMEConnect.Providers
         private DcimDevContext _decimDevContext;
         private ILogger<UserClaimProvider> _logger;
         private UserManager<ApplicationUser> _userManager;
+        private IGroupUserProvider _groupUserProvider;
 
-        public GroupRequestsPorvider(DcimDevContext dcimDevContext, UserManager<ApplicationUser> userManager, ILogger<UserClaimProvider> logger)
+        public GroupRequestsPorvider(DcimDevContext dcimDevContext, UserManager<ApplicationUser> userManager, ILogger<UserClaimProvider> logger, IGroupUserProvider groupUserProvider)
         {
             this._decimDevContext = dcimDevContext;
             _logger = logger;
             _userManager = userManager;
-
+            this._groupUserProvider = groupUserProvider;
         }
 
         public async Task<ApiResponse<List<GroupRequest>>> GetUserRequests(string userEmail)
@@ -64,6 +65,12 @@ namespace SMEConnect.Providers
         {
             try
             {
+                var group = await _decimDevContext.UserGroups.Where(ug => ug.Practice == groupRequest.PracticeName && ug.Name == groupRequest.GroupName).FirstOrDefaultAsync();
+
+                var newGroupGroupRequest = new GroupUserRequestDto() { Id = group.Id, Group = groupRequest.GroupName, GroupRole = groupRequest.RequestRole, UserEmail = groupRequest.UserName, GroupRoleClaims = groupRequest.RequestRole == "Lead" ? ["Edit"] : [],ModifiedBy = groupRequest.ModifiedBy,ModifiedOnDt = groupRequest.ModifiedOnDt };
+
+                await _groupUserProvider.UpdateGroupUser(newGroupGroupRequest);
+                
                 _decimDevContext.GroupRequests.Update(groupRequest);
 
                 await _decimDevContext.SaveChangesAsync();
@@ -71,7 +78,7 @@ namespace SMEConnect.Providers
                 return new ApiResponse<bool>(
                     ApiResponseType.Success,
                     true,
-                    ""
+                    "Assigned user group role and updated status."
                 );
             }
             catch (Exception ex)
