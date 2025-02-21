@@ -111,11 +111,6 @@ namespace SMEConnect.Controllers
         {
             try
             {
-                var userContext = HttpContext.Items["UserContext"] as UserContext;
-                if (!userContext.Roles.Contains("Admin"))
-                {
-                    return Unauthorized();
-                }
                 var result = await this._userGroupUsersProvider.DeleteGroupUser(groupIds);
                 return new JsonResult(Ok(result));
             }

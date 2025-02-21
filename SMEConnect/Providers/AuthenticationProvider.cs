@@ -226,6 +226,7 @@ namespace SMEConnect.Providers
                 ApplicationUser user = Helper.GetApplicationUser(model);
                 user.ModifiedBy = userEmail;
                 var result = await userManager.CreateAsync(user, model.password);
+                
 
                 if (!result.Succeeded)
                 {
@@ -233,6 +234,7 @@ namespace SMEConnect.Providers
                 }
 
                 var newUser = await userManager.FindByEmailAsync(model.email);
+                              await userManager.AddToRolesAsync(newUser, [GroupRoles.Member]);
                 var questions = Helper.GetQuestion(model);
                 var answers = Helper.GetAnswers(model);
 

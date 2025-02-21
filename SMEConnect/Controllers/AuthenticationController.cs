@@ -141,8 +141,7 @@
             {
                 try
                 {
-                    var userContext = HttpContext.Items["UserContext"] as UserContext;
-                    var result = await this._authenticationProvider.UpdateUser(user,userContext.Email);
+                    var result = await this._authenticationProvider.UpdateUser(user,user.email);
                     return new JsonResult(result.statusText == AccessConfigurationSccessMessage.UpdatedUser ? Ok(result) : BadRequest(result));
 
                 }
