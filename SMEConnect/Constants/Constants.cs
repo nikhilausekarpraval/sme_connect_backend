@@ -65,10 +65,11 @@
 
         public static class RoleName
         {
-            public static string Admin = "admin";
-            public static string Member = "member";
-            public static string Aseme = "aseme";
-            public static string Director = "director";
+            public static string Admin = "Admin";
+            public static string Member = "Member";
+            public static string Aseme = "Aseme";
+            public static string Director = "Director";
+            public static string Lpu = "LPU";
         }
 
         public static class AccessConfigurationErrorMessage

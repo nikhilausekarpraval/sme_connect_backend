@@ -234,7 +234,7 @@ namespace SMEConnect.Providers
                 }
 
                 var newUser = await userManager.FindByEmailAsync(model.email);
-                              await userManager.AddToRolesAsync(newUser, [GroupRoles.SME]);
+                              await userManager.AddToRolesAsync(newUser, [RoleName.Lpu]);
                 var questions = Helper.GetQuestion(model);
                 var answers = Helper.GetAnswers(model);
 
