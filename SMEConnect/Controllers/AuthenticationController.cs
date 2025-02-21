@@ -103,8 +103,7 @@
 
                 try
                 {
-                    var userContext = HttpContext.Items["UserContext"] as UserContext;
-                    var result = await this._authenticationProvider.Register(model,userContext.Email);
+                    var result = await this._authenticationProvider.Register(model,model.email);
 
                     return new JsonResult(result.statusText == ApiErrors.UserCreated ? Ok(result) : BadRequest(result));
 
