@@ -9,7 +9,7 @@ namespace SMEConnect.Contracts
 
         public Task<ApiResponse<bool>> UpdateUserRequests(GroupRequest groupRequest);
 
-        public Task<ApiResponse<bool>> DelereGroupRequest(List<int> groupRequestIds);
+        public Task<ApiResponse<bool>> DeleteGroupRequest(List<int> groupRequestIds, IUserContext userContext);
 
         public Task<ApiResponse<bool>> AddUserRequests(GroupRequest groupRequest);
     }

@@ -34,8 +34,8 @@ namespace SMEConnect.Providers
                 if (userRoles.Contains("Admin") && user != null)
                 {
                     var groupRequests = await _decimDevContext.GroupRequests.ToListAsync();
-                    return new ApiResponse<List<GroupRequest>>(ApiResponseType.Success, groupRequests,"");
-                
+                    return new ApiResponse<List<GroupRequest>>(ApiResponseType.Success, groupRequests, "");
+
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace SMEConnect.Providers
         }
 
 
-        public async Task<ApiResponse<bool>> UpdateUserRequests(GroupRequest groupRequest )
+        public async Task<ApiResponse<bool>> UpdateUserRequests(GroupRequest groupRequest)
         {
             try
             {
@@ -102,24 +102,35 @@ namespace SMEConnect.Providers
             }
         }
 
-        public async Task<ApiResponse<bool>> DelereGroupRequest(List<int> groupRequestIds)
+        public async Task<ApiResponse<bool>> DeleteGroupRequest(List<int> groupRequestIds, IUserContext userContext)
         {
             try
             {
-                using var transaction = await _decimDevContext.Database.BeginTransactionAsync();
+                var groupRequests = await _decimDevContext.GroupRequests
+                                            .Where(gr => groupRequestIds.Contains(gr.Id))
+                                            .ToListAsync();
 
-                var groupRequests = await _decimDevContext.GroupRequests.Where(gr => groupRequestIds.Contains(gr.Id)).ToListAsync();
+                if (!userContext.Roles.Contains("Admin"))
+                {
+                    var groupNames = groupRequests.Select(g => g.GroupName).ToList();
+
+                    bool isLead = await _decimDevContext.GroupUsers
+                        .AnyAsync(gu => gu.UserEmail == userContext.Email && gu.GroupRole == "Lead" && groupNames.Contains(gu.Group));
+
+                    if (!isLead)
+                    {
+                        throw new UnauthorizedAccessException("User is not a lead of all requested groups.");
+                    }
+                }
 
                 _decimDevContext.GroupRequests.RemoveRange(groupRequests);
 
                 await _decimDevContext.SaveChangesAsync();
 
-                await transaction.CommitAsync();
-
                 return new ApiResponse<bool>(
                     ApiResponseType.Success,
                     true,
-                    ""
+                    "Group requests deleted successfully."
                 );
             }
             catch (Exception ex)

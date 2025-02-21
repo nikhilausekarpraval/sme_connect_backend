@@ -21,7 +21,7 @@ namespace SMEConnect.Contracts
 
         public Task<ResponseDto> RegisterAdmin(RegisterModelDto model);
 
-        public  Task<string> GetUserGroupRole(string userEmail);
+        public  Task<string> GetUserGroupRole(string userEmail,string groupName);
 
     }
 }

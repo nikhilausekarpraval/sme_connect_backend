@@ -102,7 +102,7 @@ namespace SMEConnect.Helpers
             }
         }
 
-        public static async Task<bool> IsGroupLeadAsync(IAuthenticationProvider authenticationProvider, UserContext userContext)
+        public static async Task<bool> IsGroupLeadAsync(IAuthenticationProvider authenticationProvider, UserContext userContext,string groupName)
         {
             if (userContext.Roles.Contains("Admin"))
             {
@@ -110,7 +110,7 @@ namespace SMEConnect.Helpers
             }
             else
             {
-                var groupRole = await authenticationProvider.GetUserGroupRole(userContext.Email);
+                var groupRole = await authenticationProvider.GetUserGroupRole(userContext.Email,groupName);
                 return groupRole == GroupRoles.Lead;
             }
            

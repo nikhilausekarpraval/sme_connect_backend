@@ -55,7 +55,7 @@ namespace SMEConnect.Controllers
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
                 group.ModifiedBy = userContext.Email;
 
-                var isAdminOrLead = await Helper.IsGroupLeadAsync(_authenticationProvider, userContext);
+                var isAdminOrLead = await Helper.IsGroupLeadAsync(_authenticationProvider, userContext,group.GroupName);
                 if (isAdminOrLead)
                 {
                     var result = await _groupProvider.UpdateUserRequests(group);
@@ -97,21 +97,15 @@ namespace SMEConnect.Controllers
 
         [HttpDelete]
         [Route("delete_group_requests")]
-        public async Task<IActionResult> DeleteGroup(List<int> groupIds)
+        public async Task<IActionResult> DeleteGroup([FromBody] List<int> groupIds)
         {
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                var isAdminOrLead = await Helper.IsGroupLeadAsync(_authenticationProvider, userContext);
-                if (isAdminOrLead)
-                {
-                    var result = await this._groupProvider.DelereGroupRequest(groupIds);
+
+                    var result = await this._groupProvider.DeleteGroupRequest(groupIds,userContext);
                     return new JsonResult(Ok(result));
-                }
-                else
-                {
-                    return new JsonResult(Unauthorized());
-                }
+                
             }
             catch (Exception ex)
             {

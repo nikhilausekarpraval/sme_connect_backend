@@ -111,14 +111,14 @@ namespace SMEConnect.Providers
             }
         }
 
-        public async Task<string> GetUserGroupRole(string userEmail)
+        public async Task<string> GetUserGroupRole(string userEmail,string groupName)
         {
             try
             {
                 var userGroupRole = await (from u in _dcimDevContext.Users
                                            join gu in _dcimDevContext.GroupUsers on u.Email equals gu.UserEmail
                                            join ug in _dcimDevContext.UserGroups on gu.Group equals ug.Name
-                                           where u.Email == userEmail && ug.Practice == u.Practice
+                                           where u.Email == userEmail && ug.Practice == u.Practice && ug.Name == groupName
                                            select gu.GroupRole)
                                           .FirstOrDefaultAsync();
 

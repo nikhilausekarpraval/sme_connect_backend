@@ -33,7 +33,7 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email);
+                var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email,discussion.GroupName);
                 if (groupRole == "Lead"! || !userContext.Roles.Contains("Admin"))
                 {
                     return Unauthorized();
@@ -68,20 +68,19 @@ namespace SMEConnect.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("delete_discussion")]
-        public async Task<IActionResult> DeleteDiscussion([FromBody] string discussion)
+        public async Task<IActionResult> DeleteDiscussion([FromBody] Discussion discussion)
         {
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email);
+                var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email,discussion.GroupName);
                 if (groupRole == "Lead"! || !userContext.Roles.Contains("Admin"))
                 {
                     return Unauthorized();
                 }
-                var result = await this._discussionProvider.DeleteDiscussion(discussion);
+                var result = await this._discussionProvider.DeleteDiscussion(discussion.Name);
                 return new JsonResult(Ok(result));
             }
             catch (Exception ex)
@@ -146,7 +145,7 @@ namespace SMEConnect.Controllers
             try
             {
                 var userContext = HttpContext.Items["UserContext"] as UserContext;
-                var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email);
+                var groupRole = await _authenticationProvider.GetUserGroupRole(userContext.Email,discussion.GroupName);
                 if (groupRole == "Lead"! || !userContext.Roles.Contains("Admin"))
                 {
                     return Unauthorized();
