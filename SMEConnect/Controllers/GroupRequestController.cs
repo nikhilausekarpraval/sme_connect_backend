@@ -109,6 +109,21 @@ namespace SMEConnect.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_is_user_lead")]
+        public async Task<IActionResult> GetIsUserLeadForAnyGroup([FromQuery] string userName)
+        {
+            try
+            {
+                var result = await this._groupProvider.getIsUserLeadForGroups(userName);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex.Message));
+            }
+        }
+
 
         [HttpDelete]
         [Route("delete_group_requests")]

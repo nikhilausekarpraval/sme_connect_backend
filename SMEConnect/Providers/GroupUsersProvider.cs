@@ -17,8 +17,8 @@ namespace SMEConnect.Providers
         private IAnnouncementProvider _announcementProvider;
         private IMapper _mapper;
         private IGroupUserRoleClaimProvider _groupUserRoleProvider;
-        
 
+        
         public GroupUserProvider(ILogger<GroupUserProvider> Logger, DcimDevContext dcimDevContext, IAnnouncementProvider announcementProvider,IMapper mapper,IGroupUserRoleClaimProvider groupUserRoleClaimProvider)
         {
             this._dcimDevContext = dcimDevContext;
@@ -26,6 +26,7 @@ namespace SMEConnect.Providers
             _announcementProvider = announcementProvider;
             _mapper = mapper;
             _groupUserRoleProvider = groupUserRoleClaimProvider;
+            
         }
 
 
@@ -234,23 +235,6 @@ namespace SMEConnect.Providers
                 }).ToList();
 
                 return new ApiResponse<List<GetGroupUsersWithRoleClaims>>(ApiResponseType.Success, userDtos);
-            }
-            catch (Exception ex)
-            {
-                this._logger.LogError(1, ex, ex.Message);
-                throw;
-            }
-        }
-
-
-        public async Task<ApiResponse<bool>> getIsUserLeadForGroups(string userEmail)
-        {
-            try
-            {
-                bool isLead = await _dcimDevContext.GroupUsers
-                    .AnyAsync(gu => gu.UserEmail == userEmail && gu.GroupRole == "Lead");
-
-                return new ApiResponse<bool>(ApiResponseType.Success, isLead);
             }
             catch (Exception ex)
             {

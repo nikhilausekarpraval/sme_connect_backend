@@ -77,12 +77,15 @@ namespace SMEConnect.Providers
                 {
                     requestCount = await (from groupRequest in _decimDevContext.GroupRequests
                                           join userGroups in _decimDevContext.UserGroups
-                                              on new { Practice = groupRequest.PracticeName, Group = groupRequest.GroupName }
-                                              equals new { Practice = userGroups.Practice, Group = userGroups.Name }
+                                              on new { groupRequest.PracticeName, groupRequest.GroupName }
+                                              equals new { PracticeName = userGroups.Practice, GroupName = userGroups.Name }
                                           join groupUsers in _decimDevContext.GroupUsers
                                               on userGroups.Name equals groupUsers.Group
-                                          where groupUsers.UserEmail == userEmail && groupUsers.GroupRole.ToLower() == "lead" &&            groupRequest.RequestStatus == false
+                                          where groupUsers.UserEmail == userEmail
+                                                && groupUsers.GroupRole.ToLower() == "lead"
+                                                && groupRequest.RequestStatus == false
                                           select groupRequest).CountAsync();
+
                 }
 
                 return new ApiResponse<int>(ApiResponseType.Success, requestCount, "");
@@ -94,7 +97,28 @@ namespace SMEConnect.Providers
             }
         }
 
+        public async Task<ApiResponse<UserRequestRoleCountDto>> getIsUserLeadForGroups(string userEmail)
+        {
+            try
+            {
+                bool isLead = await _decimDevContext.GroupUsers
+                    .AnyAsync(gu => gu.UserEmail == userEmail && gu.GroupRole == "Lead");
 
+                var count = 0;
+                if (isLead)
+                {
+                    var result = await GetUserRequestCount(userEmail);
+                    count = result.Data;
+                }
+
+                return new ApiResponse<UserRequestRoleCountDto>(ApiResponseType.Success, new UserRequestRoleCountDto() { isLead=isLead,requestCount = count});
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+        }
 
         public async Task<ApiResponse<bool>> UpdateUserRequests(GroupRequest groupRequest)
         {

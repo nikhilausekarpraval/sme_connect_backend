@@ -1,4 +1,5 @@
 ﻿using SMEConnect.Data;
+using SMEConnect.Dtos;
 using SMEConnect.Modals;
 
 namespace SMEConnect.Contracts
@@ -14,5 +15,8 @@ namespace SMEConnect.Contracts
         public Task<ApiResponse<bool>> AddUserRequests(GroupRequest groupRequest);
 
         public Task<ApiResponse<int>> GetUserRequestCount(string userEmail);
+
+        public Task<ApiResponse<UserRequestRoleCountDto>> getIsUserLeadForGroups(string userEmail);
+
     }
 }
