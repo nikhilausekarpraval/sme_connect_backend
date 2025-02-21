@@ -94,6 +94,21 @@ namespace SMEConnect.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get_group_request_count")]
+        public async Task<IActionResult> GetGroupRequestCount([FromQuery] string userEmail)
+        {
+            try
+            {
+                var result = await this._groupProvider.GetUserRequestCount(userEmail);
+                return new JsonResult(Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(NotFound(ex.Message));
+            }
+        }
+
 
         [HttpDelete]
         [Route("delete_group_requests")]

@@ -60,6 +60,41 @@ namespace SMEConnect.Providers
             }
         }
 
+        public async Task<ApiResponse<int>> GetUserRequestCount(string userEmail)
+        {
+            try
+            {
+                var user = await _decimDevContext.Users.Where(u => u.Email == userEmail).FirstOrDefaultAsync();
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                int requestCount;
+
+                if (userRoles.Contains("Admin") && user != null)
+                {
+                    requestCount = await _decimDevContext.GroupRequests.Where(gr => gr.RequestStatus == false).CountAsync();
+                }
+                else
+                {
+                    requestCount = await (from groupRequest in _decimDevContext.GroupRequests
+                                          join userGroups in _decimDevContext.UserGroups
+                                              on new { Practice = groupRequest.PracticeName, Group = groupRequest.GroupName }
+                                              equals new { Practice = userGroups.Practice, Group = userGroups.Name }
+                                          join groupUsers in _decimDevContext.GroupUsers
+                                              on userGroups.Name equals groupUsers.Group
+                                          where groupUsers.UserEmail == userEmail && groupUsers.GroupRole.ToLower() == "lead" &&            groupRequest.RequestStatus == false
+                                          select groupRequest).CountAsync();
+                }
+
+                return new ApiResponse<int>(ApiResponseType.Success, requestCount, "");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(1, $"{ex.Message}", ex);
+                throw;
+            }
+        }
+
+
 
         public async Task<ApiResponse<bool>> UpdateUserRequests(GroupRequest groupRequest)
         {
@@ -92,7 +127,7 @@ namespace SMEConnect.Providers
         {
             try
             {
-               var isRequestExist = await _decimDevContext.GroupRequests.Where(gr => gr.PracticeName == groupRequest.PracticeName && gr.GroupName == groupRequest.GroupName && gr.UserName == groupRequest.UserName).FirstAsync();
+               var isRequestExist = await _decimDevContext.GroupRequests.Where(gr => gr.PracticeName == groupRequest.PracticeName && gr.GroupName == groupRequest.GroupName && gr.UserName == groupRequest.UserName).FirstOrDefaultAsync();
 
                 if(isRequestExist != null)
                 {
