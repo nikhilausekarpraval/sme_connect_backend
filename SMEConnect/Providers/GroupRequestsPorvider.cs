@@ -92,8 +92,18 @@ namespace SMEConnect.Providers
         {
             try
             {
-                await _decimDevContext.GroupRequests.AddAsync(groupRequest);
+               var isRequestExist = await _decimDevContext.GroupRequests.Where(gr => gr.PracticeName == groupRequest.PracticeName && gr.GroupName == groupRequest.GroupName && gr.UserName == groupRequest.UserName).FirstAsync();
 
+                if(isRequestExist != null)
+                {
+                    return  new ApiResponse<bool>(
+                    ApiResponseType.Failure,
+                    false,
+                    "Request already exist."
+                );
+                }
+
+                await _decimDevContext.GroupRequests.AddAsync(groupRequest);
                 await _decimDevContext.SaveChangesAsync();
 
                 return new ApiResponse<bool>(
