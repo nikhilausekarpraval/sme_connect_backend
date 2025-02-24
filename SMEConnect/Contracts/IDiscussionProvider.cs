@@ -1,7 +1,6 @@
 ﻿
 using SMEConnect.Dtos;
 using SMEConnect.Modals;
-using SMEConnectSignalRServer.Dtos;
 
 namespace SMEConnect.Contracts
 {
