@@ -128,10 +128,9 @@
 
         public static class SignalRChatURLS
         {
-            public static string SignalRBaseURL = "https://localhost:5234/api/message/";
-            public static string SignalRGetSimilarDiscussions = "get-similar-discussions";
-            public static string SignalRGetRecentDiscussions = "get-recent-discussions";
-            public static string SignalRGetDiscussionUsers = "get-discussion-users";
+            public static string SignalRGetSimilarDiscussions = "/api/message/get-similar-discussions";
+            public static string SignalRGetRecentDiscussions = "/api/message/get-recent-discussions";
+            public static string SignalRGetDiscussionUsers = "/api/message/get-discussion-users";
         }
     }
 }

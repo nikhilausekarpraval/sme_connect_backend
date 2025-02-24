@@ -9,6 +9,7 @@ using System.Text;
 using SMEConnect.Dtos;
 using static SMEConnect.Constatns.Constants;
 using SMEConnect.Helpers;
+using Microsoft.Extensions.Configuration;
 
 
 namespace SMEConnect.Providers
@@ -21,15 +22,17 @@ namespace SMEConnect.Providers
         private readonly HttpClient _httpClient;
         private readonly IAnnouncementProvider _announcementProvider;
         private readonly ISignalRCommonProvider _signalRCommonProvider;
+        private readonly IConfiguration _configuration;
 
 
-        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger, HttpClient httpClient, IAnnouncementProvider announcementProvider,ISignalRCommonProvider signalRCommonProvider)
+        public DiscussionProvider(DcimDevContext context, ILogger<DiscussionProvider> logger, HttpClient httpClient, IAnnouncementProvider announcementProvider,ISignalRCommonProvider signalRCommonProvider,IConfiguration configuration)
         {
             _context = context;
             _logger = logger;
             _httpClient = httpClient;
             _announcementProvider = announcementProvider;
             _signalRCommonProvider = signalRCommonProvider;
+            _configuration = configuration;
         }
 
         public async Task<ApiResponse<List<Discussion>>> getDiscussions(string groupId)
@@ -77,7 +80,7 @@ namespace SMEConnect.Providers
             try
             {
                 
-                var response = await _signalRCommonProvider.PostAsync(this._httpClient,SignalRChatURLS.SignalRBaseURL,SignalRChatURLS.SignalRGetRecentDiscussions,discussion,token);
+                var response = await _signalRCommonProvider.PostAsync(this._httpClient, _configuration["SignalRBaseURL"], SignalRChatURLS.SignalRGetRecentDiscussions,discussion,token);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -122,7 +125,7 @@ namespace SMEConnect.Providers
 
                 discussion.Discussion = newDiscussion?.Description;
 
-                var response = await _signalRCommonProvider.PostAsync(this._httpClient, SignalRChatURLS.SignalRBaseURL, SignalRChatURLS.SignalRGetSimilarDiscussions, discussion, token);
+                var response = await _signalRCommonProvider.PostAsync(this._httpClient, _configuration["SignalRBaseURL"], SignalRChatURLS.SignalRGetSimilarDiscussions, discussion, token);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -156,7 +159,7 @@ namespace SMEConnect.Providers
         {
             try
             {
-                var response = await _signalRCommonProvider.PostAsync(this._httpClient, SignalRChatURLS.SignalRBaseURL, SignalRChatURLS.SignalRGetDiscussionUsers, discussion, token);
+                var response = await _signalRCommonProvider.PostAsync(this._httpClient, _configuration["SignalRBaseURL"], SignalRChatURLS.SignalRGetDiscussionUsers, discussion, token);
 
                 if (!response.IsSuccessStatusCode)
                 {
