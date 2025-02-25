@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SMEConnect.Contracts;
@@ -208,6 +209,46 @@ namespace SMEConnect.Providers
             catch (Exception ex)
             {
                 this._logger.LogError(1, ex, ex.Message);
+                throw;
+            }
+
+        }
+
+        public async Task<ResponseDto> RefreshToken(UserContext userContext,  TokenRequest tokenRequest)
+        {
+
+            try
+            {
+                var user = await userManager.Users.FirstOrDefaultAsync(u => u.Email == userContext.Email);
+
+                IList<Claim> gUserClaims;
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
+                };
+
+                var userRoles = await userManager.GetRolesAsync(user);
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var userClaims = await userManager.GetClaimsAsync(user);
+                gUserClaims = userClaims;
+
+                foreach (var userClaim in userClaims)
+                {
+                    authClaims.Add(userClaim);
+                }
+
+                var accessToken = Helper.GetAuthToken(authClaims, _configuration);
+
+                return new ResponseDto { data = accessToken, status = ApiResponseType.Success, statusText = AccessConfigurationSccessMessage.RefreshTokenGenerated, message = "" };
+            }
+            catch (Exception ex)
+            {
                 throw;
             }
 

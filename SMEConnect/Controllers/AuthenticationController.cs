@@ -8,6 +8,7 @@
     using SMEConnect.Contracts;
     using SMEConnect.Data;
     using SMEConnect.Dtos;
+    using SMEConnect.Helpers;
     using SMEConnect.Modals;
     using SMEConnect.Modals.JWTAuthentication.Authentication;
     using System;
@@ -53,8 +54,38 @@
                 }
             }
 
+            [HttpPost("refresh-token")]
+            [Authorize(AuthenticationSchemes = "CustomJwt, AzureAD")]
+            public async Task<IActionResult> RefreshToken([FromBody] TokenRequest tokenRequest)
+            {
+                try
+                {
+                    if (tokenRequest == null || string.IsNullOrEmpty(tokenRequest.RefreshToken))
+                    {
+                        return BadRequest(new { message = "Invalid request." });
+                    }
 
-            [HttpPost]
+                    if (Helper.IsTokenExpired(tokenRequest.RefreshToken))
+                    {
+                        return Unauthorized(new { message = "Invalid or expired refresh token." });
+                    }
+
+                    var userContext = HttpContext.Items["UserContext"] as UserContext;
+
+                    var result = await _authenticationProvider.RefreshToken(userContext, tokenRequest);
+
+                   return new JsonResult(Ok(result));
+   
+                }
+                catch (Exception ex)
+                {
+                    return new JsonResult(NotFound(new ResponseDto { message = ex.Message, status = "", statusText = ex.Message }));
+                }
+
+            }
+
+
+             [HttpPost]
             [Route("login")]
             public async Task<IActionResult> Login([FromBody] LoginModalDto model)
             {

@@ -1,4 +1,5 @@
 ﻿using SMEConnect.Dtos;
+using SMEConnect.Modals;
 using SMEConnect.Modals.JWTAuthentication.Authentication;
 
 namespace SMEConnect.Contracts
@@ -22,6 +23,8 @@ namespace SMEConnect.Contracts
         public Task<ResponseDto> RegisterAdmin(RegisterModelDto model);
 
         public  Task<string> GetUserGroupRole(string userEmail,string groupName);
+
+        public Task<ResponseDto> RefreshToken(UserContext userContext, TokenRequest tokenRequest);
 
     }
 }

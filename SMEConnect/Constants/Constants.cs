@@ -100,6 +100,7 @@
             public static string AddedRoleToUser = "Added role to user successfully.";
             public static string ClaimAddedToUser = "Claim added to user.";
             public static string UserCreated = "User created successfully.";
+            public static string RefreshTokenGenerated = "Refresh token generated.";
             public static string UserLoggedOut = "User logged out successfully.";
             public static string UpdatedUser = "Updated user.";
             public static string PasswordUserUpdated = "Password and user details updated successfully";

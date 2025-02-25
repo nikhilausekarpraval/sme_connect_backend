@@ -76,6 +76,18 @@ namespace SMEConnect.Helpers
                 };
         }
 
+
+        public static bool IsTokenExpired(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            var expiryDate = jwtToken.ValidTo; 
+
+            return expiryDate < DateTime.UtcNow;
+        }
+
         public static string GetAccessToken(HttpContext httpContext)
         {
             if (httpContext.Request.Headers.ContainsKey("Authorization"))
