@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<ChatHub>();
+builder.Services.AddSingleton<ScoreHub>();
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
@@ -130,6 +131,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<ChatHub>("/chathub", options =>
+{
+    options.Transports =
+        HttpTransportType.WebSockets |
+        HttpTransportType.LongPolling;
+});
+
+app.MapHub<ScoreHub>("/scorehub", options =>
 {
     options.Transports =
         HttpTransportType.WebSockets |
