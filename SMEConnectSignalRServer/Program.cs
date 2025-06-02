@@ -102,6 +102,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = null; 
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -113,13 +118,18 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRouting();
-
 app.UseCors(options => options
+    .WithOrigins(
+        "http://localhost:5173",
+        "https://smeconnect-g2ewe9f0hkdpc4ap.canadacentral-01.azurewebsites.net",
+        "https://localhost:5234/",
+        "https://localhost:9091/"
+    )
     .AllowAnyMethod()
     .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true) // Allow any origin
     .AllowCredentials());
+
+app.UseRouting();
 
 //app.UseEndpoints(endpoints =>
 //{
@@ -130,14 +140,14 @@ app.UseCors(options => options
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<ChatHub>("/chathub", options =>
+app.MapHub<ScoreHub>("/scorehub", options =>
 {
     options.Transports =
         HttpTransportType.WebSockets |
         HttpTransportType.LongPolling;
-});
+}).AllowAnonymous();
 
-app.MapHub<ScoreHub>("/scorehub", options =>
+app.MapHub<ChatHub>("/chathub", options =>
 {
     options.Transports =
         HttpTransportType.WebSockets |
